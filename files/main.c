@@ -18,9 +18,19 @@ int check_exit(char *line)
 		return(1);
 	return(0);
 }
-void cd_buildin(cd, path, man)
+void env_buildin(char *line, t_minishell *man)
 {
-	if(strncmp(cd, "cd", 3))
+	node_t *temp;
+
+	temp = man->head;
+	if (ft_strncmp(line, "env", 3) == 0)
+	{
+		while(temp)
+		{
+			printf("%s\n", temp->data);
+			temp = temp->next;
+		}
+	}
 }
 
 void pwd_buildin(char *line, t_minishell *man)
@@ -33,14 +43,14 @@ void pwd_buildin(char *line, t_minishell *man)
 void buildins(char *line, t_minishell *man)
 {
 	pwd_buildin(line, man);
-	cd_buildin(line, path, man);
+	env_buildin(line, man);
 }
 
 void loop(t_minishell *man)
 {
 	char *line;
-	// node_t *node;
 
+	fill_nodes_env(man);
 	while(1)
 	{
 		line = readline("minishell> ");
@@ -52,15 +62,15 @@ void loop(t_minishell *man)
 		}
 		add_history(line);
 		buildins(line, man);
-		
 	}
 }
 
-int main()
+int main(int argc, char **argv, char **env)
 {
     t_minishell *man;
 
 	man = ft_calloc(1, sizeof(t_minishell));
+	man->env = env;
 	if(!man)
 		exit(1);
     loop(man);

@@ -1,11 +1,11 @@
 NAME    := minishell
-CFLAGS =  -Wall -Wextra -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
+CFLAGS =  -Wall -Wextra -lreadline #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
 LIBFT := ./libft
 CC = cc
 
 HEADERS := -I./include -I /include -I$(LIBFT)
 LIBS    := -ldl -pthread -lm $(LIBFT)/libft.a 
-SRCS    :=	files/main.c files/free.c
+SRCS    :=	files/main.c files/free.c files/nodes.c
 OBJS    := ${SRCS:.c=.o}
 
 all:  libft $(NAME)

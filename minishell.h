@@ -9,20 +9,20 @@
 #include <readline/history.h>
 #include <limits.h>
 
-typedef struct s_minishell{
-	char **commands;
-	char *env;
-	char **envpath;
-	char *path;
-} t_minishell;
-
 typedef struct node{
 	char *data;
 	struct node *next;
 } node_t;
 
+typedef struct s_minishell{
+	char **env;
+	node_t *head;
+} t_minishell;
+
+
 void free2pointers(char **str);
 char	*ft_strjoinfree(char const *s1, char const *s2);
+void fill_nodes_env(t_minishell *man);
 
 
 #endif
