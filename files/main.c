@@ -53,7 +53,8 @@ void loop(t_minishell *man)
 	fill_nodes_env(man);
 	while(1)
 	{
-		line = readline("minishell> ");
+		line = readline("tomzijnmondheeftnognooitfrisgeroken> ");
+		main_pars(line, man);
 		if(check_exit(line) != 0)
 		{
 			ft_putstr_fd("exit\n", 2);
@@ -68,10 +69,13 @@ void loop(t_minishell *man)
 int main(int argc, char **argv, char **env)
 {
     t_minishell *man;
+	t_token **token;
 
 	man = ft_calloc(1, sizeof(t_minishell));
 	man->env = env;
 	if(!man)
 		exit(1);
+	// tokenizer(argc, argv, token);
     loop(man);
 }
+//save environment in a linked list, that way you can easily access it and add enviromental variables to it

@@ -14,15 +14,23 @@ typedef struct node{
 	struct node *next;
 } node_t;
 
+typedef struct s_token{
+	char **command;
+	struct s_token *next;
+	char *type;
+} t_token;
+
 typedef struct s_minishell{
 	char **env;
 	node_t *head;
 } t_minishell;
 
-
 void free2pointers(char **str);
 char	*ft_strjoinfree(char const *s1, char const *s2);
 void fill_nodes_env(t_minishell *man);
+void add_node(node_t **head, node_t *new);
+node_t *make_node(char *line);
+void main_pars(char *line, t_minishell *man);
 
 
 #endif

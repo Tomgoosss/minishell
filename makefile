@@ -5,7 +5,7 @@ CC = cc
 
 HEADERS := -I./include -I /include -I$(LIBFT)
 LIBS    := -ldl -pthread -lm $(LIBFT)/libft.a 
-SRCS    :=	files/main.c files/free.c files/nodes.c
+SRCS    :=	files/main.c files/free.c files/nodes.c files/parsing.c
 OBJS    := ${SRCS:.c=.o}
 
 all:  libft $(NAME)
