@@ -6,15 +6,15 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/06/19 14:45:11 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/06/19 21:50:18 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//skip_whitespace function is used to skip whitespaces in the line
-// it returns -1 if there is no whitespace in the line
-int	skip_whitespace(char *line, int i)
+//check_whitespaces function is used to skip whitespaces in the line
+// it returns -1 if there is no whitespace in the line or there is nothing after the whitespace
+int	check_whitespaces(char *line, int i)
 {
 	if (!(line[i] == ' ' || line[i] == '\t' || line[i] == '\r'
 			|| line[i] == '\n' || line[i] == '\v' || line[i] == '\f'))
@@ -51,9 +51,9 @@ int	check_redirections(char *line)
 	while (line[i + 2])
 	{
 		if (((line[i] == '<' && line[i + 1] == '<') || ((line[i] == '>')
-					&& line[i + 1] == '>')) && skip_whitespace(line, (i + 2)) == 1)
+					&& line[i + 1] == '>')) && check_whitespaces(line, (i + 2)) == 1)
 			return (1);
-		if (skip_whitespace == -1)
+		if (check_whitespaces == -1)
 			return (0);
 		i++;
 	}
@@ -74,11 +74,9 @@ int closing_quote(char *line, int i, char c)
 
 void	main_pars(char *line, t_env *var)
 {
+	t_env *hallo;
 	env_variable(line, var);
-	if (!check_redirections(line))
-		printf("hallo\n");
-	if (!check_unclosed_brackets(line))
-		printf("tomstinkt\n");
-	
-	
+	// if (!check_redirections(line))
+	// 	printf("hallo\n");
+	return;
 }

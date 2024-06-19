@@ -25,6 +25,7 @@ void add_node(node_t **head, node_t *new)
 	}
 	temp->next = new;
 }
+
 // puts the env in a linked list
 void fill_nodes_env(t_env *var)
 {
@@ -33,17 +34,11 @@ void fill_nodes_env(t_env *var)
 
 	i = 0;
 	head = NULL;
-	// add_node(head, make_node(man->env[i]));
-	// printf("%s\n", head->data);
 	while(var->env[i])
 	{
 		add_node(&head, make_node(var->env[i]));
 		i++;
 	}
 	var->head = head;
-	// while(head->next != NULL)
-	// {
-	// 	printf("%s\n", head->data);
-	// 	head = head->next;
-	// }
+
 }

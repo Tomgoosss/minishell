@@ -26,11 +26,14 @@ typedef struct s_env{
 } t_env;
 
 void free2pointers(char **str);
+char	*remove_white_spaces(char *line);
 char	*ft_strjoinfree(char const *s1, char const *s2);
 void fill_nodes_env(t_env *man);
 void add_node(node_t **head, node_t *new);
 node_t *make_node(char *line);
 void main_pars(char *line, t_env *man);
+void	main_pars(char *line, t_env *var);
+int	check_whitespaces(char *line, int i);
 
 
 #endif
