@@ -26,7 +26,7 @@ void add_node(node_t **head, node_t *new)
 	temp->next = new;
 }
 // puts the env in a linked list
-void fill_nodes_env(t_minishell *man)
+void fill_nodes_env(t_env *var)
 {
 	int i;
 	node_t *head;
@@ -35,12 +35,12 @@ void fill_nodes_env(t_minishell *man)
 	head = NULL;
 	// add_node(head, make_node(man->env[i]));
 	// printf("%s\n", head->data);
-	while(man->env[i])
+	while(var->env[i])
 	{
-		add_node(&head, make_node(man->env[i]));
+		add_node(&head, make_node(var->env[i]));
 		i++;
 	}
-	man->head = head;
+	var->head = head;
 	// while(head->next != NULL)
 	// {
 	// 	printf("%s\n", head->data);

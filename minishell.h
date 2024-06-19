@@ -20,17 +20,17 @@ typedef struct s_token{
 	char *type;
 } t_token;
 
-typedef struct s_minishell{
+typedef struct s_env{
 	char **env;
 	node_t *head;
-} t_minishell;
+} t_env;
 
 void free2pointers(char **str);
 char	*ft_strjoinfree(char const *s1, char const *s2);
-void fill_nodes_env(t_minishell *man);
+void fill_nodes_env(t_env *man);
 void add_node(node_t **head, node_t *new);
 node_t *make_node(char *line);
-void main_pars(char *line, t_minishell *man);
+void main_pars(char *line, t_env *man);
 
 
 #endif

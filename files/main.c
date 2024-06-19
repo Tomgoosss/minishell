@@ -18,11 +18,11 @@ int check_exit(char *line)
 		return(1);
 	return(0);
 }
-void env_buildin(char *line, t_minishell *man)
+void env_buildin(char *line, t_env *var)
 {
 	node_t *temp;
 
-	temp = man->head;
+	temp = var->head;
 	if (ft_strncmp(line, "env", 3) == 0)
 	{
 		while(temp)
@@ -33,28 +33,33 @@ void env_buildin(char *line, t_minishell *man)
 	}
 }
 
-void pwd_buildin(char *line, t_minishell *man)
+void pwd_buildin(char *line, t_env *var)
 {
 	char cwd[4069];
 	if(strncmp(line, "pwd", 3) == 0)
 		printf("%s\n", getcwd(cwd, sizeof(cwd)));
 }
 
-void buildins(char *line, t_minishell *man)
+void buildins(char *line, t_env *var)
 {
-	pwd_buildin(line, man);
-	env_buildin(line, man);
+	pwd_buildin(line, var);
+	env_buildin(line, var);
 }
 
-void loop(t_minishell *man)
+void loop(t_env *var)
 {
 	char *line;
 
-	fill_nodes_env(man);
+	fill_nodes_env(var);
+	while(var->head)
+	{
+		printf("%s\n", var->head->data);
+		var = var->head->next;
+	}
 	while(1)
 	{
-		line = readline("tomzijnmondheeftnognooitfrisgeroken> ");
-		main_pars(line, man);
+		line = readline("minishell> ");
+		main_pars(line, var);
 		if(check_exit(line) != 0)
 		{
 			ft_putstr_fd("exit\n", 2);
@@ -62,20 +67,19 @@ void loop(t_minishell *man)
 			break;
 		}
 		add_history(line);
-		buildins(line, man);
+		buildins(line, var);
 	}
 }
 
-int main(int argc, char **argv, char **env)
+int main(int argc, char **argv, char **environment)
 {
-    t_minishell *man;
+    t_env *var;
 	t_token **token;
 
-	man = ft_calloc(1, sizeof(t_minishell));
-	man->env = env;
-	if(!man)
+	var = ft_calloc(1, sizeof(t_env));
+	var->env = environment;
+	if(!var)
 		exit(1);
-	// tokenizer(argc, argv, token);
-    loop(man);
+    loop(var);
 }
 //save environment in a linked list, that way you can easily access it and add enviromental variables to it
