@@ -22,7 +22,7 @@ void	env_variable(char *line, t_env *var)
 	char	*env_variable;
 	node_t	*temp;
 
-	temp = var->head;
+	temp = var->head_env;
 	i = 0;
 	if (!ft_strncmp(line, "export", 6))
 	{

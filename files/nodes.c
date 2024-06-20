@@ -39,6 +39,6 @@ void fill_nodes_env(t_env *var)
 		add_node(&head, make_node(var->env[i]));
 		i++;
 	}
-	var->head = head;
+	var->head_env = head;
 
 }

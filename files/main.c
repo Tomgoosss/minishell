@@ -21,7 +21,7 @@ void	env_buildin(char *line, t_env *var)
 {
 	node_t	*temp;
 
-	temp = var->head;
+	temp = var->head_env;
 	if (ft_strncmp(line, "env", 3) == 0)
 	{
 		while (temp)
@@ -51,6 +51,7 @@ void	loop(t_env *var)
 	char	*line;
 
 	fill_nodes_env(var);
+	fill_nodes_exp(var);
 	while (1)
 	{
 		line = readline("minishell> ");

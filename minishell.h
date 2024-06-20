@@ -22,7 +22,8 @@ typedef struct s_token{
 
 typedef struct s_env{
 	char **env;
-	node_t *head;
+	node_t *head_env;
+	node_t *head_exp;
 } t_env;
 
 void free2pointers(char **str);
@@ -34,6 +35,8 @@ node_t *make_node(char *line);
 void main_pars(char *line, t_env *man);
 void	main_pars(char *line, t_env *var);
 int	check_whitespaces(char *line, int i);
+void	env_variable(char *line, t_env *var);
+void fill_nodes_exp(t_env *var);
 
 
 #endif

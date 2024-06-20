@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/06/19 21:50:18 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/06/20 12:27:39 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ void	main_pars(char *line, t_env *var)
 {
 	t_env *hallo;
 	env_variable(line, var);
-	// if (!check_redirections(line))
-	// 	printf("hallo\n");
+	
 	return;
 }
