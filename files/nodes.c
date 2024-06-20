@@ -30,15 +30,27 @@ void add_node(node_t **head, node_t *new)
 void fill_nodes_env(t_env *var)
 {
 	int i;
-	node_t *head;
 
 	i = 0;
-	head = NULL;
 	while(var->env[i])
 	{
-		add_node(&head, make_node(var->env[i]));
+		add_node(&var->head_env, make_node(var->env[i]));
+		add_node(&var->head_exp, make_node(var->env[i]));
 		i++;
 	}
-	var->head_env = head;
+}
 
+void swap_2_nodes(node_t **node)
+{
+	node_t *first;
+	node_t *second;
+	node_t *prev;
+	
+	prev = *node;
+	first = prev->next;
+	second = first->next;
+	prev->next = second;
+	if(second->next)
+		first->next = second->next;
+	second->next = first;
 }

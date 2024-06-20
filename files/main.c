@@ -24,6 +24,7 @@ void	env_buildin(char *line, t_env *var)
 	temp = var->head_env;
 	if (ft_strncmp(line, "env", 3) == 0)
 	{
+		swap_2_nodes(var->head_exp->next);
 		while (temp)
 		{
 			printf("%s\n", temp->data);
@@ -31,6 +32,7 @@ void	env_buildin(char *line, t_env *var)
 		}
 	}
 }
+
 
 void	pwd_buildin(char *line, t_env *var)
 {
@@ -51,7 +53,6 @@ void	loop(t_env *var)
 	char	*line;
 
 	fill_nodes_env(var);
-	fill_nodes_exp(var);
 	while (1)
 	{
 		line = readline("minishell> ");
@@ -81,3 +82,4 @@ int	main(int argc, char **argv, char **environment)
 }
 // save environment in a linked list,
 // that way you can easily access it and add enviromental variables to it
+

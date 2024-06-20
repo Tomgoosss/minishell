@@ -58,4 +58,20 @@ char	*remove_white_spaces(char *line)
 	new_line[j] = '\0';
 	return (new_line);
 }
+
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	size_t	i;
+
+	i = 0;
+	while (s1[i] != '\0' || s2[i] != '\0')
+	{
+		if (s1[i] != s2[i])
+		{
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		}
+		i++;
+	}
+	return (0);
+}
 //problem with remove_white_spaces is that export name=123 cant have any spaces inbetween name and 123

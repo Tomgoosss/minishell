@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/06/20 12:27:39 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/06/20 12:59:06 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ int closing_quote(char *line, int i, char c)
 
 void	main_pars(char *line, t_env *var)
 {
-	t_env *hallo;
-	env_variable(line, var);
-	
+		
 	return;
 }
