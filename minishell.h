@@ -38,7 +38,7 @@ int	check_whitespaces(char *line, int i);
 void	env_variable(char *line, t_env *var);
 void fill_nodes_exp(t_env *var);
 int	ft_strcmp(const char *s1, const char *s2);
-void swap_nodes(node_t **one, node_t **prev);
+void swap_nodes(char **first, char **second);
 
 
 #endif

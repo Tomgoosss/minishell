@@ -20,20 +20,20 @@ int	check_exit(char *line)
 void	env_buildin(char *line, t_env *var)
 {
 	node_t	*temp;
+	int i = 0;
 
 	temp = var->head_env;
 	if (ft_strncmp(line, "env", 3) == 0)
 	{
-		swap_nodes(&temp, temp->next);
 		while (temp)
 		{
+			i++;
 			printf("%s\n", temp->data);
 			temp = temp->next;
 		}
 		temp = var->head_env;
 	}
 }
-
 
 void	pwd_buildin(char *line, t_env *var)
 {
