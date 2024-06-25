@@ -1,5 +1,58 @@
 #include "../minishell.h"
 
+void swap_no_prev(node_t **one)
+{
+	node_t *second;
+
+	second = (*one)->next;
+	if(second->next)
+	{
+		(*one)->next = second->next;
+		second->next = *one;
+	}
+	else
+	{
+		second->next = *one;
+		(*one)->next = NULL;
+	}
+	*one = second;
+}
+void swap_2(node_t **one, node_t **prev)
+{
+	node_t *second;
+
+	second = (*one)->next;
+	if(second->next)
+	{
+		printf("1");
+		(*prev)->next = second;
+		(*one)->next = second->next;
+		second->next = *one;
+	}
+	else
+	{
+		printf("2");
+		(*prev)->next = second;
+		second->next = *one;
+		(*one)->next = NULL;
+	}
+	*prev = *one;
+	*one = second;
+}
+
+void swap_nodes(node_t **one, node_t **prev)
+{
+	node_t *second;
+	
+	second = NULL;
+	if(!(*one)->next)
+		return;
+	if(!*prev)
+		swap_no_prev(one);
+	else
+		swap_2(one, prev);
+}
+
 node_t *make_node(char *line)
 {
 	node_t *new;

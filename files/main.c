@@ -24,12 +24,13 @@ void	env_buildin(char *line, t_env *var)
 	temp = var->head_env;
 	if (ft_strncmp(line, "env", 3) == 0)
 	{
-		swap_2_nodes(var->head_exp->next);
+		swap_nodes(&temp, temp->next);
 		while (temp)
 		{
 			printf("%s\n", temp->data);
 			temp = temp->next;
 		}
+		temp = var->head_env;
 	}
 }
 
