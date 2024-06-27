@@ -49,17 +49,3 @@ void fill_nodes_env(t_env *var)
 	}
 }
 
-void swap_2_nodes(node_t **node)
-{
-	node_t *first;
-	node_t *second;
-	node_t *prev;
-	
-	prev = *node;
-	first = prev->next;
-	second = first->next;
-	prev->next = second;
-	if(second->next)
-		first->next = second->next;
-	second->next = first;
-}

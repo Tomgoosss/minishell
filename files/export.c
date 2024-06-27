@@ -1,43 +1,34 @@
 #include "../minishell.h"
 
-
 int sorted(t_env *var)
 {
 	node_t *temp;
-	size_t first;
-	size_t sec;
 
 	temp = var->head_exp;
-	while(temp)
+	while(temp && temp->next)
 	{
-		first = ft_strlen(var->head_exp->data);
-		sec = ft_strlen(var->head_exp->next->data);
-		if(first < sec)
-			first = sec;
-		if(ft_strncmp(temp->data, temp->next->data, first) > 0)
+		if(ft_strcmp(temp->data, temp->next->data) > 0)
 			return 0;
 		temp = temp->next;
+
 	}
 	return 1;
 }
-void fill_nodes_exp(t_env *var)
+
+void sort_export(t_env *var)
 {
-	node_t *temp;
-	int i;
+	node_t *head;
+	int i = 0;
 
-	i = 0;
-	temp = NULL;
-	temp = var->head_exp;
-	while(!sorted(var))
+	head = var->head_exp;
+	while(sorted(var) == 0 && head->next && head)
 	{
-		if(ft_strcmp(temp->next->data, temp->next->next->data) > 0)
-			swap_2_nodes(&temp);
-		temp = temp->next;
+		while(head && head->next)
+		{
+			if(ft_strcmp(head->data, head->next->data) > 0)
+				swap_nodes(&head->data, &head->next->data);
+			head = head->next;
+		}
+		head = var->head_exp;
 	}
-
 }
-
-
-
-
-
