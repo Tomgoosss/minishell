@@ -18,6 +18,7 @@ node_t *make_node(char *line)
 	new->next = NULL;
 	return(new);
 }
+
 // adds a node behind the last node
 void add_node(node_t **head, node_t *new)
 {

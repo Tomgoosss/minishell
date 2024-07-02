@@ -7,10 +7,9 @@ int	check_env_variable(char *line)
 {
 	int	i;
 
-	i = 0;
-	//change check_whitespaces 
-	// if(skip_whitespaces(line, 0) == ft_strlen(line))
-	// 	return (0);
+	i = 0; 
+	if(skip_whitespaces(line, 0) == ft_strlen(line))
+		return (0);
 	printf("line %c\n", line[0]);
 	printf("len%i\n", ft_strlen(line));
 

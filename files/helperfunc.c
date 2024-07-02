@@ -1,7 +1,9 @@
 #include "../minishell.h"
-int is_space(char c)
+
+int	is_space(char c)
 {
-	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f')
+	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v'
+		|| c == '\f')
 		return (1);
 	return (0);
 }
@@ -17,6 +19,11 @@ int	size_no_whitespace(char *line)
 	reset = 0;
 	while (line[i] != '\0')
 	{
+		if (line[i] == "'" || line[i] == 34)
+		{
+			size += closing_quote(line, i, line[i]) - i - 1;
+			i += closing_quote(line, i, line[i]);
+		}
 		if (!is_space(line[i]))
 		{
 			reset = 1;
@@ -32,32 +39,65 @@ int	size_no_whitespace(char *line)
 	return (size);
 }
 
-char	*remove_white_spaces(char *line)
+char	*ft_stlcat(char *dst, const char *src, size_t n)
 {
-	int		i;
-	int		j;
-	char	*new_line;
+	size_t	dstlen;
+	size_t	srclen;
+	size_t	i;
 
+	dstlen = 0;
+	srclen = 0;
 	i = 0;
-	j = 0;
-	new_line = malloc(sizeof(char) * (size_no_whitespace(line) + 1));
-	while (line[i])
+	printf("dest %s\n", dst);
+	printf("src %s\n\n", src);
+	while (dst[dstlen] && dstlen < n)
+		dstlen++;
+	while (src[srclen])
+		srclen++;
+	if (dstlen >= n)
+		return NULL;
+	while (src[i] && (dstlen + i) < (n - 1))
 	{
-		if (!is_space(line[i]))
-		{
-			new_line[j] = line[i];
-			j++;
-		}
-		else if (j > 0 && !is_space(line[i + 1]))
-		{
-			new_line[j] = ' ';
-			j++;
-		}
+		dst[dstlen + i] = src[i];
 		i++;
 	}
-	new_line[j] = '\0';
-	return (new_line);
+	dst[dstlen + i] = '\0';
+	return (dst);
 }
+char *remove_white_spaces(char *line)
+{
+    int i = 0;
+    int j = 0;
+    char *new_line;
+
+    new_line = malloc(sizeof(char) * (size_no_whitespace(line) + 1));
+    if (!new_line)
+        return NULL;
+    new_line[0] = '\0'; 
+    while (line[i])
+    {
+        if (line[i] == '\'' || line[i] == '\"')
+        {
+            int quote_len = closing_quote(line, i + 1, line[i]);
+            if (quote_len == 0)
+                return (free(new_line), 0);
+            ft_stlcat(new_line, line + i, quote_len + 1);
+            j = quote_len ;
+            i = quote_len ;
+        }
+        else if (!is_space(line[i]))
+            new_line[j++] = line[i++];
+        else
+        {
+            if (j > 0 && !is_space(line[i + 1]))
+                new_line[j++] = ' ';
+            i++;
+        }
+    }
+    new_line[j] = '\0';
+    return new_line;
+}
+
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -74,4 +114,4 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return (0);
 }
-//problem with remove_white_spaces is that export name=123 cant have any spaces inbetween name and 123
+// problem with remove_white_spaces is that export name=123 cant have any spaces inbetween name and 123

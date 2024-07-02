@@ -18,7 +18,6 @@ int sorted(t_env *var)
 void sort_export(t_env *var)
 {
 	node_t *head;
-	int i = 0;
 
 	head = var->head_exp;
 	while(sorted(var) == 0 && head->next && head)

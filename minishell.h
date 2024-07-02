@@ -17,7 +17,7 @@ typedef struct node{
 typedef struct s_token{
 	char **command;
 	struct s_token *next;
-	char *type;
+	int type;
 } t_token;
 
 typedef struct s_env{
@@ -40,6 +40,7 @@ void fill_nodes_exp(t_env *var);
 int	ft_strcmp(const char *s1, const char *s2);
 void swap_nodes(char **first, char **second);
 void sort_export(t_env *var);
+int closing_quote(char *line, int i, char c);
 
 
 #endif

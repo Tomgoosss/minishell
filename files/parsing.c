@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/06/20 12:59:06 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:57:48 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//check_whitespaces function is used to skip whitespaces in the line
-// it returns -1 if there is no whitespace in the line or there is nothing after the whitespace
+// check_whitespaces function is used to skip whitespaces in the line
+// it returns
 int	check_whitespaces(char *line, int i)
 {
 	if (!(line[i] == ' ' || line[i] == '\t' || line[i] == '\r'
@@ -30,10 +30,12 @@ int	check_whitespaces(char *line, int i)
 	return (1);
 }
 
-// //check_redirections function is used to check if there is any redirection in the line
+//
+	//check_redirections function is used to check if there is any redirection in the line
 // // it returns -1 if there is no redirection in the line
 // // it returns 1 if there is a redirection in the line
-// // it returns 0 if there is a redirection in the line but it is not valid, valid means that there is a file after the redirection
+// // it returns 0 if there is a redirection in the line but it is not valid,
+
 int	check_redirections(char *line)
 {
 	int	i;
@@ -51,7 +53,8 @@ int	check_redirections(char *line)
 	while (line[i + 2])
 	{
 		if (((line[i] == '<' && line[i + 1] == '<') || ((line[i] == '>')
-					&& line[i + 1] == '>')) && check_whitespaces(line, (i + 2)) == 1)
+					&& line[i + 1] == '>')) && check_whitespaces(line, (i
+					+ 2)) == 1)
 			return (1);
 		if (check_whitespaces == -1)
 			return (0);
@@ -60,20 +63,80 @@ int	check_redirections(char *line)
 	return (0);
 }
 
-int closing_quote(char *line, int i, char c)
+int	closing_quote(char *line, int i, char c)
 {
 	i++;
-	while(line[i])
+	while (line[i])
 	{
-		if(line[i] == c)
+		if (line[i] == c)
 			return (i + 1);
 		i++;
 	}
 	return (0);
 }
 
+
+void	tokenize(t_token **token, char *line)
+{
+	t_token	*head;
+	char	**temp;
+	int		i;
+
+	i = 0;
+	head = (*token);
+	temp = ft_split(line, ' ');
+	while (temp[i])
+	{
+		(*token)->command = temp[i];
+		(*token)->next = malloc(sizeof(t_token));
+		if (ft_strcmp(temp[i], "|") == 0)
+			(*token)->type = 1;
+		else if (ft_strcmp(temp[i], "<") == 0)
+			(*token)->type = 2;
+		else if (ft_strcmp(temp[i], "<<") == 0)
+			(*token)->type = 3;
+		else if (ft_strcmp(temp[i], ">") == 0)
+			(*token)->type = 4;
+		else if (ft_strcmp(temp[i], ">>") == 0)
+			(*token)->type = 5;
+		else
+			(*token)->type = 0;
+		(*token) = (*token)->next;
+		i++;
+	}
+	(*token)->next = NULL;
+	(*token) = head;
+}
+
+void prep_commands(t_token **token, char *line)
+{
+	t_token *head;
+	int i;
+	
+	i = 0;
+	head = (*token);
+	while((*token)->next)
+	{
+		if((*token)->type == 0)
+			if((*token)->command[0][0] == '\'' || (*token)->command[0][0] == 34)
+				(*token)->type == 6;
+			else
+				(*token)->type == 7;
+		(*token) = (*token)->next;
+	}
+	(*token) = head;
+	return;
+}
 void	main_pars(char *line, t_env *var)
 {
-		
-	return;
+	t_token *token;
+	token = malloc(sizeof(t_token));
+	tokenize(&token, line);
+	// prep_commands(&token , line);
+	// while(token->next)
+	// {
+	// 	printf("command; %s , %i\n", token->command, token->type);
+	// 	token = token->next;
+	// }
+	return ;
 }

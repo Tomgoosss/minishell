@@ -1,5 +1,5 @@
 NAME    := minishell
-CFLAGS =  -Wall -Wextra -lreadline #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
+CFLAGS =  -g -Wall -Wextra -lreadline #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
 LIBFT := ./libft
 CC = cc
 
