@@ -1,5 +1,6 @@
 #include "../minishell.h"
 
+// check export is sorted
 int sorted(t_env *var)
 {
 	node_t *temp;
@@ -10,7 +11,6 @@ int sorted(t_env *var)
 		if(ft_strcmp(temp->data, temp->next->data) > 0)
 			return 0;
 		temp = temp->next;
-
 	}
 	return 1;
 }

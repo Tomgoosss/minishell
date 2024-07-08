@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/07/06 18:03:36 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/07/08 13:36:24 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,10 @@ void	prep_commands(t_token **token, char *line)
 	while ((*token)->next)
 	{
 		if ((*token)->type == 0)
+		{
 			if ((*token)->command[0] == "'" || (*token)->command[0] == 34)
-				(*token)->type =(*token)->file);
+				{
+					(*token)->type =(*token)->file;
 					(*token)->type = 7;
 				}
 				else
@@ -210,10 +212,10 @@ void	main_pars(char *line, t_env *var)
 	tokenize(&token, line);
 	prep_commands(&token, line);
 	regroup_commands(&token);
-	while(token->next)
-	{
-		printf("command: %s\n", token->command[0]);
-		token = token->next;
-	}
+	// while(token->next)
+	// {
+	// 	printf("command: %s\n", token->command[0]);
+	// 	token = token->next;
+	// }
 	return ;
 }

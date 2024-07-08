@@ -12,7 +12,7 @@ void free2pointers(char **str)
 	}
 	free(str);
 }
-
+// free str1
 char	*ft_strjoinfree(char const *s1, char const *s2)
 {
 	int		i;
