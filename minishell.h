@@ -17,7 +17,8 @@ typedef struct node{
 typedef struct s_token{
 	char **command;
 	struct s_token *next;
-	int type;
+	t_minishell type;
+	char *file; // make separate struct for file and redirection
 } t_token;
 
 typedef struct s_env{
@@ -25,6 +26,15 @@ typedef struct s_env{
 	node_t *head_env;
 	node_t *head_exp;
 } t_env;
+
+typedef enum e_minishell{
+
+	REDIR_OUT_APPEND,
+	REDIR_OUT,
+	REDIR_IN_HERE_DOC,
+	REDIR_IN,
+	PIPE
+}	t_minishell;
 
 void free2pointers(char **str);
 char	*remove_white_spaces(char *line);
@@ -41,6 +51,6 @@ int	ft_strcmp(const char *s1, const char *s2);
 void swap_nodes(char **first, char **second);
 void sort_export(t_env *var);
 int closing_quote(char *line, int i, char c);
-
+char	**ft_split_mod(char const *s, char c);
 
 #endif

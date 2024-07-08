@@ -73,8 +73,6 @@ void	loop(t_env *var)
 	while (1)
 	{
 		line = readline("minishell> ");
-		line = remove_white_spaces(line);
-		printf("line: %s\n", line);
 		sort_export(var);
 		main_pars(line, var);
 		if (check_exit(line) != 0)
@@ -98,6 +96,3 @@ int	main(int argc, char **argv, char **environment)
 		exit(1);
 	loop(var);
 }
-// save environment in a linked list,
-// that way you can easily access it and add enviromental variables to it
-

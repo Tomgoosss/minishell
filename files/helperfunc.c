@@ -8,97 +8,6 @@ int	is_space(char c)
 	return (0);
 }
 
-int	size_no_whitespace(char *line)
-{
-	int	i;
-	int	size;
-	int	reset;
-
-	i = 0;
-	size = 0;
-	reset = 0;
-	while (line[i] != '\0')
-	{
-		if (line[i] == "'" || line[i] == 34)
-		{
-			size += closing_quote(line, i, line[i]) - i - 1;
-			i += closing_quote(line, i, line[i]);
-		}
-		if (!is_space(line[i]))
-		{
-			reset = 1;
-			size++;
-		}
-		else if (reset == 1)
-		{
-			reset = 0;
-			size++;
-		}
-		i++;
-	}
-	return (size);
-}
-
-char	*ft_stlcat(char *dst, const char *src, size_t n)
-{
-	size_t	dstlen;
-	size_t	srclen;
-	size_t	i;
-
-	dstlen = 0;
-	srclen = 0;
-	i = 0;
-	printf("dest %s\n", dst);
-	printf("src %s\n\n", src);
-	while (dst[dstlen] && dstlen < n)
-		dstlen++;
-	while (src[srclen])
-		srclen++;
-	if (dstlen >= n)
-		return NULL;
-	while (src[i] && (dstlen + i) < (n - 1))
-	{
-		dst[dstlen + i] = src[i];
-		i++;
-	}
-	dst[dstlen + i] = '\0';
-	return (dst);
-}
-char *remove_white_spaces(char *line)
-{
-    int i = 0;
-    int j = 0;
-    char *new_line;
-
-    new_line = malloc(sizeof(char) * (size_no_whitespace(line) + 1));
-    if (!new_line)
-        return NULL;
-    new_line[0] = '\0'; 
-    while (line[i])
-    {
-        if (line[i] == '\'' || line[i] == '\"')
-        {
-            int quote_len = closing_quote(line, i + 1, line[i]);
-            if (quote_len == 0)
-                return (free(new_line), 0);
-            ft_stlcat(new_line, line + i, quote_len + 1);
-            j = quote_len ;
-            i = quote_len ;
-        }
-        else if (!is_space(line[i]))
-            new_line[j++] = line[i++];
-        else
-        {
-            if (j > 0 && !is_space(line[i + 1]))
-                new_line[j++] = ' ';
-            i++;
-        }
-    }
-    new_line[j] = '\0';
-    return new_line;
-}
-
-
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
@@ -114,4 +23,86 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return (0);
 }
-// problem with remove_white_spaces is that export name=123 cant have any spaces inbetween name and 123
+
+static int	wordleng(char const *s, char c, int j)
+{
+	int	i;
+
+	i = 0;
+	while (s[j] != c && s[j] != '\0')
+	{
+		i++;
+		j++;
+	}
+	return (i);
+}
+static int	stringcounter(char const *s, char c)
+{
+	int	str;
+	int	t;
+
+	t = 0;
+	str = 0;
+	while (*s != '\0')
+	{
+		if (*s != c && t == 0)
+		{
+			str++;
+			t = 1;
+		}
+		if (*s == c)
+		{
+			t = 0;
+		}
+		s++;
+	}
+	return (str);
+}
+static void	free_str_array(char **str, int i)
+{
+	while (i >= 0)
+	{
+		free(str[i]);
+		i--;
+	}
+	free(str);
+}
+
+char	**ft_split_mod(char const *s, char c)
+{
+	int		strings;
+	int		i;
+	char	**str;
+
+	strings = stringcounter(s, c);
+	str = malloc((strings + 1) * sizeof(char *));
+	if (str == NULL)
+		return (NULL);
+	i = 0;
+	while (i < strings)
+	{
+		while (*s == c)
+			s++;
+		if(*s == '\'' || *s == '\"')
+		{
+			str[i] = ft_substr(s, 0, closing_quote(s, 0, *s));
+			if (str[i] == NULL)
+			{
+				free_str_array(str, i);
+				return (NULL);
+			}
+			s += closing_quote(s, 0, *s);
+		}
+		else
+			str[i] = ft_substr(s, 0, wordleng(s, c, 0));
+		if (str[i] == NULL)
+		{
+			free_str_array(str, i);
+			return (NULL);
+		}
+		s += wordleng(s, c, 0);
+		i++;
+	}
+	str[i] = NULL;
+	return (str);
+}
