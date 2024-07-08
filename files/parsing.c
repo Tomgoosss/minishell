@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/07/08 13:36:24 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/07/08 13:40:31 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void	prep_commands(t_token **token, char *line)
 			if ((*token)->command[0] == "'" || (*token)->command[0] == 34)
 				{
 					(*token)->type =(*token)->file;
-					(*token)->type = 7;
+					(*token)->type = STRING;
 				}
 				else
 					(*token)->type = 8;

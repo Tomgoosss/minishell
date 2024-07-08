@@ -45,5 +45,5 @@ void	buildins(char *line, t_env *var)
 {
 	pwd_buildin(line, var);
 	env_buildin(line, var);
-	exp_buildin(line, var);
+	// exp_buildin(line, var);
 }

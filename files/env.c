@@ -15,30 +15,6 @@ int	check_env_variable(char *line)
 
 }
 
-void	env_variable(char *line, t_env *var)
-{
-	int		i;
-	char	*env_variable;
-	node_t	*temp;
-
-	temp = var->head_env;
-	i = 0;
-	if (!ft_strncmp(line, "export", 6))
-	{
-		i = skip_whitespaces(line, 6);
-		if(i == 6)
-			{
-				// execute export
-				return ;
-			}
-		env_variable = ft_substr(line, i, ft_strlen(line) - i);
-		if (check_env_variable(env_variable) == 0)
-			return ;
-		add_node(&temp, make_node(env_variable));
-	}
-	return ;
-}
-
 int	skip_whitespaces(char *line, int i)
 {
 	while (line[i] == ' ' || line[i] == '\t' || line[i] == '\r'
@@ -46,3 +22,4 @@ int	skip_whitespaces(char *line, int i)
 		i++;
 	return (i);
 }
+
