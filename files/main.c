@@ -23,12 +23,13 @@ void	loop(t_env *var)
 	char	*line;
 
 	fill_nodes_env(var);
+	sort_export(var);
 	while (1)
 	{
 		line = readline("minishell> ");
-		printf("%s\n", line);
 		sort_export(var);
-		main_pars(line, var);
+		// main_pars(line, var);
+		main_execution(var);
 		if (check_exit(line) != 0)
 		{
 			ft_putstr_fd("exit\n", 2);

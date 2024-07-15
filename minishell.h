@@ -32,12 +32,18 @@ typedef enum e_minishell
 	STRING
 }					t_minishell;
 
+typedef struct redirection
+{
+	char			*file;
+	t_minishell		type;
+	struct t_redirection 	*next;
+}					t_redirection;
+
 typedef struct s_token
 {
 	char			**command;
 	struct s_token	*next;
-	t_minishell		type;
-	char *file; // make separate struct for file and redirection
+	t_redirection	*redirection;
 }					t_token;
 
 void				free2pointers(char **str);

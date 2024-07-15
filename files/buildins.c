@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	env_buildin(char *line, t_env *var)
+void	env_print(char *line, t_env *var)
 {
 	node_t	*temp;
 
@@ -12,25 +12,28 @@ void	env_buildin(char *line, t_env *var)
 			printf("%s\n", temp->data);
 			temp = temp->next;
 		}
-		temp = var->head_env;
 	}
 }
 
-void	exp_buildin(char *line, t_env *var)
+// this recreates the export function
+void	export(char *line, t_env *var)
 {
 	node_t	*temp;
+	char	*linetemp;
 
 	temp = var->head_exp;
-	if (ft_strncmp(line, "export", 7) == 0)
+	// remove_all_white_spaces(line);
+	if (ft_strncmp(line, "export", 7) == 0) // && ft_strlen(linetemp) == 6)
 	{
-		sort_export(var);
 		while (temp)
 		{
-			printf("%s\n", temp->data);
+			printf("declare -x %s\n", temp->data);
 			temp = temp->next;
 		}
-		temp = var->head_env;
 	}
+	// else if()
+	// 	env_or_exp(line, var);
+	// free(linetemp);
 }
 
 void	pwd_buildin(char *line, t_env *var)
@@ -44,6 +47,6 @@ void	pwd_buildin(char *line, t_env *var)
 void	buildins(char *line, t_env *var)
 {
 	pwd_buildin(line, var);
-	env_buildin(line, var);
-	// exp_buildin(line, var);
+	env_print(line, var);
+	export(line, var);
 }
