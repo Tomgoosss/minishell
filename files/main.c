@@ -26,7 +26,6 @@ void	loop(t_env *var)
 	while (1)
 	{
 		line = readline("minishell> ");
-		printf("%s\n", line);
 		sort_export(var);
 		main_pars(line, var);
 		if (check_exit(line) != 0)

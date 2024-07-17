@@ -1,10 +1,10 @@
 NAME    := minishell
-CFLAGS =  -g -Wall -Wextra -lreadline #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
+CFLAGS =  -g -Wall #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
 LIBFT := ./libft
 CC = cc
 
 HEADERS := -I./include -I /include -I$(LIBFT)
-LIBS    := -ldl -pthread -lm $(LIBFT)/libft.a 
+LIBS    := -ldl -pthread -lm $(LIBFT)/libft.a -lreadline
 SRCS    :=	files/main.c files/free.c files/nodes.c files/parsing.c files/helperfunc.c files/env.c files/export.c \
 files/buildins.c
 OBJS    := ${SRCS:.c=.o}
