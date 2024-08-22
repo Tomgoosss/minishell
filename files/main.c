@@ -9,35 +9,34 @@ void	error_msg(char *line, int i)
 	ft_putstr_fd("\n", 2);
 }
 
-int	check_exit(char *line)
-{
-	if (line == NULL)
-		return (1);
-	if (ft_strncmp(line, "exit", 4) == 0)
-		return (1);
-	return (0);
-}
-
 void	loop(t_env *var)
 {
 	char	*line;
+	t_token	*token;
+	int		exitcode;
 
 	fill_nodes_env(var);
-	sort_export(var);
+	exitcode = 0;
 	while (1)
 	{
 		line = readline("minishell> ");
 		sort_export(var);
-		// main_pars(line, var);
-		main_execution(var);
-		if (check_exit(line) != 0)
+		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
 		{
 			ft_putstr_fd("exit\n", 2);
 			rl_clear_history();
-			break ;
+			exit(exitcode);
 		}
+		if (line)
+			token = main_pars(line, var);
+		if (!token)
+			return (free(line));
+		else
+			main_execute(token, var);
+		if (token->command && ft_strcmp(token->command[0], "export") == 0)
+			export(token, var);
 		add_history(line);
-		buildins(line, var);
+		free(line);
 	}
 }
 

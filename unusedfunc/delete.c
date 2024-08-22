@@ -52,36 +52,36 @@ char	*ft_stlcat(char *dst, const char *src, size_t n)
 	dst[dstlen + i] = '\0';
 	return (dst);
 }
-// char *remove_white_spaces(char *line)
-// {
-//     int i = 0;
-//     int j = 0;
-//     char *new_line;
+char *remove_white_spaces(char *line)
+{
+    int i = 0;
+    int j = 0;
+    char *new_line;
 
-//     new_line = malloc(sizeof(char) * (size_no_whitespace(line) + 1));
-//     if (!new_line)
-//         return NULL;
-//     new_line[0] = '\0'; 
-//     while (line[i])
-//     {
-//         if (line[i] == '\'' || line[i] == '\"')
-//         {
-//             int quote_len = closing_quote(line, i + 1, line[i]);
-//             if (quote_len == 0)
-//                 return (free(new_line), 0);
-//             ft_stlcat(new_line, line + i, quote_len + 1);
-//             j = quote_len;
-//             i = quote_len;
-//         }
-//         else if (!is_space(line[i]))
-//             new_line[j++] = line[i++];
-//         else
-//         {
-//             if (j > 0 && !is_space(line[i + 1]))
-//                 new_line[j++] = ' ';
-//             i++;
-//         }
-//     }
-//     new_line[j] = '\0';
-//     return new_line;
-// }
+    new_line = malloc(sizeof(char) * (size_no_whitespace(line) + 1));
+    if (!new_line)
+        return NULL;
+    new_line[0] = '\0'; 
+    while (line[i])
+    {
+        if (line[i] == '\'' || line[i] == '\"')
+        {
+            int quote_len = closing_quote(line, i + 1, line[i]);
+            if (quote_len == 0)
+                return (free(new_line), 0);
+            ft_stlcat(new_line, line + i, quote_len + 1);
+            j = quote_len;
+            i = quote_len;
+        }
+        else if (!is_space(line[i]))
+            new_line[j++] = line[i++];
+        else
+        {
+            if (j > 0 && !is_space(line[i + 1]))
+                new_line[j++] = ' ';
+            i++;
+        }
+    }
+    new_line[j] = '\0';
+    return new_line;
+}

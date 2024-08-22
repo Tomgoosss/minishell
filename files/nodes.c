@@ -23,6 +23,8 @@ node_t *make_node(char *line)
 void add_node(node_t **head, node_t *new)
 {
 	node_t *temp;
+	if(new == NULL || head == NULL)
+		return;
 	if(*head == NULL)
 	{
 		*head = new;
@@ -49,4 +51,3 @@ void fill_nodes_env(t_env *var)
 		i++;
 	}
 }
-

@@ -1,18 +1,12 @@
 #include "../minishell.h"
 
-int	is_space(char c)
-{
-	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v'
-		|| c == '\f')
-		return (1);
-	return (0);
-}
-
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
 
 	i = 0;
+	if (s1 == NULL || s2 == NULL)
+		return (1);
 	while (s1[i] != '\0' || s2[i] != '\0')
 	{
 		if (s1[i] != s2[i])
@@ -24,39 +18,44 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-static int	wordleng(char const *s, char c, int j)
+static int	wordleng_mod(char const *s, char c, char x, int j)
 {
 	int	i;
 
 	i = 0;
-	while (s[j] != c && s[j] != '\0')
+	while (s[j] != c && s[j] != x && s[j] != '\0')
 	{
 		i++;
 		j++;
 	}
 	return (i);
 }
-static int	stringcounter(char const *s, char c)
+static int stringcounter_mod(char const *s, char c, char x)
 {
-	int	str;
-	int	t;
+    int str;
+    int t;
 
-	t = 0;
-	str = 0;
-	while (*s != '\0')
-	{
-		if (*s != c && t == 0)
-		{
-			str++;
-			t = 1;
-		}
-		if (*s == c)
-		{
-			t = 0;
-		}
-		s++;
-	}
-	return (str);
+    t = 0;
+    str = 0;
+    while (*s != '\0')
+    {
+        if (*s == x)
+        {
+            str++;
+            t = 0;
+        }
+        else if (*s != c && t == 0)
+        {
+            str++;
+            t = 1;
+        }
+        else if (*s == c)
+        {
+            t = 0;
+        }
+        s++;
+    }
+    return (str);
 }
 static void	free_str_array(char **str, int i)
 {
@@ -67,42 +66,99 @@ static void	free_str_array(char **str, int i)
 	}
 	free(str);
 }
-
-char	**ft_split_mod(char const *s, char c)
+char	*ft_substr_mod(char const *s, unsigned int start, size_t len)
 {
-	int		strings;
-	int		i;
-	char	**str;
+	char	*countm;
+	size_t	lengs;
+	size_t	i;
 
-	strings = stringcounter(s, c);
-	str = malloc((strings + 1) * sizeof(char *));
-	if (str == NULL)
-		return (NULL);
+	lengs = ft_strlen(s);
 	i = 0;
-	while (i < strings)
+	if (start >= lengs || len == 0)
+		return (ft_strdup(""));
+	if (start + len > lengs)
+		len = lengs - start;
+	countm = (char *)malloc((len + 1) * sizeof(char));
+	if (countm == 0)
+		return (NULL);
+	while (i < len)
 	{
-		while (*s == c)
-			s++;
-		if(*s == '\'' || *s == '\"')
-		{
-			str[i] = ft_substr(s, 0, closing_quote(s, 0, *s));
-			if (str[i] == NULL)
-			{
-				free_str_array(str, i);
-				return (NULL);
-			}
-			s += closing_quote(s, 0, *s);
-		}
-		else
-			str[i] = ft_substr(s, 0, wordleng(s, c, 0));
-		if (str[i] == NULL)
-		{
-			free_str_array(str, i);
-			return (NULL);
-		}
-		s += wordleng(s, c, 0);
+		countm[i] = s[i + start];
 		i++;
 	}
-	str[i] = NULL;
-	return (str);
+	countm[i] = '\0';
+	return (countm);
+}
+
+void print_str_array(char **str)
+{
+    if (str == NULL)
+    {
+        printf("Array is NULL\n");
+        return;
+    }
+
+    for (int i = 0; str[i] != NULL; i++)
+    {
+        printf("[%d]: '%s'\n", i, str[i]);
+    }
+    printf("End of array\n");
+}
+int is_delimiter(const char *s)
+{
+    return (*s == '<' || *s == '>' || *s == '|');
+}
+
+int get_token_length(const char *s)
+{
+    int len;
+    
+    if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
+        return 2;
+    if (is_delimiter(s))
+        return 1;
+    len = 0;
+    while (s[len] && !is_delimiter(s + len) && s[len] != ' ')
+        len++;
+    return len;
+}
+
+char **ft_split_mod(char const *s, char c)
+{
+    int strings = 0;
+    int i = 0;
+    int len = 0;
+    char **str;
+    const char *og_string = s;
+
+    while (*s)
+    {
+        if (*s != c)
+        {
+            len = get_token_length(s);
+            strings++;
+            s += len;
+        }
+        else
+            s++;
+    }
+    str = malloc((strings + 1) * sizeof(char *));
+    if (str == NULL)
+        return (NULL);
+    s = og_string;
+    i = 0;
+    while (i < strings)
+    {
+        while (*s == c)
+            s++;
+        len = get_token_length(s);
+        str[i] = ft_substr(s, 0, len);
+        if (str[i] == NULL)
+            return (free_str_array(str, i), NULL);
+        s += len;
+        i++;
+    }
+    str[i] = NULL;
+    // print_str_array(str);
+    return (str);
 }

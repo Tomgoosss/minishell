@@ -1,46 +1,51 @@
 #include "../minishell.h"
 
-// count leng of char withoud white spaces
-int count_len_str(char *line)
+int	is_space(char c)
 {
-	int i;
-	int c;
-
-	i = 0;
-	c = 0;
-	while(line[i])
-	{
-		if(line[i] == ' ' || line[i] == '\t' || line[i] == '\f' || line[i] == '\n' || line[i] == '\r' || line[i] == '\v')
-			i++;
-		else
-		{
-			c++;
-			i++;
-		}
-	}
-	return(c);
+	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v'
+		|| c == '\f')
+		return (1);
+	return (0);
 }
-// wrong type of remove white spaces but now already in use for a function so keep it in
-char *remove_all_white_spaces(char *line)
+
+int	not_print_str(char *c)
 {
-	int i;
-	int l;
-	char *templine;
+	int	i;
 
 	i = 0;
-	l = 0;
-	if(count_len_str(line) == 0)
-		return(NULL);
-	templine = malloc(count_len_str(line) + 1);
-	if(!templine)
-		return(NULL);
-	while(line[i])
+	if (!c)
+		return (0);
+	while (c[i])
 	{
-		if(line[i] == ' ' || line[i] == '\t' || line[i] == '\f' || line[i] == '\n' || line[i] == '\r' || line[i] == '\v')
-			i++;
-		else
-			templine[l++] = line[i++];
+		if (c[i] < 32 || c[i] > 126)
+			return (1);
+		i++;
 	}
-	templine[l] = '\0';
-	return(templine);
+	return (0);
+}
+
+int	is_meta_character(char *str)
+{
+	if (ft_strchr(str, '>') || ft_strchr(str, '<') || ft_strchr(str, '|'))
+		return (1);
+	return (0);
+}
+
+int	valid_redirection(char *str)
+{
+	if (!str)
+	{
+		printf("syntax error near unexpected token `newline'\n");
+		return (0);
+	}
+	if (is_meta_character(str) || not_print_str(str))
+	{
+		printf("not valid\n");
+		printf("%i\n", is_meta_character(str));
+		printf("%i\n", not_print_str(str));
+		printf("syntax error near unexpected token `%c'\n", str[0]);
+		return (0);
+	}
+	printf("valid\n");
+	return (1);
 }
