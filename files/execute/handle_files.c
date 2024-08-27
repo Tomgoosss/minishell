@@ -8,7 +8,7 @@ int red_out_append(t_redirection *red)
 	if (fd == -1)
 	{
 		error_lines(red->file, 2);
-		return(1);
+		return(fd);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
@@ -27,7 +27,7 @@ int red_out(t_redirection *red)
 	if(fd == -1)
 	{
 		error_lines(red->file, 2);
-		return (1);
+		return (fd);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
@@ -54,7 +54,7 @@ int red_in(t_redirection *red)
 	if (fd == -1)
 	{
 		error_lines(red->file, 2);
-		return(1);
+		return(fd);
 	}
 	if(dup2(fd, STDIN_FILENO) == -1)
 	{
@@ -66,7 +66,7 @@ int red_in(t_redirection *red)
 	return(0);
 }
 
-void open_files(t_token *token)
+int open_files(t_token *token)
 {
 	t_redirection *red;
 	int result;

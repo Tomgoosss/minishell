@@ -71,7 +71,7 @@ char						**ft_split_mod(char const *s, char c);
 void						buildins(char *line, t_env *var);
 int							valid_redirection(char *str);
 void						remove_node(t_token **token);
-void						export(t_token *token, t_env *var);
+int							export(t_token *token, t_env *var, char **command);
 void						main_execute(t_token *token, t_env *env);
 int							check_exit(char **cmd_array);
 int							check_if_buildin(t_token *token, t_env *var);
@@ -79,6 +79,7 @@ int							env_buildin(char **command, t_env *var);
 int							exp_buildin(char **command, t_env *var);
 int							pwd_buildin();
 void						error_lines(char *arg, int i);
-void						open_files(t_token *token);
+int							open_files(t_token *token);
+int							is_space(char c);
 
 #endif

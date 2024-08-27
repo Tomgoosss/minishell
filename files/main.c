@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 void	error_msg(char *line, int i)
 {
@@ -33,8 +33,6 @@ void	loop(t_env *var)
 			return (free(line));
 		else
 			main_execute(token, var);
-		if (token->command && ft_strcmp(token->command[0], "export") == 0)
-			export(token, var);
 		add_history(line);
 		free(line);
 	}

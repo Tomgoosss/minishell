@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mini_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:09:26 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/08/20 14:39:45 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/08/23 10:42:34 by tomgoossens      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 int	check_exit(char **cmd_array)
 {

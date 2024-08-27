@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/07/25 17:22:39 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:29:15 by tomgoossens      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 
 char	*prepare_for_export(char *line)
@@ -134,24 +134,25 @@ int	add_to_lists(t_env *var, char *arg)
 	return (0);
 }
 
-void	export(t_token *token, t_env *var)
+int	export(t_token *token, t_env *var, char **command)
 {
 	int i;
 	int is_double;
 	
 	i = 1;
-	if (token->command[i] == '\0')
+	if (command[i] == '\0')
 	{
 		printf_export(var);
-		return ;
+		return (0);
 	}
-	while (token->command[i])
+	while (command[i])
 	{
 		is_double = 0;
-		is_double = remove_double_env(var, token->command[i]);
-		is_double += remove_double_exp(var, token->command[i]);
+		is_double = remove_double_env(var, command[i]);
+		is_double += remove_double_exp(var, command[i]);
 		if (is_double != 0)
-			add_to_lists(var, token->command[i]);
+			add_to_lists(var, command[i]);
 		i++;
 	}
+	return(0);
 }

@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 void swap_nodes(char **first, char **second)
 {

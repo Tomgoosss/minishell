@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 void	error_lines(char *arg, int i)
 {
@@ -19,7 +19,6 @@ int find_path(char **temp_path, t_ex *ex, t_token *token)
 	i = 0;
 	if (access(token->command[0], X_OK) == 0)
 	{
-		printf("test");
 		ex->path = ft_strdup(token->command[0]);
 		free2pointers(temp_path);
 		return(0);
@@ -30,12 +29,14 @@ int find_path(char **temp_path, t_ex *ex, t_token *token)
 		ex->path = ft_strjoinfree(ex->path, token->command[0]);
 		if(access(ex->path, X_OK) == 0)
 		{
+			// printf("check path = %s\n", ex->path);
 			free2pointers(temp_path);
 			return(0);
 		}
 		free(ex->path);
 		i++;
 	}
+	free2pointers(temp_path);
 	return(1);
 }
 
@@ -50,45 +51,54 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 	temp_path = ft_split(var->env[i] + 5, ':');
 	if(find_path(temp_path, ex, token) == 0)
 		return ;
-	free2pointers(temp_path);
 	error_lines(token->command[0], 1);
 	// free structs
 	exit(127);
 }
 
-// void execute(t_token *token, t_ex *ex, t_env *var)
-// {
-// 	open_files(token);
-// }
+void execute(t_token *token, t_ex *ex, t_env *var)
+{
+	int temp;
+	make_path(token, ex, var);
+	temp = open_files(token);
+	if(temp == -1)
+	{
+		//free some struct
+		free2pointers(ex->path);
+		exit(errno);
+	}
+	if(execve(ex->path, token->command, var->env) == -1)
+	{
+		perror("execve");
+		free2pointers(ex->path);
+		exit(errno);
+	}
+}
 
-// int create_child(t_token *token, t_ex *ex, t_env *var)
-// {
-// 	int temp_fd;
-// 	int p;
+int create_child(t_token *token, t_ex *ex, t_env *var)
+{
+	int p;
 
-// 	pipe(ex->fd);
-// 	p = fork();
-// 	temp_fd = 0;
-
-// 	if(p == -1)
-// 	{
-// 		perror("fork");
-// 		exit(errno);
-// 	}
-// 	if(p == 0)
-// 	{
-// 		make_path(token, ex, var);
-// 		if(!ex->path)
-// 		{
-// 			exit(1);
-// 		}
-// 		execute(token, ex, var);
-// 	}
-// 	else
-// 	{
-
-// 	}
-// }
+	p = fork();
+	if(p == -1)
+	{
+		perror("fork");
+		exit(errno);
+	}
+	if(p == 0)
+	{
+		make_path(token, ex, var);
+		if(!ex->path)
+		{
+			exit(1);
+		}
+		execute(token, ex, var);
+	}
+	else
+	{
+		free(ex->path);;
+	}
+}
 
 void	main_execute(t_token *token, t_env *var) 
 {
@@ -103,10 +113,10 @@ void	main_execute(t_token *token, t_env *var)
 
 	// Check if command is builtins
 	// make_path(token, execute, var);
-	printf("check path = %s\n", execute->path);
+	// printf("check path = %s\n", execute->path);
 	// check_if_buildin(token, var);
 	// Else run execve
-	// create_child(token, execute, var);
+	create_child(token, execute, var);
 
 
 }

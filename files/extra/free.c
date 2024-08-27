@@ -1,4 +1,5 @@
-#include "../minishell.h"
+#include "minishell.h"
+
 
 void free2pointers(char **str)
 {

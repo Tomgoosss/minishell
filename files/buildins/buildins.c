@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 int	env_buildin(char **command, t_env *var)
 {
