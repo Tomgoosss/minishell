@@ -6,7 +6,7 @@
 /*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/08/27 10:29:15 by tomgoossens      ###   ########.fr       */
+/*   Updated: 2024/08/27 11:44:16 by tomgoossens      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ int	export(t_token *token, t_env *var, char **command)
 	if (command[i] == '\0')
 	{
 		printf_export(var);
-		return (0);
+		return (1);
 	}
 	while (command[i])
 	{
@@ -154,5 +154,5 @@ int	export(t_token *token, t_env *var, char **command)
 			add_to_lists(var, command[i]);
 		i++;
 	}
-	return(0);
+	return(1);
 }

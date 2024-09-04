@@ -6,7 +6,7 @@
 /*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/08/23 10:42:44 by tomgoossens      ###   ########.fr       */
+/*   Updated: 2024/09/04 11:43:32 by tomgoossens      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ void	tokenize(t_token **token, char *line, char **temp)
 		{
 			if (valid_redirection(temp[i + 1]))
 			{
-				printf("hallo\n");
+				// printf("hallo\n");
 				place_file(&(*token)->redirection, temp[i + 1]);
 				if (!(*token)->redirection->file)
 					return (free2pointers(temp),

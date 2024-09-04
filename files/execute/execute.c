@@ -59,13 +59,16 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 void execute(t_token *token, t_ex *ex, t_env *var)
 {
 	int temp;
-	make_path(token, ex, var);
 	temp = open_files(token);
 	if(temp == -1)
 	{
 		//free some struct
 		free2pointers(ex->path);
 		exit(errno);
+	}
+	if (check_if_buildin(token, var) == 1)
+	{
+		exit(0);
 	}
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
@@ -75,9 +78,32 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 	}
 }
 
-int create_child(t_token *token, t_ex *ex, t_env *var)
+void close_pipes_par(t_ex *ex, int count)
+{
+	int i;
+
+	i = 0;
+	if (i == 0 && ex->amound_commands >= 2)
+		close(ex->fd[1]);
+	else
+		close(ex->fd[0]);
+}
+void close_pipes_child(t_ex *ex, int count)
+{
+	int i;
+
+	i = 0;
+	if (i == 0 && ex->amound_commands >= 2)
+		close(ex->fd[0]);
+	else
+		close(ex->fd[1]);
+	
+}
+
+int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
 	int p;
+	int status;
 
 	p = fork();
 	if(p == -1)
@@ -92,12 +118,35 @@ int create_child(t_token *token, t_ex *ex, t_env *var)
 		{
 			exit(1);
 		}
+		// if(ex->amound_commands > 1)
+		// 	close_pipes_child(ex, count);
 		execute(token, ex, var);
 	}
 	else
 	{
-		free(ex->path);;
+		free(ex->path);
+		if(count == ex->amound_commands)
+		{
+			waitpid(p, &status, 0);
+			return(WEXITSTATUS(status));
+		}
 	}
+}
+
+
+int count_nodes(t_token *token)
+{
+	t_token *temp;
+	int count;
+
+	count = 0;
+	temp = token;
+	while(temp)
+	{
+		count++;
+		temp = temp->next;
+	}
+	return(count);
 }
 
 void	main_execute(t_token *token, t_env *var) 
@@ -105,18 +154,19 @@ void	main_execute(t_token *token, t_env *var)
 	int i;
 	t_ex *execute;
 	t_redirection *red;
+	int count_commands;
 
 	execute = ft_calloc(1, sizeof(t_ex));
 	if(!execute)
 		exit(errno);
 	i = 0;
-
-	// Check if command is builtins
-	// make_path(token, execute, var);
-	// printf("check path = %s\n", execute->path);
-	// check_if_buildin(token, var);
-	// Else run execve
-	create_child(token, execute, var);
-
-
+	execute->amound_commands = count_nodes(token);
+	while(token)
+	{
+		if(execute->amound_commands > 1 && i <= execute->amound_commands - 1)
+			pipe(execute->fd);
+		create_child(token, execute, var, i);
+		i++;
+		token = token->next;
+	}
 }

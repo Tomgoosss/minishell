@@ -40,12 +40,12 @@ int	valid_redirection(char *str)
 	}
 	if (is_meta_character(str) || not_print_str(str))
 	{
-		printf("not valid\n");
+		// printf("not valid\n");
 		printf("%i\n", is_meta_character(str));
 		printf("%i\n", not_print_str(str));
 		printf("syntax error near unexpected token `%c'\n", str[0]);
 		return (0);
 	}
-	printf("valid\n");
+	// printf("valid\n");
 	return (1);
 }
