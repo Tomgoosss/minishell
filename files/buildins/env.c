@@ -1,4 +1,12 @@
-#include "../minishell.h"
+#include "minishell.h"
+
+int	skip_whitespaces(char *line, int i)
+{
+	while (line[i] == ' ' || line[i] == '\t' || line[i] == '\r'
+		|| line[i] == '\n' || line[i] == '\v' || line[i] == '\f')
+		i++;
+	return (i);
+}
 
 // needs to be changed
 // check if the variable is valid. there should be no whitespace in the variable name
@@ -15,11 +23,5 @@ int	check_env_variable(char *line)
 
 }
 
-int	skip_whitespaces(char *line, int i)
-{
-	while (line[i] == ' ' || line[i] == '\t' || line[i] == '\r'
-		|| line[i] == '\n' || line[i] == '\v' || line[i] == '\f')
-		i++;
-	return (i);
-}
+
 

@@ -1,10 +1,13 @@
-#include "../minishell.h"
+#include "minishell.h"
+
 
 void free2pointers(char **str)
 {
 	int i;
 
 	i = 0;
+	if(!str)
+		return ;
 	while(str[i])
 	{
 		free(str[i]);
@@ -12,7 +15,11 @@ void free2pointers(char **str)
 	}
 	free(str);
 }
-// free str1
+
+// Concatenates two strings and frees the first one.
+// s1: The first string (will be freed).
+// s2: The second string.
+// Returns: A new string containing the concatenation of s1 and s2, or NULL if allocation fails.
 char	*ft_strjoinfree(char const *s1, char const *s2)
 {
 	int		i;

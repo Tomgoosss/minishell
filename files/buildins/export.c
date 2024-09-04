@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 // check export is sorted
 int sorted(t_env *var)
