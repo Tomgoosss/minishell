@@ -78,27 +78,27 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 	}
 }
 
-void close_pipes_par(t_ex *ex, int count)
-{
-	int i;
+// void close_pipes_par(t_ex *ex, int count)
+// {
+// 	int i;
 
-	i = 0;
-	if (i == 0 && ex->amound_commands >= 2)
-		close(ex->fd[1]);
-	else
-		close(ex->fd[0]);
-}
-void close_pipes_child(t_ex *ex, int count)
-{
-	int i;
+// 	i = 0;
+// 	if (i == 0 && ex->amound_commands >= 2)
+// 		close(ex->fd[1]);
+// 	else
+// 		close(ex->fd[0]);
+// }
+// void close_pipes_child(t_ex *ex, int count)
+// {
+// 	int i;
 
-	i = 0;
-	if (i == 0 && ex->amound_commands >= 2)
-		close(ex->fd[0]);
-	else
-		close(ex->fd[1]);
+// 	i = 0;
+// 	if (i == 0 && ex->amound_commands >= 2)
+// 		close(ex->fd[0]);
+// 	else
+// 		close(ex->fd[1]);
 	
-}
+// }
 
 int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
@@ -125,7 +125,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	else
 	{
 		free(ex->path);
-		if(count == ex->amound_commands)
+		if(count != ex->amound_commands)
 		{
 			waitpid(p, &status, 0);
 			return(WEXITSTATUS(status));
@@ -163,8 +163,8 @@ void	main_execute(t_token *token, t_env *var)
 	execute->amound_commands = count_nodes(token);
 	while(token)
 	{
-		if(execute->amound_commands > 1 && i <= execute->amound_commands - 1)
-			pipe(execute->fd);
+		// if(execute->amound_commands > 1 && i <= execute->amound_commands - 1)
+		// 	pipe(execute->fd);
 		create_child(token, execute, var, i);
 		i++;
 		token = token->next;
