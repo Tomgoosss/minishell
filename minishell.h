@@ -81,5 +81,6 @@ int							pwd_buildin();
 void						error_lines(char *arg, int i);
 int							open_files(t_token *token);
 int							is_space(char c);
+int							cd_buildin(t_token *token, t_env *var);
 
 #endif

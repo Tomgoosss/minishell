@@ -29,10 +29,13 @@ void	loop(t_env *var)
 		}
 		if (line)
 			token = main_pars(line, var);
-		if (!token)
-			return (free(line));
-		else
-			main_execute(token, var);
+
+		char cwd[9999];
+		cd_buildin(token, var);
+		// if (!token)
+		// 	return (free(line));
+		// else
+		// 	main_execute(token, var);
 		add_history(line);
 		free(line);
 	}
