@@ -125,7 +125,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	else
 	{
 		free(ex->path);
-		if(count != ex->amound_commands)
+		if(count == ex->amound_commands - 1)
 		{
 			waitpid(p, &status, 0);
 			return(WEXITSTATUS(status));
