@@ -13,8 +13,15 @@ void	loop(t_env *var)
 {
 	char	*line;
 	t_token	*token;
+<<<<<<< HEAD
+=======
+	t_ex *ex;
+>>>>>>> main
 	int		exitcode;
 
+	ex = ft_calloc(1, sizeof(t_ex));
+	if(!ex)
+		exit(errno);
 	fill_nodes_env(var);
 	exitcode = 0;
 	while (1)
@@ -32,7 +39,11 @@ void	loop(t_env *var)
 		if (!token)
 			return (free(line));
 		else
+<<<<<<< HEAD
 			main_execute(token, var);
+=======
+			main_execute(token, var, ex);
+>>>>>>> main
 		add_history(line);
 		free(line);
 	}

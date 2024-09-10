@@ -51,8 +51,15 @@ typedef struct s_token
 typedef struct execute
 {
 	int						fd[2];
+<<<<<<< HEAD
 	char					*path;
 	int 					amound_commands;
+=======
+	int						prev_fd[2];
+	char					*path;
+	int 					amound_commands;
+	int 					exit_status;
+>>>>>>> main
 }	t_ex;
 
 void						free2pointers(char **str);
@@ -73,7 +80,11 @@ void						buildins(char *line, t_env *var);
 int							valid_redirection(char *str);
 void						remove_node(t_token **token);
 int							export(t_token *token, t_env *var, char **command);
+<<<<<<< HEAD
 void						main_execute(t_token *token, t_env *env);
+=======
+void						main_execute(t_token *token, t_env *var, t_ex *ex);
+>>>>>>> main
 int							check_exit(char **cmd_array);
 int							check_if_buildin(t_token *token, t_env *var);
 int							env_buildin(char **command, t_env *var);
@@ -81,5 +92,9 @@ int							pwd_buildin();
 void						error_lines(char *arg, int i);
 int							open_files(t_token *token);
 int							is_space(char c);
+<<<<<<< HEAD
+=======
+int							check_buildin(t_token *token);
+>>>>>>> main
 
 #endif

@@ -49,14 +49,31 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 	while(var->env && ft_strncmp(var->env[i], "PATH=", 5) != 0)
 		i++;
 	temp_path = ft_split(var->env[i] + 5, ':');
+<<<<<<< HEAD
 	if(find_path(temp_path, ex, token) == 0)
+=======
+	if(find_path(temp_path, ex, token) == 0 || check_buildin(token))
+>>>>>>> main
 		return ;
 	error_lines(token->command[0], 1);
 	// free structs
 	exit(127);
 }
 
+<<<<<<< HEAD
 void execute(t_token *token, t_ex *ex, t_env *var)
+=======
+// void dup_choose(t_ex *ex, int count)
+// {
+// 	if (count == 0 && ex->amound_commands >= 2)
+// 		dup2(ex->fd[1], STDOUT_FILENO);
+// 	else
+// 		dup2
+// }
+
+
+void execute(t_token *token, t_ex *ex, t_env *var, int count)
+>>>>>>> main
 {
 	int temp;
 	temp = open_files(token);
@@ -66,18 +83,35 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		free2pointers(ex->path);
 		exit(errno);
 	}
+<<<<<<< HEAD
+=======
+	// dup_choose(ex, count);
+>>>>>>> main
 	if (check_if_buildin(token, var) == 1)
 	{
 		exit(0);
 	}
+<<<<<<< HEAD
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
 		perror("execve");
 		free2pointers(ex->path);
+=======
+	// printf("test\n");
+	if(execve(ex->path, token->command, var->env) == -1)
+	{
+		perror("execve");
+		if(ex->path)
+		{
+			free(ex->path);
+			ex->path = NULL;
+		}
+>>>>>>> main
 		exit(errno);
 	}
 }
 
+<<<<<<< HEAD
 void close_pipes_par(t_ex *ex, int count)
 {
 	int i;
@@ -98,6 +132,45 @@ void close_pipes_child(t_ex *ex, int count)
 	else
 		close(ex->fd[1]);
 	
+=======
+//fd[0] read
+//fd[1] write
+void 	close_pipes_par(t_ex *ex, int count)
+{
+	if (count == 0) // first command
+	{
+		close(ex->fd[1]);
+	}
+	else if(count < ex->amound_commands - 1) // middle command
+	{
+		close(ex->prev_fd[0]);
+		close(ex->fd[1]);
+	}
+	else if (count == ex->amound_commands - 1)// last command
+	{
+		close(ex->prev_fd[0]);
+	}
+}
+void close_pipes_child(t_ex *ex, int count)
+{
+    if (count == 0) // First command
+    {
+        dup2(ex->fd[1], STDOUT_FILENO);
+        close(ex->fd[0]);
+    }
+    else if(count < ex->amound_commands - 1)  // Middle commands
+    {
+        dup2(ex->prev_fd[0], STDIN_FILENO);
+        dup2(ex->fd[1], STDOUT_FILENO);
+        close(ex->prev_fd[0]);
+        close(ex->fd[0]);
+    }
+    else if (count == ex->amound_commands - 1) // Last command
+    {
+        dup2(ex->prev_fd[0], STDIN_FILENO);
+        close(ex->prev_fd[1]);
+    }
+>>>>>>> main
 }
 
 int create_child(t_token *token, t_ex *ex, t_env *var, int count)
@@ -118,6 +191,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		{
 			exit(1);
 		}
+<<<<<<< HEAD
 		// if(ex->amound_commands > 1)
 		// 	close_pipes_child(ex, count);
 		execute(token, ex, var);
@@ -133,6 +207,85 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 }
 
+=======
+		if(ex->amound_commands > 1)
+			close_pipes_child(ex, count);
+		execute(token, ex, var, count);
+		// if execve fails, then cleanup and close
+		exit(1);
+
+	}
+	else
+	{
+		if(ex->amound_commands > 1)
+			close_pipes_par(ex, count);
+		if (ex->path)
+        {
+            free(ex->path);
+            ex->path = NULL;
+        }
+        waitpid(p, &status, 0);
+        return(WEXITSTATUS(status));
+		while(wait(NULL))
+			continue;
+	}
+	return(0);
+}
+
+// int create_child(t_token *token, t_ex *ex, t_env *var, int count)
+// {
+//     int p;
+//     int status;
+
+//     printf("Creating child for command %d\n", count);
+//     p = fork();
+//     if(p == -1)
+//     {
+//         perror("fork");
+//         exit(errno);
+//     }
+//     if(p == 0)
+//     {
+//         printf("Child %d: Starting (pid: %d)\n", count, getpid());
+//         make_path(token, ex, var);
+//         if(!ex->path)
+//         {
+//             printf("Child %d: Path not found, exiting\n", count);
+//             exit(1);
+//         }
+//         if(ex->amound_commands > 1 && count < ex->amound_commands - 1)
+//         {
+//             printf("Child %d: Closing pipes\n", count);
+//             close_pipes_child(ex, count);
+//         }
+//         printf("Child %d: Executing command\n", count);
+//         execute(token, ex, var, count);
+//         printf("Child %d: Execution complete, exiting\n", count);
+//         exit(0);
+//     }
+//     else
+//     {
+//         printf("Parent: Child %d created with pid %d\n", count, p);
+//         if(ex->amound_commands > 1 && count < ex->amound_commands - 1)
+//         {
+//             printf("Parent: Closing pipes for child %d\n", count);
+//             close_pipes_par(ex, count);
+//         }
+//         free(ex->path);
+        
+//         printf("Parent: Waiting for all children to finish\n");
+//         while (wait(NULL) > 0)
+//       		printf("Parent: A child process finished\n");
+        
+//         printf("Parent: Waiting for last child (pid: %d)\n", p);
+//         waitpid(p, &status, 0);
+//         printf("Parent: Last child finished with status %d\n", WEXITSTATUS(status));
+//         return(WEXITSTATUS(status));
+//         printf("Parent: Finished processing command %d\n", count);
+//     }
+//     return 0;
+// }
+>>>>>>> main
 
 int count_nodes(t_token *token)
 {
@@ -149,6 +302,7 @@ int count_nodes(t_token *token)
 	return(count);
 }
 
+<<<<<<< HEAD
 void	main_execute(t_token *token, t_env *var) 
 {
 	int i;
@@ -169,4 +323,39 @@ void	main_execute(t_token *token, t_env *var)
 		i++;
 		token = token->next;
 	}
+=======
+void	main_execute(t_token *token, t_env *var, t_ex *ex) 
+{
+	int i;
+	t_redirection *red;
+	int count_commands;
+	int last_status;
+
+
+
+	i = 0;
+	ex->amound_commands = count_nodes(token);
+	while(token)
+	{
+		if(ex->amound_commands > 1 && i < ex->amound_commands - 1)
+		{
+			if(pipe(ex->fd) == -1)
+			{
+				perror("pipe failed");
+				exit(errno);
+			}
+		}
+		// printf("Creating child process %d\n", i);
+		last_status = create_child(token, ex, var, i);
+		// printf("Child process %d created with pid %d\n", i, pid);
+		if(i > 0)
+			close(ex->prev_fd[0]);
+		ex->prev_fd[1] = ex->fd[1];
+		ex->prev_fd[0] = ex->fd[0];
+		i++;
+		token = token->next;
+		
+	}
+	ex->exit_status = last_status;
+>>>>>>> main
 }
