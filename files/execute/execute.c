@@ -115,22 +115,25 @@ void close_pipes_child(t_ex *ex, int count)
 {
     if (count == 0) // First command
     {
-        dup2(ex->fd[1], STDOUT_FILENO);
         close(ex->fd[0]);
+        dup2(ex->fd[1], STDOUT_FILENO);
+		close(ex->fd[1]);
     }
     else if(count < ex->amound_commands - 1)  // Middle commands
     {
+        close(ex->fd[0]);
         dup2(ex->prev_fd[0], STDIN_FILENO);
         dup2(ex->fd[1], STDOUT_FILENO);
         close(ex->prev_fd[0]);
-        close(ex->fd[0]);
+		close(ex->fd[1]);
     }
     else if (count == ex->amound_commands - 1) // Last command
     {
         dup2(ex->prev_fd[0], STDIN_FILENO);
-        close(ex->prev_fd[1]);
+        close(ex->prev_fd[0]);
     }
 }
+
 
 int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
@@ -166,67 +169,16 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
             free(ex->path);
             ex->path = NULL;
         }
-        waitpid(p, &status, 0);
-        return(WEXITSTATUS(status));
-		while(wait(NULL))
-			continue;
+		if(count == ex->amound_commands - 1)
+		{
+			while(wait(&status) > 0)
+				continue;
+        	waitpid(p, &status, 0);
+       		return(WEXITSTATUS(status));
+		}
 	}
 	return(0);
 }
-
-// int create_child(t_token *token, t_ex *ex, t_env *var, int count)
-// {
-//     int p;
-//     int status;
-
-//     printf("Creating child for command %d\n", count);
-//     p = fork();
-//     if(p == -1)
-//     {
-//         perror("fork");
-//         exit(errno);
-//     }
-//     if(p == 0)
-//     {
-//         printf("Child %d: Starting (pid: %d)\n", count, getpid());
-//         make_path(token, ex, var);
-//         if(!ex->path)
-//         {
-//             printf("Child %d: Path not found, exiting\n", count);
-//             exit(1);
-//         }
-//         if(ex->amound_commands > 1 && count < ex->amound_commands - 1)
-//         {
-//             printf("Child %d: Closing pipes\n", count);
-//             close_pipes_child(ex, count);
-//         }
-//         printf("Child %d: Executing command\n", count);
-//         execute(token, ex, var, count);
-//         printf("Child %d: Execution complete, exiting\n", count);
-//         exit(0);
-//     }
-//     else
-//     {
-//         printf("Parent: Child %d created with pid %d\n", count, p);
-//         if(ex->amound_commands > 1 && count < ex->amound_commands - 1)
-//         {
-//             printf("Parent: Closing pipes for child %d\n", count);
-//             close_pipes_par(ex, count);
-//         }
-//         free(ex->path);
-        
-//         printf("Parent: Waiting for all children to finish\n");
-//         while (wait(NULL) > 0)
-//       		printf("Parent: A child process finished\n");
-        
-//         printf("Parent: Waiting for last child (pid: %d)\n", p);
-//         waitpid(p, &status, 0);
-//         printf("Parent: Last child finished with status %d\n", WEXITSTATUS(status));
-//         return(WEXITSTATUS(status));
-//         printf("Parent: Finished processing command %d\n", count);
-//     }
-//     return 0;
-// }
 
 int count_nodes(t_token *token)
 {
@@ -269,11 +221,10 @@ void	main_execute(t_token *token, t_env *var, t_ex *ex)
 		// printf("Child process %d created with pid %d\n", i, pid);
 		if(i > 0)
 			close(ex->prev_fd[0]);
-		ex->prev_fd[1] = ex->fd[1];
-		ex->prev_fd[0] = ex->fd[0];
+		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)
+			ex->prev_fd[0] = ex->fd[0];
 		i++;
 		token = token->next;
-		
 	}
 	ex->exit_status = last_status;
 }
