@@ -37,6 +37,12 @@ void	loop(t_env *var)
 			return (free(line));
 		else
 			main_execute(token, var, ex);
+		char cwd[9999];
+		cd_buildin(token, var);
+		// if (!token)
+		// 	return (free(line));
+		// else
+		// 	main_execute(token, var);
 		add_history(line);
 		free(line);
 	}
