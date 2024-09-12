@@ -1,10 +1,10 @@
 NAME    := minishell
-CFLAGS =  -g -Wall -Wextra -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
+CFLAGS =  -g -Wall -Wextra #-lreadline #-L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include #-Werror
 LIBFT := ./libft
 CC = cc
 
 HEADERS := -I. -I$(LIBFT)
-LIBS    := -ldl -pthread -lm $(LIBFT)/libft.a 
+LIBS    := -ldl -pthread -lm -lreadline $(LIBFT)/libft.a
 SRCS    := files/main.c \
            files/buildins/buildins.c files/buildins/buildins_ex.c files/buildins/env.c \
            files/buildins/export.c files/buildins/export_buildin.c files/buildins/mini_exit.c \
@@ -26,7 +26,7 @@ files/%.o: files/%.c
 	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME) $(LIBS)  # Move $(LIBS) to the end
 
 clean:
 	@rm -rf $(OBJS)

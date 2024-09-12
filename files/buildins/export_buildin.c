@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/08/27 11:44:16 by tomgoossens      ###   ########.fr       */
+/*   Updated: 2024/09/12 15:11:23 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,13 +134,13 @@ int	add_to_lists(t_env *var, char *arg)
 	return (0);
 }
 
-int	export(t_token *token, t_env *var, char **command)
+int	export(t_env *var, char **command)
 {
 	int i;
 	int is_double;
 	
 	i = 1;
-	if (command[i] == '\0')
+	if (command[i] == NULL)
 	{
 		printf_export(var);
 		return (1);

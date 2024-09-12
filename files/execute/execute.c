@@ -76,14 +76,15 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 // }
 
 
-void execute(t_token *token, t_ex *ex, t_env *var, int count)
+void execute(t_token *token, t_ex *ex, t_env *var)
 {
 	int temp;
 	temp = open_files(token);
 	if(temp == -1)
 	{
 		//free some struct
-		free2pointers(ex->path);
+		free(ex->path);
+		ex->path = NULL;		
 		exit(errno);
 	}
 	// dup_choose(ex, count);
@@ -161,7 +162,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		}
 		if(ex->amound_commands > 1)
 			close_pipes_child(ex, count);
-		execute(token, ex, var, count);
+		execute(token, ex, var);
 		// if execve fails, then cleanup and close
 		exit(1);
 
@@ -204,11 +205,7 @@ int count_nodes(t_token *token)
 void	main_execute(t_token *token, t_env *var, t_ex *ex) 
 {
 	int i;
-	t_redirection *red;
-	int count_commands;
 	int last_status;
-
-
 
 	i = 0;
 	ex->amound_commands = count_nodes(token);

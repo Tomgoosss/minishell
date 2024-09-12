@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	env_buildin(char **command, t_env *var)
+int	env_buildin(t_env *var)
 {
 	node_t	*temp;
 
@@ -16,7 +16,6 @@ int	env_buildin(char **command, t_env *var)
 int	pwd_buildin()
 {
 	char	cwd[4069];
-	int		temp;
 
 	printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	return(1);

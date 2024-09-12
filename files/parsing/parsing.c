@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/04 11:43:32 by tomgoossens      ###   ########.fr       */
+/*   Updated: 2024/09/12 15:25:41 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void	init_token(t_token **token, int pipe)
 	(*token)->command = NULL;
 }
 
-void	tokenize(t_token **token, char *line, char **temp)
+void	tokenize(t_token **token, char **temp)
 {
 	t_token	*temp_token;
 	int		i;
@@ -291,10 +291,8 @@ char	*check_dollar_sign(char *line, t_env *var)
 t_token	*main_pars(char *line, t_env *var)
 {
 	t_token	*token;
-	t_token	*temptoken;
 	char	**temp;
 	char	*updated_line;
-	int		i;
 
 	token = malloc(sizeof(t_token));
 	if (!token)
@@ -303,33 +301,6 @@ t_token	*main_pars(char *line, t_env *var)
 	if (!temp)
 		return (free(token), NULL);
 	updated_line = check_dollar_sign(line, var);
-	tokenize(&token, line, temp);
-	// temptoken = token;
-	// while (temptoken)
-	// {
-	// 	i = 0;
-	// 	while (temptoken->command[i])
-	// 	{
-	// 		printf("command :%s\n", temptoken->command[i]);
-	// 		i++;
-	// 	}
-	// 	temptoken = temptoken->next;
-	// 	if (temptoken)
-	// 		printf("\npipe\n");
-	// }
-	// temptoken = token;
-	// printf("\n");
-	// while (temptoken)
-	// {
-	// 	i = 0;
-	// 	while (temptoken->redirection)
-	// 	{
-	// 		printf("type : %d\n", temptoken->redirection->type);
-	// 		printf("file : %s\n\n", temptoken->redirection->file);
-	// 		printf("1");
-	// 		temptoken->redirection = temptoken->redirection->next;
-	// 	}
-	// 	temptoken = temptoken->next;
-	// }
+	tokenize(&token, temp);
 	return (token);
 }

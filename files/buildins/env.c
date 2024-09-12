@@ -20,7 +20,7 @@ int	check_env_variable(char *line)
 		return (0);
 	printf("line %c\n", line[0]);
 	printf("len%i\n", ft_strlen(line));
-
+	return 1;
 }
 
 

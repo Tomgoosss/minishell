@@ -17,46 +17,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return (0);
 }
-
-static int	wordleng_mod(char const *s, char c, char x, int j)
-{
-	int	i;
-
-	i = 0;
-	while (s[j] != c && s[j] != x && s[j] != '\0')
-	{
-		i++;
-		j++;
-	}
-	return (i);
-}
-static int stringcounter_mod(char const *s, char c, char x)
-{
-    int str;
-    int t;
-
-    t = 0;
-    str = 0;
-    while (*s != '\0')
-    {
-        if (*s == x)
-        {
-            str++;
-            t = 0;
-        }
-        else if (*s != c && t == 0)
-        {
-            str++;
-            t = 1;
-        }
-        else if (*s == c)
-        {
-            t = 0;
-        }
-        s++;
-    }
-    return (str);
-}
 static void	free_str_array(char **str, int i)
 {
 	while (i >= 0)
@@ -159,6 +119,5 @@ char **ft_split_mod(char const *s, char c)
         i++;
     }
     str[i] = NULL;
-    // print_str_array(str);
     return (str);
 }

@@ -46,6 +46,8 @@ int	main(int argc, char **argv, char **environment)
 {
 	t_env	*var;
 
+	argc = 0;
+	argv = NULL;
 	var = ft_calloc(1, sizeof(t_env));
 	var->env = environment;
 	if (!var)

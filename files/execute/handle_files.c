@@ -85,9 +85,9 @@ int open_files(t_token *token)
 			result = red_in(red);
 		else 
 			result = 0;
-		
 		if (result != 0)
 			return(result);
 		red = red->next;
 	}
+	return(0);
 }
