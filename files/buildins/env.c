@@ -13,9 +13,7 @@ int	skip_whitespaces(char *line, int i)
 // aswell as there should be no whitespace in the value of the variable
 int	check_env_variable(char *line)
 {
-	int	i;
-
-	i = 0; 
+ 
 	if(skip_whitespaces(line, 0) == ft_strlen(line))
 		return (0);
 	printf("line %c\n", line[0]);
