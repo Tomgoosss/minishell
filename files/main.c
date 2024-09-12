@@ -25,12 +25,12 @@ void	loop(t_env *var)
 	{
 		line = readline("minishell> ");
 		sort_export(var);
-		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
-		{
-			ft_putstr_fd("exit\n", 2);
-			rl_clear_history();
-			exit(exitcode);
-		}
+		// if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
+		// {
+		// 	ft_putstr_fd("exit\n", 2);
+		// 	rl_clear_history();
+		// 	exit(exitcode);
+		// }
 		if (line)
 			token = main_pars(line, var);
 		if (!token)

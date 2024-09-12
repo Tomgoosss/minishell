@@ -3,13 +3,24 @@
 void	error_lines(char *arg, int i)
 {
 	if (i == 1)
-		ft_putstr_fd("command not found: ", 2);
-	if (i == 2)
-		ft_putstr_fd("No such file or directory: ", 2);
-	if (i == 3)
-		ft_putstr_fd("not anough arguments: ", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("\n", 2);
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
+	else if (i == 2)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	else if (i == 3)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd("not enough arguments: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd("\n", 2);
+	}
 }
 
 int find_path(char **temp_path, t_ex *ex, t_token *token)
@@ -83,12 +94,7 @@ void execute(t_token *token, t_ex *ex, t_env *var, int count)
 	// printf("test\n");
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
-		perror("execve");
-		if(ex->path)
-		{
-			free(ex->path);
-			ex->path = NULL;
-		}
+		error_lines(token->command[0], 1);
 		exit(errno);
 	}
 }
@@ -223,6 +229,11 @@ void	main_execute(t_token *token, t_env *var, t_ex *ex)
 			close(ex->prev_fd[0]);
 		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)
 			ex->prev_fd[0] = ex->fd[0];
+		if(ex->path)
+		{
+			free(ex->path);
+			ex->path = NULL;
+		}
 		i++;
 		token = token->next;
 	}
