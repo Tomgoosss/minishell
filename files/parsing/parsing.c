@@ -6,7 +6,19 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/12 15:25:41 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/09/16 16:53:49 by fbiberog         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
+/*   Updated: 2024/09/16 14:52:42 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +91,24 @@ void	add_command(t_token *token, char *cmd, int array_len)
 
 	i = 0;
 	ret = malloc(sizeof(char *) * (array_len + 2));
+	if (!ret) // Check for malloc failure
+		return;
 	while (i != array_len)
 	{
 		ret[i] = ft_strdup(token->command[i]);
 		if (!ret[i])
-			return (free2pointers(token->command), free(ret));
+		{
+			free2pointers(ret); // Free ret on failure
+			return (free2pointers(token->command));
+		}
 		i++;
 	}
 	ret[i] = ft_strdup(cmd);
 	if (!ret[i])
-		return (free2pointers(token->command), free(ret));
+	{
+		free2pointers(ret); // Free ret on failure
+		return (free2pointers(token->command));
+	}
 	ret[i + 1] = 0;
 	free2pointers(token->command);
 	token->command = ret;
@@ -119,7 +139,10 @@ void	init_token(t_token **token, int pipe)
 	{
 		(*token)->next = malloc(sizeof(t_token));
 		if (!(*token)->next)
+		{
+			free(*token); // Free token on failure
 			return ;
+		}
 		(*token) = (*token)->next;
 	}
 	(*token)->redirection = NULL;
@@ -160,7 +183,6 @@ void	tokenize(t_token **token, char **temp)
 		{
 			if (valid_redirection(temp[i + 1]))
 			{
-				// printf("hallo\n");
 				place_file(&(*token)->redirection, temp[i + 1]);
 				if (!(*token)->redirection->file)
 					return (free2pointers(temp),
@@ -195,6 +217,7 @@ void	remove_node(t_token **token)
 	(*token)->next = temp->next;
 	free(temp);
 }
+
 int	end_of_var(char *line)
 {
 	int	i;
@@ -218,6 +241,8 @@ char	*replace_variable(char *line, t_env *var)
 	if (is_space(line[0]))
 		return (ft_strdup("$"));
 	var_name = malloc(sizeof(char) * 1000);
+	if (!var_name) // Check for malloc failure
+		return (NULL);
 	var_name = ft_memcpy(var_name, line, end_of_var(line));
 	temp = var->head_env;
 	while (temp)
@@ -230,6 +255,7 @@ char	*replace_variable(char *line, t_env *var)
 		}
 		temp = temp->next;
 	}
+	free(var_name); // Free var_name if not used
 	return (NULL);
 }
 
@@ -244,47 +270,46 @@ char	*check_dollar_sign(char *line, t_env *var)
 	j = 0;
 	ret = malloc(sizeof(char) * 1000);
 	if (!line || !ret)
+	{
+		free(ret); // Free ret on failure
 		return (NULL);
+	}
 	if (ft_strchr(line, '$') == NULL)
-		return (free(ret),line);
+	{
+		free(ret); // Free ret if no dollar signs
+		return (ft_strdup(line)); // Return a duplicate of line
+	}
 	ret[0] = '\0';
 	while (line[i])
 	{
 		if (line[i] == '\'' && closing_quote(line, i, '\''))
 		{
-			ret[j] = line[i];
-			i++;
-			j++;
-			while (line[i] != '\'')
+			ret[j++] = line[i++]; // Copy opening quote
+			while (line[i] != '\'' && line[i]) // Copy until closing quote
 			{
-				ret[j] = line[i];
-				j++;
-				i++;
+				ret[j++] = line[i++];
 			}
-			ret[j] = line[i];
-			j++;
-			i++;
-			continue ;
+			if (line[i] == '\'') // Copy closing quote
+				ret[j++] = line[i++];
+			continue;
 		}
 		while (line[i] == '$')
 		{
 			temp = replace_variable(&line[i + 1], var);
-			if (!temp)
-				ret = ret;
-			else
-				ret = ft_strjoinfree(ret, temp);
-			j = ft_strlen(ret);
-			i = end_of_var(line + i + 1) + i + 1;
+			if (temp)
+			{
+				ret = ft_strjoinfree(ret, temp); // Concatenate variable value
+				if (!ret) // Check for allocation failure
+					return (NULL);
+			}
+			i += end_of_var(line + i + 1) + 1; // Move index past the variable
 			free(temp);
-			temp = NULL;
 		}
-		if(!line[i])
-			break ;
-		ret[j] = line[i];
-		j++;
-		i++;
+		if (!line[i]) // Break if end of line
+			break;
+		ret[j++] = line[i++]; // Copy current character
 	}
-	ret[j] = '\0';
+	ret[j] = '\0'; // Null-terminate the result
 	return (ret);
 }
 
@@ -299,8 +324,13 @@ t_token	*main_pars(char *line, t_env *var)
 		return (NULL);
 	temp = ft_split_mod(line, ' ');
 	if (!temp)
-		return (free(token), NULL);
+	{
+		free(token); // Free token on failure
+		return (NULL);
+	}
 	updated_line = check_dollar_sign(line, var);
+	printf("updated_line: %s\n", updated_line);
 	tokenize(&token, temp);
+	// free(updated_line);
 	return (token);
 }

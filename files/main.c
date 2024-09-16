@@ -9,44 +9,38 @@ void	error_msg(char *line, int i)
 	ft_putstr_fd("\n", 2);
 }
 
+
 void	loop(t_env *var)
 {
 	char	*line;
-	t_token	*token;
-	t_ex *ex;
+	t_token	*token = NULL; // Initialize token to NULL
+	t_ex	*ex;
 	int		exitcode;
 
 	ex = ft_calloc(1, sizeof(t_ex));
-	if(!ex)
+	if (!ex)
 		exit(errno);
 	fill_nodes_env(var);
 	exitcode = 0;
+	int i = 0;
 	while (1)
 	{
 		line = readline("minishell> ");
-		sort_export(var);
-		// if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
-		// {
-		// 	ft_putstr_fd("exit\n", 2);
-		// 	rl_clear_history();
-		// 	exit(exitcode);
-		// }
-		if (line)
-			token = main_pars(line, var);
-		if (!token)
-			return (free(line));
-		else
-			main_execute(token, var, ex);
-		char cwd[9999];
-		cd_buildin(token, var);
-		// if (!token)
-		// 	return (free(line));
-		// else
-		// 	main_execute(token, var);
-		add_history(line);
-		free(line);
+		if (!line) // Check if line is NULL
+			break; // Exit loop if readline fails
+		add_history(line); // Add line to history
+		token = main_pars(line, var);
+		free(line); // Free line after processing
+		main_execute(token, ex, var);
+		free_token(token);
+		if (i == 2)
+			break;
+		i++;
 	}
+	free(ex); // Free ex before exiting the loop
+	rl_clear_history();
 }
+
 
 int	main(int argc, char **argv, char **environment)
 {
@@ -55,8 +49,10 @@ int	main(int argc, char **argv, char **environment)
 	argc = 0;
 	argv = NULL;
 	var = ft_calloc(1, sizeof(t_env));
-	var->env = environment;
-	if (!var)
+	if (!var) // Check for malloc failure
 		exit(1);
+	var->env = environment; // Ensure environment is properly assigned
 	loop(var);
+	free_env(var);
+	return (0);
 }
