@@ -86,4 +86,5 @@ int							open_files(t_token *token);
 int							is_space(char c);
 int							check_buildin(t_token *token);
 int						cd_buildin(t_token *token, t_env *var);
+int buildins_par(t_token *token, t_env *var);
 #endif

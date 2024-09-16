@@ -1,5 +1,13 @@
 #include "minishell.h"
 
+int buildins_par(t_token *token, t_env *var)
+{
+	if(strncmp(token->command[0], "exit", 4))
+	 	return(check_exit(token->command));
+	if(strncmp(token->command[0], "cd", 2) == 0)
+		return(cd_buildin(token, var));	
+}
+
 int check_if_buildin(t_token *token, t_env *var)
 {
 	// if(strncmp(token->command[0], "echo", 4))

@@ -36,9 +36,7 @@ void	loop(t_env *var)
 		if (!token)
 			return (free(line));
 		else
-			main_execute(token, var, ex);
-		char cwd[9999];
-		cd_buildin(token, var);
+			main_execute(token, var, ex);	
 		// if (!token)
 		// 	return (free(line));
 		// else
