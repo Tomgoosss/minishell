@@ -88,7 +88,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		exit(errno);
 	}
 	// dup_choose(ex, count);
-	if (check_if_buildin(token, var) == 1)
+	if (check_if_buildin(token, var) == 1 || check_buildin(token))
 	{
 		exit(0);
 	}

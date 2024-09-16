@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/16 16:53:49 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:57:37 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,59 +259,53 @@ char	*replace_variable(char *line, t_env *var)
 	return (NULL);
 }
 
-char	*check_dollar_sign(char *line, t_env *var)
+char *check_dollar_sign(char *line, t_env *var)
 {
-	int		i;
-	int		j;
-	char	*ret;
-	char	*temp;
-
-	i = 0;
-	j = 0;
-	ret = malloc(sizeof(char) * 1000);
-	if (!line || !ret)
-	{
-		free(ret); // Free ret on failure
-		return (NULL);
-	}
-	if (ft_strchr(line, '$') == NULL)
-	{
-		free(ret); // Free ret if no dollar signs
-		return (ft_strdup(line)); // Return a duplicate of line
-	}
-	ret[0] = '\0';
-	while (line[i])
-	{
-		if (line[i] == '\'' && closing_quote(line, i, '\''))
-		{
-			ret[j++] = line[i++]; // Copy opening quote
-			while (line[i] != '\'' && line[i]) // Copy until closing quote
-			{
-				ret[j++] = line[i++];
-			}
-			if (line[i] == '\'') // Copy closing quote
-				ret[j++] = line[i++];
-			continue;
-		}
-		while (line[i] == '$')
-		{
-			temp = replace_variable(&line[i + 1], var);
-			if (temp)
-			{
-				ret = ft_strjoinfree(ret, temp); // Concatenate variable value
-				if (!ret) // Check for allocation failure
-					return (NULL);
-			}
-			i += end_of_var(line + i + 1) + 1; // Move index past the variable
-			free(temp);
-		}
-		if (!line[i]) // Break if end of line
-			break;
-		ret[j++] = line[i++]; // Copy current character
-	}
-	ret[j] = '\0'; // Null-terminate the result
-	return (ret);
+    int i, j;
+    char *ret, *temp;
+    
+    if (!line)
+        return (NULL);
+    
+    ret = malloc(sizeof(char) * (ft_strlen(line) * 2 + 1)); // Allocate more space
+    if (!ret)
+        return (NULL);
+    
+    if (ft_strchr(line, '$') == NULL)
+    {
+        free(ret);
+        return (ft_strdup(line));
+    }
+    
+    for (i = 0, j = 0; line[i]; i++)
+    {
+        if (line[i] == '\'' && closing_quote(line, i, '\''))
+        {
+            while (line[i] && line[i] != '\'')
+                ret[j++] = line[i++];
+            if (line[i])
+                ret[j++] = line[i];
+        }
+        else if (line[i] == '$')
+        {
+            temp = replace_variable(&line[i + 1], var);
+            if (temp)
+            {
+                ft_strcpy(&ret[j], temp);
+                j += strlen(temp);
+                free(temp);
+            }
+            i += end_of_var(&line[i + 1]);
+        }
+        else
+        {
+            ret[j++] = line[i];
+        }
+    }
+    ret[j] = '\0';
+    return (ret);
 }
+
 
 t_token	*main_pars(char *line, t_env *var)
 {
@@ -331,6 +325,8 @@ t_token	*main_pars(char *line, t_env *var)
 	updated_line = check_dollar_sign(line, var);
 	printf("updated_line: %s\n", updated_line);
 	tokenize(&token, temp);
+	if(ft_strcmp(token->command[0], "export") == 0)
+		export(var, token->command);
 	// free(updated_line);
 	return (token);
 }

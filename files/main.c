@@ -26,21 +26,27 @@ void	loop(t_env *var)
 	while (1)
 	{
 		line = readline("minishell> ");
-		if (!line) // Check if line is NULL
-			break; // Exit loop if readline fails
-		add_history(line); // Add line to history
-		token = main_pars(line, var);
-		free(line); // Free line after processing
-		main_execute(token, ex, var);
+		sort_export(var);
+		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
+		{
+			ft_putstr_fd("exit\n", 2);
+			rl_clear_history();
+			exit(exitcode);
+		}
+		if (line)
+			token = main_pars(line, var);
+		if (!token)
+			return (free(line));
+		else
+			main_execute(token, var, ex);
+		buildins_par(token, var);	
+		add_history(line);
+		free(line);
 		free_token(token);
-		if (i == 2)
-			break;
-		i++;
 	}
 	free(ex); // Free ex before exiting the loop
 	rl_clear_history();
 }
-
 
 int	main(int argc, char **argv, char **environment)
 {

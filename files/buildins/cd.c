@@ -75,6 +75,7 @@ char *get_home(t_env *var)
     return NULL;
 }
 
+
 int cd_buildin(t_token *token, t_env *var)
 {
     char *path;
