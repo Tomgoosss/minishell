@@ -220,7 +220,6 @@ void	main_execute(t_token *token, t_env *var, t_ex *ex)
 			}
 		}
 		// printf("Creating child process %d\n", i);
-		buildins_par(token, var);
 		last_status = create_child(token, ex, var, i);
 		// printf("Child process %d created with pid %d\n", i, pid);
 		if(i > 0)
