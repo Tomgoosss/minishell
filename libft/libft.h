@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: knockla <knockla@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:15:56 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/07/06 14:17:20 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/09/17 14:34:03 by knockla          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ char	*ft_strjoin2(char *s1, char *s2);
 char	*ft_free(char **line);
 int		ft_nlcheck(char	*str);
 int		ft_printf(const char *var, ...);
-int		ft_hexpointer(void *str);
 int		ft_putchar(char c);
 int		putstr(const char *c);
 int		allbase(long nb, char *base);

@@ -88,7 +88,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		exit(errno);
 	}
 	// dup_choose(ex, count);
-	if (check_if_buildin(token, var) == 1 || check_buildin(token))
+	if (check_if_buildin(token, var) == 1)
 	{
 		exit(0);
 	}
@@ -155,6 +155,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 	if(p == 0)
 	{
+		printf("test = %s\n", token->command[0]);
 		make_path(token, ex, var);
 		if(!ex->path)
 		{
