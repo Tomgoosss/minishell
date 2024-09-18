@@ -98,6 +98,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		error_lines(token->command[0], 1);
 		exit(errno);
 	}
+	exit(0);
 }
 
 //fd[0] read
@@ -155,7 +156,6 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 	if(p == 0)
 	{
-		printf("test = %s\n", token->command[0]);
 		make_path(token, ex, var);
 		if(!ex->path)
 		{
