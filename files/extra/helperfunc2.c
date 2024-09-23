@@ -1,5 +1,19 @@
 #include "minishell.h"
 
+int empty_line(char *line)
+{
+	int i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] > 32 && line[i] <= 126)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	is_space(char c)
 {
 	if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v'

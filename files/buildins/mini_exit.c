@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: knockla <knockla@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:09:26 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/09/17 14:35:45 by knockla          ###   ########.fr       */
+/*   Updated: 2024/09/23 16:02:23 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,12 @@ int	check_exit(char **cmd_array)
 	
 	i = 0;
 	if (cmd_array[0] == NULL)
-		return (0);
+		return (free2pointers(cmd_array), 0);
 	if (ft_strncmp(cmd_array[0], "exit", 4) == 0 && !cmd_array[1])
+	{
+		free2pointers(cmd_array);
 		exit(0);
+	}
 	if (ft_strncmp(cmd_array[0], "exit", 4) == 0 && cmd_array[2])
 	{
 			ft_putstr_fd("exit: ", 2);
@@ -36,13 +39,14 @@ int	check_exit(char **cmd_array)
 				ft_putstr_fd("exit: ", 2);
 				ft_putstr_fd(cmd_array[1], 2);
 				ft_putstr_fd(": numeric argument required\n", 2);
+				free2pointers(cmd_array);
 				exit(2); 
 			}
 			i++;
 		}
 		exit(ft_atoi(cmd_array[1]));
 	}
-	return (0);
+	return (free2pointers(cmd_array), 0);
 }
 
 // exit

@@ -1,5 +1,19 @@
 #include "minishell.h"
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	ft_putstr_fd("\nminishell> ", 2); // Display a new prompt on ctrl-C
+}
+
+void	handle_sigquit(int sig)
+{
+	(void)sig;
+	// Do nothing, just return to keep the prompt intact
+}
 
 void	error_msg(char *line, int i)
 {
@@ -9,7 +23,6 @@ void	error_msg(char *line, int i)
 	ft_putstr_fd(line, 2);
 	ft_putstr_fd("\n", 2);
 }
-
 
 void	loop(t_env *var)
 {
@@ -23,10 +36,17 @@ void	loop(t_env *var)
 		exit(errno);
 	fill_nodes_env(var);
 	exitcode = 0;
-	int i = 0;
 	while (1)
 	{
 		line = readline("minishell> ");
+		if (!line) // Handle ctrl-D (EOF)
+		{
+			ft_putstr_fd("exit\n", 2);
+			// free(line);
+			// free_env(var);
+			// free_token(token);
+			break;
+		}
 		sort_export(var);
 		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
 		{
@@ -35,15 +55,19 @@ void	loop(t_env *var)
 			exit(exitcode);
 		}
 		if (line)
+		{
 			token = main_pars(line, var);
-		if (!token)
-			return (free(line));
-		else
+			if (!token)
+			{
+				free(line);
+				continue; // Skip to the next iteration if token is NULL
+			}
 			main_execute(token, var, ex);
-		buildins_par(token, var);	
-		add_history(line);
+			buildins_par(token, var);	
+			add_history(line);
+			free_token(token);
+		}
 		free(line);
-		free_token(token);
 	}
 	free(ex); // Free ex before exiting the loop
 	rl_clear_history();
@@ -52,6 +76,9 @@ void	loop(t_env *var)
 int	main(int argc, char **argv, char **environment)
 {
 	t_env	*var;
+
+	signal(SIGINT, handle_sigint);  // Handle ctrl-C
+	signal(SIGQUIT, SIG_IGN);        // Ignore ctrl-\
 
 	argc = 0;
 	argv = NULL;

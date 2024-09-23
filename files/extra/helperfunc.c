@@ -91,6 +91,8 @@ char **ft_split_mod(char const *s, char c)
     char **str;
     const char *og_string = s;
 
+    if (s == NULL)
+        return (NULL);
     while (*s)
     {
         if (*s != c)
@@ -104,7 +106,7 @@ char **ft_split_mod(char const *s, char c)
     }
     str = malloc((strings + 1) * sizeof(char *));
     if (str == NULL)
-        return (NULL);
+        return (NULL); // Return NULL if malloc fails
     s = og_string;
     i = 0;
     while (i < strings)
@@ -114,10 +116,13 @@ char **ft_split_mod(char const *s, char c)
         len = get_token_length(s);
         str[i] = ft_substr(s, 0, len);
         if (str[i] == NULL)
-            return (free_str_array(str, i), NULL);
+        {
+            free_str_array(str, i); 
+            return (NULL);
+        }
         s += len;
         i++;
     }
-    str[i] = NULL;
+    str[i] = NULL; 
     return (str);
 }

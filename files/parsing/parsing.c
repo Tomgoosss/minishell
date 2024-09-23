@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: knockla <knockla@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/18 17:59:00 by knockla          ###   ########.fr       */
+/*   Updated: 2024/09/23 18:24:01 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,80 +232,102 @@ int	end_of_var(char *line)
 
 char	*replace_variable(char *line, t_env *var)
 {
-	node_t	*temp;
-	char	*var_name;
-	char	*ret;
+    node_t *temp;
+    char *var_name;
+    char *ret;
 
-	if (line[0] == '?')
-		printf("error code. ADD exit status\n");
-	if (is_space(line[0]))
-		return (ft_strdup("$"));
-	var_name = malloc(sizeof(char) * 1000);
-	if (!var_name) // Check for malloc failure
-		return (NULL);
-	var_name = ft_memcpy(var_name, line, end_of_var(line));
-	temp = var->head_env;
-	while (temp)
-	{
-		if (ft_strncmp(temp->data, var_name, ft_strlen(var_name)) == 0)
-		{
-			ret = ft_strdup(temp->data + end_of_var(temp->data) + 1);
-			free(var_name);
-			return (ret);
-		}
-		temp = temp->next;
-	}
-	free(var_name); // Free var_name if not used
-	return (NULL);
+    if (line[0] == '?')
+        return ft_strdup("error code. ADD exit status");
+    if (is_space(line[0]))
+		return ft_strdup("$");
+    int var_length = end_of_var(line);
+    var_name = malloc(sizeof(char) * (var_length + 1));
+    if (!var_name)
+        return (NULL);
+    ft_memcpy(var_name, line, var_length);
+    var_name[var_length] = '\0';
+    temp = var->head_env;
+    while (temp)
+    {
+        if (ft_strncmp(temp->data, var_name, var_length) == 0 &&
+            temp->data[var_length] == '=')
+        {
+            ret = ft_strdup(temp->data + var_length + 1);
+            return (free(var_name), ret);
+        }
+        temp = temp->next;
+    }
+    return (free(var_name), NULL);
 }
 
 char *check_dollar_sign(char *line, t_env *var)
 {
-    int i, j;
+    int i = 0; // Index for input string
+    int j = 0; // Index for output string
     char *ret, *temp;
-    
+	
     if (!line)
         return (NULL);
-    
-    ret = malloc(sizeof(char) * (ft_strlen(line) * 2 + 1)); // Allocate more space
+    ret = malloc(sizeof(char) * (1000)); //maybe dynamic allocation??
     if (!ret)
         return (NULL);
-    
-    if (ft_strchr(line, '$') == NULL)
+	if (ft_strchr(line, '$') == NULL)
     {
         free(ret);
         return (ft_strdup(line));
     }
-    
-    for (i = 0, j = 0; line[i]; i++)
+    while (line[i] != '\0')
     {
         if (line[i] == '\'' && closing_quote(line, i, '\''))
         {
+            ret[j++] = line[i++]; 
             while (line[i] && line[i] != '\'')
                 ret[j++] = line[i++];
-            if (line[i])
-                ret[j++] = line[i];
+            if (line[i] == '\'')
+                ret[j++] = line[i++]; 
+            continue;  
         }
-        else if (line[i] == '$')
+        if (line[i] == '$')
         {
-            temp = replace_variable(&line[i + 1], var);
-            if (temp)
+            if (ft_isalpha(line[i + 1]) || line[i + 1] == '_')
             {
-                ft_strlcpy(&ret[j], temp, ft_strlen(temp) + 1);
-                j += ft_strlen(temp);
-                free(temp);
+                int var_length = end_of_var(&line[i + 1]);
+                if (var_length > 0)
+                {
+                    char *var_name = malloc(sizeof(char) * (var_length + 1));
+                    if (!var_name)
+                    {
+                        free(ret);
+                        return (NULL);
+                    }
+                    ft_strlcpy(var_name, &line[i + 1], var_length + 1);
+                    temp = replace_variable(var_name, var);
+                    free(var_name);
+                    if (temp)
+                    {
+                        size_t temp_len = ft_strlen(temp);
+                        ft_strlcpy(&ret[j], temp, temp_len + 1); // Copy the variable value
+                        j += temp_len;
+                        free(temp);
+                    }
+                    else
+                        ret[j] = '\0';
+                    i += var_length + 1;
+                    continue;
+                }
             }
-            i += end_of_var(&line[i + 1]);
+            else
+            {
+                // Handle cases like '$ ' or '$$' by treating '$' as a regular character
+                ret[j++] = line[i++];
+                continue;
+            }
         }
-        else
-        {
-            ret[j++] = line[i];
-        }
+        ret[j++] = line[i++];
     }
     ret[j] = '\0';
-    return (ret);
+    return ret;
 }
-
 
 t_token	*main_pars(char *line, t_env *var)
 {
@@ -313,20 +335,24 @@ t_token	*main_pars(char *line, t_env *var)
 	char	**temp;
 	char	*updated_line;
 
+	if (empty_line(line))
+		return (NULL);
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	temp = ft_split_mod(line, ' ');
+	updated_line = check_dollar_sign(line, var);
+	printf("updated_line: %s\n", updated_line);
+	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)
 	{
 		free(token); // Free token on failure
 		return (NULL);
-	}
-	updated_line = check_dollar_sign(line, var);
-	// printf("updated_line: %s\n", updated_line);
+	}	
 	tokenize(&token, temp);
+	printf("token->command[0]: %s\n", token->command[0]);
+	printf("token->command[1]: %s\n", token->command[1]);
 	// if(ft_strcmp(token->command[0], "export") == 0)
 	// 	export(var, token->command);
-	// free(updated_line);
+	// free(line);
 	return (token);
 }

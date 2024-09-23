@@ -2,6 +2,8 @@
 
 int buildins_par(t_token *token, t_env *var)
 {
+	if(token->command == NULL)
+		return(0);
 	if(strncmp(token->command[0], "cd", 2) == 0)
 		return(cd_buildin(token, var));	
 }

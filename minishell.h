@@ -90,4 +90,5 @@ void						free_env(t_env *var);
 void						free_token(t_token *token);
 void						free_list(node_t *head);
 int							buildins_par(t_token *token, t_env *var);
+int empty_line(char *line);
 #endif
