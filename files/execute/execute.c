@@ -88,7 +88,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		exit(errno);
 	}
 	// dup_choose(ex, count);
-	if (check_if_buildin(token, var) == 1 || check_buildin(token))
+	if (check_if_buildin(token, var) == 1)
 	{
 		exit(0);
 	}
@@ -98,6 +98,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 		error_lines(token->command[0], 1);
 		exit(errno);
 	}
+	exit(0);
 }
 
 //fd[0] read
