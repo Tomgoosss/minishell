@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <signal.h>
 
 void	error_msg(char *line, int i)
 {
