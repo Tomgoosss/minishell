@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/23 18:24:01 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/09/24 14:52:03 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,7 +341,7 @@ t_token	*main_pars(char *line, t_env *var)
 	if (!token)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var);
-	printf("updated_line: %s\n", updated_line);
+	// printf("updated_line: %s\n", updated_line);
 	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)
 	{
@@ -349,8 +349,8 @@ t_token	*main_pars(char *line, t_env *var)
 		return (NULL);
 	}	
 	tokenize(&token, temp);
-	printf("token->command[0]: %s\n", token->command[0]);
-	printf("token->command[1]: %s\n", token->command[1]);
+	// printf("token->command[0]: %s\n", token->command[0]);
+	// printf("token->command[1]: %s\n", token->command[1]);
 	// if(ft_strcmp(token->command[0], "export") == 0)
 	// 	export(var, token->command);
 	// free(line);
