@@ -56,7 +56,7 @@ void	loop(t_env *var)
 		}
 		if (line)
 		{
-			token = main_pars(line, var);
+			token = main_pars(line, var, ex);
 			if (!token)
 			{
 				free(line);

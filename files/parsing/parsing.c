@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/30 16:06:34 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/09/30 19:02:42 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,14 +230,15 @@ int	end_of_var(char *line)
 	return (i);
 }
 
-char	*replace_variable(char *line, t_env *var)
+char	*replace_variable(char *line, t_env *var, t_ex *ex)
 {
     node_t *temp;
     char *var_name;
     char *ret;
 
+	printf("%s\n", line);
     if (line[0] == '?')
-        return ft_strdup("error code. ADD exit status");
+        return (ft_itoa(ex->exit_status));
     if (is_space(line[0]))
 		return ft_strdup("$");
     int var_length = end_of_var(line);
@@ -279,7 +280,7 @@ int max_expansion(char *line, t_env *var)
 	return (size);
 }
 
-char *check_dollar_sign(char *line, t_env *var)
+char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
     int i = 0;
     int j = 0; 
@@ -320,7 +321,7 @@ char *check_dollar_sign(char *line, t_env *var)
                         return (NULL);
                     }
                     ft_strlcpy(var_name, &line[i + 1], var_length + 1);
-                    temp = replace_variable(var_name, var);
+                    temp = replace_variable(var_name, var, ex);
                     free(var_name);
                     if (temp)
                     {
@@ -347,7 +348,7 @@ char *check_dollar_sign(char *line, t_env *var)
     return ret;
 }
 
-t_token	*main_pars(char *line, t_env *var)
+t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 {
 	t_token	*token;
 	char	**temp;
@@ -358,7 +359,7 @@ t_token	*main_pars(char *line, t_env *var)
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	updated_line = check_dollar_sign(line, var);
+	updated_line = check_dollar_sign(line, var, ex);
 	// printf("updated_line: %s\n", updated_line);
 	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)

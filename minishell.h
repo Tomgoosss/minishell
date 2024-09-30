@@ -64,7 +64,7 @@ char						*ft_strjoinfree(char const *s1, char const *s2);
 void						fill_nodes_env(t_env *man);
 void						add_node(node_t **head, node_t *new);
 node_t						*make_node(char *line);
-t_token						*main_pars(char *line, t_env *var);
+t_token						*main_pars(char *line, t_env *var, t_ex *ex);
 int							check_whitespaces(char *line, int i);
 void						fill_nodes_exp(t_env *var);
 int							ft_strcmp(const char *s1, const char *s2);
