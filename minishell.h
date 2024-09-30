@@ -76,7 +76,7 @@ void						buildins(char *line, t_env *var);
 int							valid_redirection(char *str);
 void						remove_node(t_token **token);
 int							export(t_env *var, char **command);
-void						main_execute(t_token *token, t_env *var, t_ex *ex);
+void						main_execute(t_token *token, t_env *env, t_ex *ex);
 int							check_exit(char **cmd_array);
 int							check_if_buildin(t_token *token, t_env *var);
 int							env_buildin(t_env *var);
@@ -90,5 +90,5 @@ void						free_env(t_env *var);
 void						free_token(t_token *token);
 void						free_list(node_t *head);
 int							buildins_par(t_token *token, t_env *var);
-int empty_line(char *line);
+int							empty_line(char *line);
 #endif

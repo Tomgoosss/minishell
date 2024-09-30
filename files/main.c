@@ -63,7 +63,6 @@ void	loop(t_env *var)
 				continue; // Skip to the next iteration if token is NULL
 			}
 			main_execute(token, var, ex);
-			buildins_par(token, var);	
 			add_history(line);
 			free_token(token);
 		}

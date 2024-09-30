@@ -76,7 +76,7 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 // }
 
 
-void execute(t_token *token, t_ex *ex, t_env *var)
+void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	int temp;
 	temp = open_files(token);
@@ -100,6 +100,7 @@ void execute(t_token *token, t_ex *ex, t_env *var)
 	}
 	exit(0);
 }
+
 
 //fd[0] read
 //fd[1] write
@@ -163,10 +164,9 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		}
 		if(ex->amound_commands > 1)
 			close_pipes_child(ex, count);
-		execute(token, ex, var);
+		execute_child(token, ex, var);
 		// if execve fails, then cleanup and close
 		exit(1);
-
 	}
 	else
 	{
@@ -179,9 +179,13 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
         }
 		if(count == ex->amound_commands - 1)
 		{
-			while(wait(&status) > 0)
-				continue;
-        	waitpid(p, &status, 0);
+			waitpid(p, &status, 0);
+			count--;
+			while(count > 0)
+			{
+				wait(NULL);
+				count--;
+			}
        		return(WEXITSTATUS(status));
 		}
 	}
@@ -203,7 +207,90 @@ int count_nodes(t_token *token)
 	return(count);
 }
 
-void	main_execute(t_token *token, t_env *var, t_ex *ex) 
+
+int check_if_red(t_token *token, t_ex *ex)
+{
+	t_redirection *red;
+
+	red = token->redirection;
+	if(ex->amound_commands != 1)
+		return(1);
+	else if (red == NULL)
+		return(0); 
+	else if(red->type == REDIR_OUT_APPEND)
+		return(0);
+	else if(red->type == REDIR_OUT)
+		return(0);
+	else if(red->type == REDIR_IN_HERE_DOC)
+		return(0);
+	else if(red->type == REDIR_IN)
+		return(0);
+	return(1);
+}
+
+
+int execute(t_token *token, t_env *env, t_ex *ex, int count)
+{
+	int last_status;
+	int temp;
+
+	temp = 0;
+	last_status = 0;
+	if(check_buildin(token) == 1 && check_if_red(token, ex) == 0)
+	{
+		
+		temp = open_files(token);
+		if(temp == -1)
+		{
+			//free some struct
+			free(ex->path);
+			ex->path = NULL;		
+			exit(errno);
+		}
+		check_if_buildin(token, env);
+	}
+	else
+	{
+		last_status = create_child(token, ex, env, count);
+	}
+	return(last_status);
+}
+
+void copy_dup(t_ex *ex, int i)
+{
+    static int saved_stdin = -1;
+    static int saved_stdout = -1;
+
+    if (i == 1)
+    {
+        // Save the original file descriptors
+        saved_stdin = dup(STDIN_FILENO);
+        saved_stdout = dup(STDOUT_FILENO);
+
+        // Duplicate the new file descriptors
+        if (ex->fd[0] != -1)
+            dup2(ex->fd[0], STDIN_FILENO);
+        if (ex->fd[1] != -1)
+            dup2(ex->fd[1], STDOUT_FILENO);
+    }
+    else if (i == 2)
+    {
+        // Restore the original file descriptors
+        if (saved_stdin != -1)
+        {
+            dup2(saved_stdin, STDIN_FILENO);
+            close(saved_stdin);
+            saved_stdin = -1;
+        }
+        if (saved_stdout != -1)
+        {
+            dup2(saved_stdout, STDOUT_FILENO);
+            close(saved_stdout);
+            saved_stdout = -1;
+        }
+    }
+}
+void	main_execute(t_token *token, t_env *env, t_ex *ex) 
 {
 	int i;
 	int last_status;
@@ -220,9 +307,9 @@ void	main_execute(t_token *token, t_env *var, t_ex *ex)
 				exit(errno);
 			}
 		}
-		// printf("Creating child process %d\n", i);
-		last_status = create_child(token, ex, var, i);
-		// printf("Child process %d created with pid %d\n", i, pid);
+		// copy_dup(ex, 1);
+		last_status = execute(token, env, ex, i);
+		// copy_dup(ex, 2);
 		if(i > 0)
 			close(ex->prev_fd[0]);
 		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)
@@ -236,4 +323,5 @@ void	main_execute(t_token *token, t_env *var, t_ex *ex)
 		token = token->next;
 	}
 	ex->exit_status = last_status;
+	// printf("Exit status is: %i\n", ex->exit_status);
 }
