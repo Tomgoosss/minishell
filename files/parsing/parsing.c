@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/24 14:52:03 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/09/30 16:06:34 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,15 +260,34 @@ char	*replace_variable(char *line, t_env *var)
     return (free(var_name), NULL);
 }
 
+int max_expansion(char *line, t_env *var)
+{
+	int i;
+	int size;
+	node_t *temp;
+	
+	temp = var->head_exp;
+	i = 0;
+	size = 0;
+	while (temp)
+	{
+		i = ft_strlen(temp->data);
+		if (i > size)
+			size = i;
+		temp = temp->next;
+	}
+	return (size);
+}
+
 char *check_dollar_sign(char *line, t_env *var)
 {
-    int i = 0; // Index for input string
-    int j = 0; // Index for output string
+    int i = 0;
+    int j = 0; 
     char *ret, *temp;
 	
     if (!line)
         return (NULL);
-    ret = malloc(sizeof(char) * (1000)); //maybe dynamic allocation??
+    ret = malloc(sizeof(char) * (max_expansion(line, var)));
     if (!ret)
         return (NULL);
 	if (ft_strchr(line, '$') == NULL)
@@ -318,7 +337,6 @@ char *check_dollar_sign(char *line, t_env *var)
             }
             else
             {
-                // Handle cases like '$ ' or '$$' by treating '$' as a regular character
                 ret[j++] = line[i++];
                 continue;
             }
@@ -345,7 +363,7 @@ t_token	*main_pars(char *line, t_env *var)
 	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)
 	{
-		free(token); // Free token on failure
+		free(token);
 		return (NULL);
 	}	
 	tokenize(&token, temp);
