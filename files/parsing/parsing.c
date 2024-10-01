@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/30 19:02:42 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:31:18 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,9 +236,6 @@ char	*replace_variable(char *line, t_env *var, t_ex *ex)
     char *var_name;
     char *ret;
 
-	printf("%s\n", line);
-    if (line[0] == '?')
-        return (ft_itoa(ex->exit_status));
     if (is_space(line[0]))
 		return ft_strdup("$");
     int var_length = end_of_var(line);
@@ -280,6 +277,19 @@ int max_expansion(char *line, t_env *var)
 	return (size);
 }
 
+char *add_exit_code(char *ret, int j, char *line, int i, int exit_status)
+{
+	char *exit_code;
+
+	exit_code = ft_itoa(exit_status);
+	ft_strlcpy(&ret[j], exit_code, ft_strlen(exit_code) + 1);
+	j += ft_strlen(exit_code);
+	i += 2;
+	while(line [i] && !is_space(line[i]))
+		ret[j++] = line[i++];
+	return (i);
+}
+
 char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
     int i = 0;
@@ -288,14 +298,11 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
 	
     if (!line)
         return (NULL);
+	if (ft_strchr(line, '$') == NULL)
+        return (ft_strdup(line));
     ret = malloc(sizeof(char) * (max_expansion(line, var)));
     if (!ret)
         return (NULL);
-	if (ft_strchr(line, '$') == NULL)
-    {
-        free(ret);
-        return (ft_strdup(line));
-    }
     while (line[i] != '\0')
     {
         if (line[i] == '\'' && closing_quote(line, i, '\''))
@@ -309,6 +316,12 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
         }
         if (line[i] == '$')
         {
+			if(line[i + 1] == '?')
+			{
+				i = add_exit_code(ret, j, line, i, ex->exit_status);
+				j += ft_strlen(ret);
+				continue;
+			}
             if (ft_isalpha(line[i + 1]) || line[i + 1] == '_')
             {
                 int var_length = end_of_var(&line[i + 1]);
@@ -360,7 +373,7 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 	if (!token)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var, ex);
-	// printf("updated_line: %s\n", updated_line);
+	printf("updated_line: %s\n", updated_line);
 	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)
 	{
