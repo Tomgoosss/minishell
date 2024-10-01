@@ -160,7 +160,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		make_path(token, ex, var);
 		if(!ex->path)
 		{
-			exit(1);
+			exit(127);
 		}
 		if(ex->amound_commands > 1)
 			close_pipes_child(ex, count);
@@ -307,9 +307,9 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 				exit(errno);
 			}
 		}
-		// copy_dup(ex, 1);
+		copy_dup(ex, 1);
 		last_status = execute(token, env, ex, i);
-		// copy_dup(ex, 2);
+		copy_dup(ex, 2);
 		if(i > 0)
 			close(ex->prev_fd[0]);
 		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)

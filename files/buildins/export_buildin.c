@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/23 16:57:59 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/01 13:30:10 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,25 +134,44 @@ int	add_to_lists(t_env *var, char *arg)
 	return (0);
 }
 
-int	export(t_env *var, char **command)
+int is_valid_identifier(const char *str)
 {
-	int i;
-	int is_double;
-	
-	i = 1;
-	if (command[i] == NULL)
-	{
-		printf_export(var);
-		return (1);
-	}
-	while (command[i])
-	{
-		is_double = 0;
-		is_double = remove_double_env(var, command[i]);
-		is_double += remove_double_exp(var, command[i]);
-		if (is_double != 0)
-			add_to_lists(var, command[i]);
-		i++;
-	}
-	return(1);
+    if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
+        return 0;
+    str++;
+    while (*str)
+    {
+        if (!ft_isalnum(*str) && *str != '_')
+            return 0;
+        str++;
+    }
+    return 1;
+}
+
+int export(t_env *var, char **command)
+{
+    int i;
+    int is_double;
+    
+    i = 1;
+    if (command[i] == NULL)
+    {
+        printf_export(var);
+        return (0);
+    }
+    while (command[i])
+    {
+        if (!is_valid_identifier(command[i]))
+        {
+            fprintf(stderr, "export: `%s': not a valid identifier\n", command[i]);
+            return (1);
+        }
+        is_double = 0;
+        is_double = remove_double_env(var, command[i]);
+        is_double += remove_double_exp(var, command[i]);
+        if (is_double != 0)
+            add_to_lists(var, command[i]);
+        i++;
+    }
+    return (0);
 }
