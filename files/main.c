@@ -41,7 +41,7 @@ void	loop(t_env *var)
 		line = readline("minishell> ");
 		if (!line) // Handle ctrl-D (EOF)
 		{
-			ft_putstr_fd("exit\n", 2);
+			// ft_putstr_fd("exit\n", 2);
 			// free(line);
 			// free_env(var);
 			// free_token(token);

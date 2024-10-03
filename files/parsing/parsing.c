@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/01 14:31:18 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:49:10 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,7 +373,7 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 	if (!token)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var, ex);
-	printf("updated_line: %s\n", updated_line);
+	// printf("updated_line: %s\n", updated_line);
 	temp = ft_split_mod(updated_line, ' ');
 	if (!temp)
 	{

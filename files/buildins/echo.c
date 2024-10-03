@@ -1,24 +1,27 @@
 #include <stdio.h>
 
-void echo(char **command)
+int echo(char **command)
 {
-	int i;
+	int i = 1;
+	int newline = 1;
 
-    if(ft_strncmp(command[1], "-n", 2) == 0)
-    {
-       //print statement infront of minishell
-	   return 0;
-    }
-	i = 1;
-    while(command[i])
+	if (command[i] && ft_strncmp(command[i], "-n", 2) == 0)
 	{
-		if(command[i + 1])
-			printf("%s ", command[i]);
-		else
-			printf("%s", command[i]);
+		newline = 0;
 		i++;
 	}
-	printf("\n");
-	return 0;
+
+	while (command[i])
+	{
+		printf("%s", command[i]);
+		if (command[i + 1])
+			printf(" ");
+		i++;
+	}
+
+	if (newline)
+		printf("\n");
+
+	return 1;
 }
 

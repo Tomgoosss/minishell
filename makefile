@@ -11,7 +11,7 @@ SRCS    := files/main.c \
            files/buildins/nodes.c \
            files/execute/execute.c files/execute/handle_files.c \
            files/extra/free.c files/extra/helperfunc.c files/extra/helperfunc2.c \
-           files/parsing/parsing.c files/buildins/cd.c
+           files/parsing/parsing.c files/buildins/cd.c files/buildins/echo.c
 OBJS    := ${SRCS:.c=.o}
 
 all:  libft $(NAME)

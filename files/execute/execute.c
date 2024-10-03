@@ -98,7 +98,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 		error_lines(token->command[0], 1);
 		exit(errno);
 	}
-	exit(0);
+	exit(1);
 }
 
 
@@ -165,8 +165,6 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		if(ex->amound_commands > 1)
 			close_pipes_child(ex, count);
 		execute_child(token, ex, var);
-		// if execve fails, then cleanup and close
-		exit(1);
 	}
 	else
 	{
@@ -208,26 +206,27 @@ int count_nodes(t_token *token)
 }
 
 
-int check_if_red(t_token *token, t_ex *ex)
-{
-	t_redirection *red;
+// int check_if_red(t_token *token, t_ex *ex)
+// {
+// 	t_redirection *red;
 
-	red = token->redirection;
-	if(ex->amound_commands != 1)
-		return(1);
-	else if (red == NULL)
-		return(0); 
-	else if(red->type == REDIR_OUT_APPEND)
-		return(0);
-	else if(red->type == REDIR_OUT)
-		return(0);
-	else if(red->type == REDIR_IN_HERE_DOC)
-		return(0);
-	else if(red->type == REDIR_IN)
-		return(0);
-	return(1);
-}
+// 	red = token->redirection;
+// 	if(ex->amound_commands == 1)
+// 	{
+// 		if (red == NULL)
+// 			return(0); 
+// 		else if(red->type == REDIR_OUT_APPEND)
+// 			return(1);
+// 		else if(red->type == REDIR_OUT)
+// 			return(1);
+// 		else if(red->type == REDIR_IN_HERE_DOC)
+// 			return(1);
+// 		else if(red->type == REDIR_IN)
+// 			return(1);
+// 	}
 
+// 	return(1);
+// }
 
 int execute(t_token *token, t_env *env, t_ex *ex, int count)
 {
@@ -236,9 +235,8 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 
 	temp = 0;
 	last_status = 0;
-	if(check_buildin(token) == 1 && check_if_red(token, ex) == 0)
+	if(check_buildin(token) == 1 && ex->amound_commands == 1)
 	{
-		
 		temp = open_files(token);
 		if(temp == -1)
 		{
@@ -307,9 +305,9 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 				exit(errno);
 			}
 		}
-		copy_dup(ex, 1);
+		// copy_dup(ex, 1);
 		last_status = execute(token, env, ex, i);
-		copy_dup(ex, 2);
+		// copy_dup(ex, 2);
 		if(i > 0)
 			close(ex->prev_fd[0]);
 		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)

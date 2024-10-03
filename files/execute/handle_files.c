@@ -80,7 +80,7 @@ int open_files(t_token *token)
 		else if(red->type == REDIR_OUT)
 			result = red_out(red);
 		// else if(red->type == REDIR_IN_HERE_DOC)
-		// 	// red in here doc
+		// 	red_in_heredoc(red);
 		else if(red->type == REDIR_IN)
 			result = red_in(red);
 		else 
