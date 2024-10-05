@@ -60,7 +60,7 @@ void print_str_array(char **str)
 
     for (int i = 0; str[i] != NULL; i++)
     {
-        printf("[%d]: '%s'\n", i, str[i]);
+        printf("[%d]: %s\n", i, str[i]);
     }
     printf("End of array\n");
 }
@@ -69,18 +69,44 @@ int is_delimiter(const char *s)
     return (*s == '<' || *s == '>' || *s == '|');
 }
 
-int get_token_length(const char *s)
+int is_quote(char c)
+{
+    return (c == '\'' || c == '"');
+}
+
+int get_token_length(const char *s, int *quote_len)
 {
     int len;
+    char quote_char;
     
+    *quote_len = 0;
     if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
         return 2;
     if (is_delimiter(s))
         return 1;
+    if (is_quote(*s))
+    {
+        quote_char = *s;
+        len = 1;
+        while (s[len] && s[len] != quote_char)
+            len++;
+        *quote_len = (s[len] == quote_char) ? 2 : 0;
+        return len + 1;
+    }
     len = 0;
-    while (s[len] && !is_delimiter(s + len) && s[len] != ' ')
+    while (s[len] && !is_delimiter(s + len) && s[len] != ' ' && !is_quote(s[len]))
         len++;
     return len;
+}
+
+char *ft_strndup(const char *s, size_t n)
+{
+    char *result = malloc(n + 1);
+    if (result == NULL)
+        return NULL;
+    strncpy(result, s, n);
+    result[n] = '\0';
+    return result;
 }
 
 char **ft_split_mod(char const *s, char c)
@@ -88,6 +114,7 @@ char **ft_split_mod(char const *s, char c)
     int strings = 0;
     int i = 0;
     int len = 0;
+    int quote_len = 0;
     char **str;
     const char *og_string = s;
 
@@ -97,32 +124,31 @@ char **ft_split_mod(char const *s, char c)
     {
         if (*s != c)
         {
-            len = get_token_length(s);
+            len = get_token_length(s, &quote_len);
             strings++;
             s += len;
         }
         else
             s++;
     }
-    str = malloc((strings + 1) * sizeof(char *));
-    if (str == NULL)
-        return (NULL); // Return NULL if malloc fails
+    if (!(str = malloc((strings + 1) * sizeof(char *))))
+        return (NULL);
     s = og_string;
     i = 0;
     while (i < strings)
     {
         while (*s == c)
             s++;
-        len = get_token_length(s);
-        str[i] = ft_substr(s, 0, len);
-        if (str[i] == NULL)
+        len = get_token_length(s, &quote_len);
+        if (!(str[i] = ft_strndup(s + (quote_len / 2), len - quote_len)))
         {
-            free_str_array(str, i); 
+            free_str_array(str, i);
             return (NULL);
         }
         s += len;
         i++;
     }
-    str[i] = NULL; 
+    str[i] = NULL;
+    print_str_array(str);
     return (str);
 }

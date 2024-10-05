@@ -18,10 +18,8 @@ int echo(char **command)
 			printf(" ");
 		i++;
 	}
-
 	if (newline)
 		printf("\n");
-
 	return 1;
 }
 

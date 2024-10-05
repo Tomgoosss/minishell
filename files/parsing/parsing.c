@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/03 12:49:10 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/05 15:11:30 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,24 @@ char *add_exit_code(char *ret, int j, char *line, int i, int exit_status)
 		ret[j++] = line[i++];
 	return (i);
 }
-
+int inside_double_quote(char *line, int i)
+{
+	int j;
+	int end;	
+	
+	j = 0;
+	while (j < i)
+	{
+		if(line[j] == '"')
+		{
+			end = closing_quote(line, j, '"');
+			if (end - 1 > j)
+				return (1);
+		}
+		j++;
+	}
+	return (0);
+}
 char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
     int i = 0;
@@ -305,7 +322,7 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
         return (NULL);
     while (line[i] != '\0')
     {
-        if (line[i] == '\'' && closing_quote(line, i, '\''))
+        if (line[i] == '\'' && closing_quote(line, i, '\'') && !inside_double_quote(line, i))
         {
             ret[j++] = line[i++]; 
             while (line[i] && line[i] != '\'')
