@@ -58,11 +58,11 @@ void print_str_array(char **str)
         return;
     }
 
-    for (int i = 0; str[i] != NULL; i++)
-    {
-        printf("[%d]: %s\n", i, str[i]);
-    }
-    printf("End of array\n");
+    // for (int i = 0; str[i] != NULL; i++)
+    // {
+    //     printf("[%d]: %s\n", i, str[i]);
+    // }
+    // printf("End of array\n");
 }
 int is_delimiter(const char *s)
 {

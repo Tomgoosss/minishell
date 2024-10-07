@@ -21,6 +21,12 @@ void	error_lines(char *arg, int i)
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd("\n", 2);
 	}
+	else if (i == 4)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": too many arguments", 2);
+	}
 }
 
 int find_path(char **temp_path, t_ex *ex, t_token *token)
@@ -245,7 +251,7 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 			ex->path = NULL;		
 			exit(errno);
 		}
-		check_if_buildin(token, env);
+		last_status = check_if_buildin(token, env);
 	}
 	else
 	{
@@ -254,40 +260,40 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 	return(last_status);
 }
 
-void copy_dup(t_ex *ex, int i)
-{
-    static int saved_stdin = -1;
-    static int saved_stdout = -1;
+// void copy_dup(t_ex *ex, int i)
+// {
+//     static int saved_stdin = -1;
+//     static int saved_stdout = -1;
 
-    if (i == 1)
-    {
-        // Save the original file descriptors
-        saved_stdin = dup(STDIN_FILENO);
-        saved_stdout = dup(STDOUT_FILENO);
+//     if (i == 1)
+//     {
+//         // Save the original file descriptors
+//         saved_stdin = dup(STDIN_FILENO);
+//         saved_stdout = dup(STDOUT_FILENO);
 
-        // Duplicate the new file descriptors
-        if (ex->fd[0] != -1)
-            dup2(ex->fd[0], STDIN_FILENO);
-        if (ex->fd[1] != -1)
-            dup2(ex->fd[1], STDOUT_FILENO);
-    }
-    else if (i == 2)
-    {
-        // Restore the original file descriptors
-        if (saved_stdin != -1)
-        {
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
-            saved_stdin = -1;
-        }
-        if (saved_stdout != -1)
-        {
-            dup2(saved_stdout, STDOUT_FILENO);
-            close(saved_stdout);
-            saved_stdout = -1;
-        }
-    }
-}
+//         // Duplicate the new file descriptors
+//         if (ex->fd[0] != -1)
+//             dup2(ex->fd[0], STDIN_FILENO);
+//         if (ex->fd[1] != -1)
+//             dup2(ex->fd[1], STDOUT_FILENO);
+//     }
+//     else if (i == 2)
+//     {
+//         // Restore the original file descriptors
+//         if (saved_stdin != -1)
+//         {
+//             dup2(saved_stdin, STDIN_FILENO);
+//             close(saved_stdin);
+//             saved_stdin = -1;
+//         }
+//         if (saved_stdout != -1)
+//         {
+//             dup2(saved_stdout, STDOUT_FILENO);
+//             close(saved_stdout);
+//             saved_stdout = -1;
+//         }
+//     }
+// }
 void	main_execute(t_token *token, t_env *env, t_ex *ex) 
 {
 	int i;

@@ -18,5 +18,5 @@ int	pwd_buildin()
 	char	cwd[4069];
 
 	printf("%s\n", getcwd(cwd, sizeof(cwd)));
-	return(1);
+	return(0);
 }

@@ -79,28 +79,35 @@ char *get_home(t_env *var)
 int cd_buildin(t_token *token, t_env *var)
 {
     char *path;
-    char cwd[9999];
+    char cwd[4096];
 
+	if (token->command[2])
+	{
+		error_lines("cd", 4);
+		return(1);
+	}
     if(token == NULL || token->command == NULL || token->command[0] == NULL)
-        return 0;
+        return 1;
     getcwd(cwd, sizeof(cwd));
     change_oldpwd(var, cwd);
     if (token->command[1] == NULL)
     {
         chdir(get_home(var));
         change_current_dir(var);
-    	return 1;
+    	return (0);
     }
     path = token->command[1];
     if (chdir(path) != 0)
     {
-        printf("cd: no such file or directory: %s\n", path);
-        exit(1);
+        error_lines("cd", 2);
+        return(1);
     }
     change_current_dir(var);
     getcwd(cwd, sizeof(cwd));
-    return 1;
+    return 0;
 }
 //to-do: update env with new path
 //to-do: make sure to free everything
 //to-do: when in directory 1/2/3 and you rm -r 1 make sure program doesnt seggfault
+
+

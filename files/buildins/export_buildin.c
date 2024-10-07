@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/01 13:30:10 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/07 09:11:59 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,14 +136,17 @@ int	add_to_lists(t_env *var, char *arg)
 
 int is_valid_identifier(const char *str)
 {
+	int i;
+
+	i = 0;
     if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
         return 0;
     str++;
-    while (*str)
+    while (str[i] && str[i] != '=')
     {
-        if (!ft_isalnum(*str) && *str != '_')
+        if (!ft_isalnum(str[i]) && str[i] != '_')
             return 0;
-        str++;
+        i++;
     }
     return 1;
 }
