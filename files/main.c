@@ -3,10 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int g_exit_status = 0;
+
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	ft_putstr_fd("\nminishell> ", 2); // Display a new prompt on ctrl-C
+	g_exit_status = 130;
+	write(STDERR_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void	handle_sigquit(int sig)
@@ -49,7 +55,7 @@ int	unclosed_quote(char *line, t_ex *ex)
 void	loop(t_env *var)
 {
 	char	*line;
-	t_token	*token = NULL; // Initialize token to NULL
+	t_token	*token = NULL;
 	t_ex	*ex;
 	int		exitcode;
 
@@ -60,33 +66,42 @@ void	loop(t_env *var)
 	exitcode = 0;
 	while (1)
 	{
+		signal(SIGINT, handle_sigint);
 		line = readline("minishell> ");
 		if (!line) // Handle ctrl-D (EOF)
 			break;
+		if (g_exit_status == 130)
+		{
+			ex->exit_status = 130;
+			g_exit_status = 0;
+		}
 		if (unclosed_quote(line, ex))
+		{
+			free(line);
 			continue;
+		}
 		sort_export(var);
 		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
 		{
 			ft_putstr_fd("exit\n", 2);
 			rl_clear_history();
+			free(line);
+			free(ex);
 			exit(exitcode);
 		}
-		if (line)
+		token = main_pars(line, var, ex);
+		if (!token)
 		{
-			token = main_pars(line, var, ex);
-			if (!token)
-			{
-				free(line);
-				continue; // Skip to the next iteration if token is NULL
-			}
-			main_execute(token, var, ex);
-			add_history(line);
-			free_token(token);
+			free(line);
+			continue;
 		}
+		signal(SIGINT, SIG_IGN);
+		main_execute(token, var, ex);
+		add_history(line);
+		free_token(token);
 		free(line);
 	}
-	free(ex); 
+	free(ex);
 	rl_clear_history();
 }
 

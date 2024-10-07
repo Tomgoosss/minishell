@@ -6,19 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/07 15:50:22 by fbiberog         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/09/16 14:52:42 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/07 16:10:30 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +220,7 @@ int	end_of_var(char *line)
 	return (i);
 }
 
-char	*replace_variable(char *line, t_env *var, t_ex *ex)
+char	*replace_variable(char *line, t_env *var)
 {
     node_t *temp;
     char *var_name;
@@ -260,7 +248,7 @@ char	*replace_variable(char *line, t_env *var, t_ex *ex)
     return (free(var_name), NULL);
 }
 
-int max_expansion(char *line, t_env *var)
+int max_expansion(t_env *var)
 {
 	int i;
 	int size;
@@ -279,7 +267,7 @@ int max_expansion(char *line, t_env *var)
 	return (size);
 }
 
-char *add_exit_code(char *ret, int j, char *line, int i, int exit_status)
+int add_exit_code(char *ret, int j, char *line, int i, int exit_status)
 {
 	char *exit_code;
 
@@ -316,10 +304,10 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
     char *ret, *temp;
 	
     if (!line)
-        return (NULL);
-	if (ft_strchr(line, '$') == NULL)
+    	return (NULL);
+    if (ft_strchr(line, '$') == NULL)
         return (ft_strdup(line));
-    ret = malloc(sizeof(char) * (max_expansion(line, var)));
+    ret = malloc(sizeof(char) * (max_expansion(var)));
     if (!ret)
         return (NULL);
     while (line[i] != '\0')
@@ -353,7 +341,7 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
                         return (NULL);
                     }
                     ft_strlcpy(var_name, &line[i + 1], var_length + 1);
-                    temp = replace_variable(var_name, var, ex);
+                    temp = replace_variable(var_name, var);
                     free(var_name);
                     if (temp)
                     {

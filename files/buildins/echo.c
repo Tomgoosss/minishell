@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "minishell.h"
 
 int echo(char **command)
 {

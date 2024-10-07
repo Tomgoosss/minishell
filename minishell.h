@@ -12,6 +12,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
+extern int g_exit_status;
+
 typedef struct node
 {
 	char					*data;
