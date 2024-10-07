@@ -11,8 +11,8 @@ int	size_no_whitespace(char *line)
 	{
 		if (line[i] == "'" || line[i] == 34)
 		{
-			size += closing_quote(line, i, line[i]) - i - 1;
-			i = closing_quote(line, i, line[i]);
+			size += closing_quote(line, i, line[i], 0) - i - 1;
+			i = closing_quote(line, i, line[i], 0);
 		}
 		if (!is_space(line[i]))
 		{
@@ -66,7 +66,7 @@ char *remove_white_spaces(char *line)
     {
         if (line[i] == '\'' || line[i] == '\"')
         {
-            int quote_len = closing_quote(line, i + 1, line[i]);
+            int quote_len = closing_quote(line, i + 1, line[i], 0);
             if (quote_len == 0)
                 return (free(new_line), 0);
             ft_stlcat(new_line, line + i, quote_len + 1);

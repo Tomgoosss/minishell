@@ -58,11 +58,11 @@ void print_str_array(char **str)
         return;
     }
 
-    // for (int i = 0; str[i] != NULL; i++)
-    // {
-    //     printf("[%d]: %s\n", i, str[i]);
-    // }
-    // printf("End of array\n");
+    for (int i = 0; str[i] != NULL; i++)
+    {
+        printf("[%d]: %s\n", i, str[i]);
+    }
+    printf("End of array\n");
 }
 int is_delimiter(const char *s)
 {
@@ -76,7 +76,7 @@ int is_quote(char c)
 
 int get_token_length(const char *s, int *quote_len)
 {
-    int len;
+    int len = 0;
     char quote_char;
     
     *quote_len = 0;
@@ -84,18 +84,27 @@ int get_token_length(const char *s, int *quote_len)
         return 2;
     if (is_delimiter(s))
         return 1;
-    if (is_quote(*s))
+    while (s[len])
     {
-        quote_char = *s;
-        len = 1;
-        while (s[len] && s[len] != quote_char)
+        if (is_quote(s[len]))
+        {
+            quote_char = s[len];
             len++;
-        *quote_len = (s[len] == quote_char) ? 2 : 0;
-        return len + 1;
+            while (s[len] && s[len] != quote_char)
+                len++;
+            if (s[len] == quote_char)
+            {
+                len++;
+                *quote_len += 2;
+            }
+            else
+                *quote_len += 1;
+        }
+        else if (is_delimiter(s + len) || s[len] == ' ')
+            break;
+        else
+            len++;
     }
-    len = 0;
-    while (s[len] && !is_delimiter(s + len) && s[len] != ' ' && !is_quote(s[len]))
-        len++;
     return len;
 }
 
@@ -140,15 +149,26 @@ char **ft_split_mod(char const *s, char c)
         while (*s == c)
             s++;
         len = get_token_length(s, &quote_len);
-        if (!(str[i] = ft_strndup(s + (quote_len / 2), len - quote_len)))
+        if (!(str[i] = malloc(len - quote_len + 1)))
         {
             free_str_array(str, i);
             return (NULL);
         }
+        int j = 0;
+        int k = 0;
+        while (k < len)
+        {
+            if (!is_quote(s[k]))
+            {
+                str[i][j] = s[k];
+                j++;
+            }
+            k++;
+        }
+        str[i][j] = '\0';
         s += len;
         i++;
     }
     str[i] = NULL;
-    print_str_array(str);
     return (str);
 }

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/05 15:11:30 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/07 15:50:22 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	check_whitespaces(char *line, int i)
 	return (1);
 }
 
-int	closing_quote(char *line, int i, char c)
+int	closing_quote(char *line, int i, char c, int extra)
 {
 	i++;
 	while (line[i])
@@ -49,7 +49,9 @@ int	closing_quote(char *line, int i, char c)
 			return (i + 1);
 		i++;
 	}
-	return (0);
+	if(extra == 0)
+		return (0);
+	return (-1);
 }
 
 int	check_redirection(t_redirection **redirection, char *temp)
@@ -299,7 +301,7 @@ int inside_double_quote(char *line, int i)
 	{
 		if(line[j] == '"')
 		{
-			end = closing_quote(line, j, '"');
+			end = closing_quote(line, j, '"', 0);
 			if (end - 1 > j)
 				return (1);
 		}
@@ -322,7 +324,7 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
         return (NULL);
     while (line[i] != '\0')
     {
-        if (line[i] == '\'' && closing_quote(line, i, '\'') && !inside_double_quote(line, i))
+        if (line[i] == '\'' && closing_quote(line, i, '\'', 0) && !inside_double_quote(line, i))
         {
             ret[j++] = line[i++]; 
             while (line[i] && line[i] != '\'')

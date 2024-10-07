@@ -70,7 +70,7 @@ void						fill_nodes_exp(t_env *var);
 int							ft_strcmp(const char *s1, const char *s2);
 void						swap_nodes(char **first, char **second);
 void						sort_export(t_env *var);
-int							closing_quote(char *line, int i, char c);
+int							closing_quote(char *line, int i, char c, int extra);
 char						**ft_split_mod(char const *s, char c);
 void						buildins(char *line, t_env *var);
 int							valid_redirection(char *str);
@@ -92,4 +92,5 @@ void						free_list(node_t *head);
 int							buildins_par(t_token *token, t_env *var);
 int							empty_line(char *line);
 int							echo(char **command);
+
 #endif

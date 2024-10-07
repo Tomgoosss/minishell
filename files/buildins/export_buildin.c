@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/07 09:11:59 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/07 15:11:22 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ int export(t_env *var, char **command)
 {
     int i;
     int is_double;
+    char *equal_sign;
     
     i = 1;
     if (command[i] == NULL)
@@ -164,11 +165,24 @@ int export(t_env *var, char **command)
     }
     while (command[i])
     {
-        if (!is_valid_identifier(command[i]))
+        equal_sign = ft_strchr(command[i], '=');
+        if (equal_sign)
+        {
+            *equal_sign = '\0';  // Temporarily split the string
+            if (!is_valid_identifier(command[i]))
+            {
+                fprintf(stderr, "export: `%s': not a valid identifier\n", command[i]);
+                *equal_sign = '=';  // Restore the string
+                return (1);
+            }
+            *equal_sign = '=';  // Restore the string
+        }
+        else if (!is_valid_identifier(command[i]))
         {
             fprintf(stderr, "export: `%s': not a valid identifier\n", command[i]);
             return (1);
         }
+        
         is_double = 0;
         is_double = remove_double_env(var, command[i]);
         is_double += remove_double_exp(var, command[i]);

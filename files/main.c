@@ -24,6 +24,28 @@ void	error_msg(char *line, int i)
 	ft_putstr_fd("\n", 2);
 }
 
+int	unclosed_quote(char *line, t_ex *ex)
+{
+	int	i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'' || line[i] == '"')
+			i = closing_quote(line, i, line[i], 1);
+		if (i == -1)
+		{
+			printf("syntax error: unexpected EOF while looking for matching `%c\'\n", line[j]);
+			ex->exit_status = 2;
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 void	loop(t_env *var)
 {
 	char	*line;
@@ -40,13 +62,9 @@ void	loop(t_env *var)
 	{
 		line = readline("minishell> ");
 		if (!line) // Handle ctrl-D (EOF)
-		{
-			// ft_putstr_fd("exit\n", 2);
-			// free(line);
-			// free_env(var);
-			// free_token(token);
 			break;
-		}
+		if (unclosed_quote(line, ex))
+			continue;
 		sort_export(var);
 		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
 		{
@@ -68,7 +86,7 @@ void	loop(t_env *var)
 		}
 		free(line);
 	}
-	free(ex); // Free ex before exiting the loop
+	free(ex); 
 	rl_clear_history();
 }
 
@@ -76,15 +94,15 @@ int	main(int argc, char **argv, char **environment)
 {
 	t_env	*var;
 
-	signal(SIGINT, handle_sigint);  // Handle ctrl-C
-	signal(SIGQUIT, SIG_IGN);        // Ignore ctrl-\
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 
 	argc = 0;
 	argv = NULL;
 	var = ft_calloc(1, sizeof(t_env));
-	if (!var) // Check for malloc failure
+	if (!var)
 		exit(1);
-	var->env = environment; // Ensure environment is properly assigned
+	var->env = environment;
 	loop(var);
 	free_env(var);
 	return (0);
