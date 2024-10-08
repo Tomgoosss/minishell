@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/07 16:10:30 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/08 16:58:49 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,18 +380,23 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 	if (!token)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var, ex);
-	// printf("updated_line: %s\n", updated_line);
 	temp = ft_split_mod(updated_line, ' ');
+	int i = 0;
+	while (temp[i])
+	{
+		if(temp[i][0] == '|' && temp[i + 1] == NULL)
+		{			
+			ft_putstr_fd("syntax error near unexpected token `|'\n", 2);
+			return (free2pointers(temp), free(token), free(updated_line), NULL);
+		}
+		i++;
+	}
 	if (!temp)
 	{
 		free(token);
 		return (NULL);
 	}	
 	tokenize(&token, temp);
-	// printf("token->command[0]: %s\n", token->command[0]);
-	// printf("token->command[1]: %s\n", token->command[1]);
-	// if(ft_strcmp(token->command[0], "export") == 0)
-	// 	export(var, token->command);
-	// free(line);
+	free(updated_line);
 	return (token);
 }
