@@ -33,21 +33,24 @@ void	error_msg(char *line, int i)
 int	unclosed_quote(char *line, t_ex *ex)
 {
 	int	i;
-	int j;
+	int s_quote;
+	int d_quote;
 
 	i = 0;
-	j = 0;
+	s_quote = 0;
+	d_quote = 0;
 	while (line[i])
 	{
-		if (line[i] == '\'' || line[i] == '"')
-			i = closing_quote(line, i, line[i], 1);
-		if (i == -1)
-		{
-			printf("syntax error: unexpected EOF while looking for matching `%c\'\n", line[j]);
-			ex->exit_status = 2;
-			return (1);
-		}
+		if (line[i] == '\'')
+			s_quote++;
+		if (line[i] == '"')
+			d_quote++;
 		i++;
+	}
+	if (s_quote % 2 != 0 || d_quote % 2 != 0)
+	{
+		ex->exit_status = 2;
+		return (1);
 	}
 	return (0);
 }
