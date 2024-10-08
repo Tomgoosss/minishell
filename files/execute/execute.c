@@ -21,12 +21,6 @@ void	error_lines(char *arg, int i)
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd("\n", 2);
 	}
-	else if (i == 4)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": too many arguments", 2);
-	}
 }
 
 int find_path(char **temp_path, t_ex *ex, t_token *token)
@@ -91,7 +85,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 		//free some struct
 		free(ex->path);
 		ex->path = NULL;		
-		exit(errno);
+		exit(1);
 	}
 	// dup_choose(ex, count);
 	if (check_if_buildin(token, var) == 1)
@@ -260,40 +254,51 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 	return(last_status);
 }
 
-// void copy_dup(t_ex *ex, int i)
-// {
-//     static int saved_stdin = -1;
-//     static int saved_stdout = -1;
 
-//     if (i == 1)
-//     {
-//         // Save the original file descriptors
-//         saved_stdin = dup(STDIN_FILENO);
-//         saved_stdout = dup(STDOUT_FILENO);
 
-//         // Duplicate the new file descriptors
-//         if (ex->fd[0] != -1)
-//             dup2(ex->fd[0], STDIN_FILENO);
-//         if (ex->fd[1] != -1)
-//             dup2(ex->fd[1], STDOUT_FILENO);
-//     }
-//     else if (i == 2)
-//     {
-//         // Restore the original file descriptors
-//         if (saved_stdin != -1)
-//         {
-//             dup2(saved_stdin, STDIN_FILENO);
-//             close(saved_stdin);
-//             saved_stdin = -1;
-//         }
-//         if (saved_stdout != -1)
-//         {
-//             dup2(saved_stdout, STDOUT_FILENO);
-//             close(saved_stdout);
-//             saved_stdout = -1;
-//         }
-//     }
-// }
+void copy_dup(t_ex *ex, int i)
+{
+    static int saved_stdin = -1;
+    static int saved_stdout = -1;
+    static int stdin_changed = 0;
+    static int stdout_changed = 0;
+
+    if (i == 1)
+    {
+        // Save the original file descriptors
+        if (ex->fd[0] != -1)
+        {
+            saved_stdin = dup(STDIN_FILENO);
+            dup2(ex->fd[0], STDIN_FILENO);
+            stdin_changed = 1;
+        }
+        if (ex->fd[1] != -1)
+        {
+            saved_stdout = dup(STDOUT_FILENO);
+            dup2(ex->fd[1], STDOUT_FILENO);
+            stdout_changed = 1;
+        }
+    }
+    else if (i == 2)
+    {
+        // Restore the original file descriptors only if they were changed
+        if (stdin_changed)
+        {
+            dup2(saved_stdin, STDIN_FILENO);
+            close(saved_stdin);
+            saved_stdin = -1;
+            stdin_changed = 0;
+        }
+        if (stdout_changed)
+        {
+            dup2(saved_stdout, STDOUT_FILENO);
+            close(saved_stdout);
+            saved_stdout = -1;
+            stdout_changed = 0;
+        }
+    }
+}
+
 void	main_execute(t_token *token, t_env *env, t_ex *ex) 
 {
 	int i;
@@ -303,6 +308,7 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 	ex->amound_commands = count_nodes(token);
 	while(token)
 	{
+		copy_dup(ex, 1);
 		if(ex->amound_commands > 1 && i < ex->amound_commands - 1)
 		{
 			if(pipe(ex->fd) == -1)
@@ -311,9 +317,7 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 				exit(errno);
 			}
 		}
-		// copy_dup(ex, 1);
 		last_status = execute(token, env, ex, i);
-		// copy_dup(ex, 2);
 		if(i > 0)
 			close(ex->prev_fd[0]);
 		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)
@@ -325,6 +329,7 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 		}
 		i++;
 		token = token->next;
+		copy_dup(ex, 2);
 	}
 	ex->exit_status = last_status;
 	// printf("Exit status is: %i\n", ex->exit_status);

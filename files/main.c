@@ -81,19 +81,18 @@ void	loop(t_env *var)
 			continue;
 		}
 		sort_export(var);
-		if ((exitcode = check_exit(ft_split(line, ' '))) != 0)
-		{
-			ft_putstr_fd("exit\n", 2);
-			rl_clear_history();
-			free(line);
-			free(ex);
-			exit(exitcode);
-		}
 		token = main_pars(line, var, ex);
 		if (!token)
 		{
 			free(line);
 			continue;
+		}
+		if ((exitcode = check_exit(token->command)) != 0)
+		{
+			rl_clear_history();
+			free(line);
+			free(ex);
+			exit(exitcode);
 		}
 		signal(SIGINT, SIG_IGN);
 		main_execute(token, var, ex);

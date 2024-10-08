@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+
 int red_out_append(t_redirection *red)
 {
 	int fd;
@@ -7,7 +8,7 @@ int red_out_append(t_redirection *red)
 	fd = open(red->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 	{
-		error_lines(red->file, 2);
+		perror("ERROR");
 		return(fd);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -26,7 +27,7 @@ int red_out(t_redirection *red)
 	fd = open(red->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if(fd == -1)
 	{
-		error_lines(red->file, 2);
+		perror("ERROR");
 		return (fd);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -53,7 +54,7 @@ int red_in(t_redirection *red)
 	fd = open(red->file, O_RDONLY);
 	if (fd == -1)
 	{
-		error_lines(red->file, 2);
+		perror("ERROR");
 		return(fd);
 	}
 	if(dup2(fd, STDIN_FILENO) == -1)

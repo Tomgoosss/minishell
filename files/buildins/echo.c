@@ -10,7 +10,6 @@ int echo(char **command)
 		newline = 0;
 		i++;
 	}
-
 	while (command[i])
 	{
 		printf("%s", command[i]);
