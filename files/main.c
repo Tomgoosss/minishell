@@ -33,22 +33,31 @@ void	error_msg(char *line, int i)
 int	unclosed_quote(char *line, t_ex *ex)
 {
 	int	i;
-	int s_quote;
-	int d_quote;
+	int	quote_type;
+	int	in_quote;
 
 	i = 0;
-	s_quote = 0;
-	d_quote = 0;
+	in_quote = 0;
+	quote_type = 0;
 	while (line[i])
 	{
-		if (line[i] == '\'')
-			s_quote++;
-		if (line[i] == '"')
-			d_quote++;
+		if (!in_quote && (line[i] == '\'' || line[i] == '"'))
+		{
+			in_quote = 1;
+			quote_type = line[i];
+		}
+		else if (in_quote && line[i] == quote_type)
+		{
+			in_quote = 0;
+			quote_type = 0;
+		}
 		i++;
 	}
-	if (s_quote % 2 != 0 || d_quote % 2 != 0)
+	if (in_quote)
 	{
+		ft_putstr_fd("minishell: unexpected EOF while looking for matching `", 2);
+		ft_putchar_fd(quote_type, 2);
+		ft_putstr_fd("'\n", 2);
 		ex->exit_status = 2;
 		return (1);
 	}

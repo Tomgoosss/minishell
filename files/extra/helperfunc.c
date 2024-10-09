@@ -77,7 +77,7 @@ int is_quote(char c)
 int get_token_length(const char *s, int *quote_len)
 {
     int len = 0;
-    char quote_char;
+    char quote_char = 0;
     
     *quote_len = 0;
     if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
@@ -86,24 +86,19 @@ int get_token_length(const char *s, int *quote_len)
         return 1;
     while (s[len])
     {
-        if (is_quote(s[len]))
+        if (is_quote(s[len]) && quote_char == 0)
         {
             quote_char = s[len];
-            len++;
-            while (s[len] && s[len] != quote_char)
-                len++;
-            if (s[len] == quote_char)
-            {
-                len++;
-                *quote_len += 2;
-            }
-            else
-                *quote_len += 1;
+            (*quote_len)++;
         }
-        else if (is_delimiter(s + len) || s[len] == ' ')
+        else if (s[len] == quote_char)
+        {
+            quote_char = 0;
+            (*quote_len)++;
+        }
+        else if (quote_char == 0 && (is_delimiter(s + len) || s[len] == ' '))
             break;
-        else
-            len++;
+        len++;
     }
     return len;
 }
@@ -149,19 +144,37 @@ char **ft_split_mod(char const *s, char c)
         while (*s == c)
             s++;
         len = get_token_length(s, &quote_len);
-        if (!(str[i] = malloc(len - quote_len + 1)))
+        if (!(str[i] = malloc(len + 1)))
         {
             free_str_array(str, i);
             return (NULL);
         }
         int j = 0;
         int k = 0;
+        char outer_quote = 0;
+        char inner_quote = 0;
         while (k < len)
         {
-            if (!is_quote(s[k]))
+            if (is_quote(s[k]))
             {
-                str[i][j] = s[k];
-                j++;
+                if (outer_quote == 0)
+                    outer_quote = s[k];
+                else if (s[k] == outer_quote)
+                    outer_quote = 0;
+                else if (inner_quote == 0)
+                {
+                    inner_quote = s[k];
+                    str[i][j++] = s[k];
+                }
+                else if (s[k] == inner_quote)
+                {
+                    inner_quote = 0;
+                    str[i][j++] = s[k];
+                }
+            }
+            else
+            {
+                str[i][j++] = s[k];
             }
             k++;
         }
@@ -170,5 +183,6 @@ char **ft_split_mod(char const *s, char c)
         i++;
     }
     str[i] = NULL;
+    print_str_array(str); 
     return (str);
 }
