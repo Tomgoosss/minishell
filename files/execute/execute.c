@@ -243,7 +243,7 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 			//free some struct
 			free(ex->path);
 			ex->path = NULL;		
-			exit(errno);
+			return(errno);
 		}
 		last_status = check_if_buildin(token, env);
 	}
@@ -265,7 +265,6 @@ void copy_dup(t_ex *ex, int i)
 
     if (i == 1)
     {
-        // Save the original file descriptors
         if (ex->fd[0] != -1)
         {
             saved_stdin = dup(STDIN_FILENO);
@@ -281,7 +280,6 @@ void copy_dup(t_ex *ex, int i)
     }
     else if (i == 2)
     {
-        // Restore the original file descriptors only if they were changed
         if (stdin_changed)
         {
             dup2(saved_stdin, STDIN_FILENO);
@@ -306,23 +304,28 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 
 	i = 0;
 	ex->amound_commands = count_nodes(token);
-	while(token)
+	while (token)
 	{
 		copy_dup(ex, 1);
-		if(ex->amound_commands > 1 && i < ex->amound_commands - 1)
+		if (ex->amound_commands > 1 && i < ex->amound_commands - 1)
 		{
-			if(pipe(ex->fd) == -1)
+			if (pipe(ex->fd) == -1)
 			{
 				perror("pipe failed");
 				exit(errno);
 			}
 		}
 		last_status = execute(token, env, ex, i);
-		if(i > 0)
-			close(ex->prev_fd[0]);
-		if (i <= ex->amound_commands - 1 && ex->amound_commands > 0)
-			ex->prev_fd[0] = ex->fd[0];
-		if(ex->path)
+		if (i > 0)
+			close(ex->prev_fd[0]); // Close the previous read end
+
+		if (i < ex->amound_commands - 1)
+		{
+			ex->prev_fd[0] = ex->fd[0]; // Save the current read end
+			// close(ex->fd[0]); // Close the current read end in the parent
+		}
+
+		if (ex->path)
 		{
 			free(ex->path);
 			ex->path = NULL;
