@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:09:26 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/08 11:08:20 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:20:41 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	check_exit(char **cmd_array)
 	int i;
 	
 	i = 0;
-	if (cmd_array[0] == NULL)
+	if (cmd_array == NULL)
 		return (0);
 	if (ft_strncmp(cmd_array[0], "exit", 4) == 0 && !cmd_array[1])
 	{

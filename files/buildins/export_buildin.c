@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/07 15:11:22 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:51:25 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void	remove_current_node(node_t *head, node_t *node)
 	free(node->data);
 	free(node);
 }
+
 int	remove_double_env(t_env *var, char *arg)
 {
 	node_t	*temp;

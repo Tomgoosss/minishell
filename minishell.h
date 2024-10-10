@@ -94,5 +94,7 @@ void						free_list(node_t *head);
 int							buildins_par(t_token *token, t_env *var);
 int							empty_line(char *line);
 int							echo(char **command);
+int						unset(t_token *token, t_env *var);
+void	remove_current_node(node_t *head, node_t *node);
 
 #endif

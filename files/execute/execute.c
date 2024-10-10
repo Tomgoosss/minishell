@@ -59,6 +59,8 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 	i = 0;
 	while(var->env && ft_strncmp(var->env[i], "PATH=", 5) != 0)
 		i++;
+	if(var->env[i] == NULL)
+		return ;
 	temp_path = ft_split(var->env[i] + 5, ':');
 	if(find_path(temp_path, ex, token) == 0 || check_buildin(token))
 		return ;
@@ -90,9 +92,9 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 	// dup_choose(ex, count);
 	if (check_if_buildin(token, var) == 0)
 	{
+		ex->exit_status = 0;
 		exit(0);
 	}
-	// printf("test\n");
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
 		error_lines(token->command[0], 1);
