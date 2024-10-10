@@ -88,7 +88,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 		exit(1);
 	}
 	// dup_choose(ex, count);
-	if (check_if_buildin(token, var) == 1)
+	if (check_if_buildin(token, var) == 0)
 	{
 		exit(0);
 	}
@@ -178,7 +178,6 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 		if(count == ex->amound_commands - 1)
 		{
 			waitpid(p, &status, 0);
-			count--;
 			while(count > 0)
 			{
 				wait(NULL);
@@ -306,7 +305,6 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 	ex->amound_commands = count_nodes(token);
 	while (token)
 	{
-		copy_dup(ex, 1);
 		if (ex->amound_commands > 1 && i < ex->amound_commands - 1)
 		{
 			if (pipe(ex->fd) == -1)
@@ -315,14 +313,14 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 				exit(errno);
 			}
 		}
+		
 		last_status = execute(token, env, ex, i);
+		
 		if (i > 0)
 			close(ex->prev_fd[0]); // Close the previous read end
-
 		if (i < ex->amound_commands - 1)
 		{
 			ex->prev_fd[0] = ex->fd[0]; // Save the current read end
-			// close(ex->fd[0]); // Close the current read end in the parent
 		}
 
 		if (ex->path)
@@ -332,8 +330,6 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 		}
 		i++;
 		token = token->next;
-		copy_dup(ex, 2);
 	}
 	ex->exit_status = last_status;
-	// printf("Exit status is: %i\n", ex->exit_status);
 }

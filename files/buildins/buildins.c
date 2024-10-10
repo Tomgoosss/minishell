@@ -10,7 +10,7 @@ int	env_buildin(t_env *var)
 		printf("%s\n", temp->data);
 		temp = temp->next;
 	}
-	return(1);
+	return(0);
 }
 
 int	pwd_buildin()

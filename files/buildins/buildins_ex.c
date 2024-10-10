@@ -27,7 +27,7 @@ int check_if_buildin(t_token *token, t_env *var)
 		return(env_buildin(var));
 	// if(strncmp(token->command[0], "exit", 4))
 	// 	// exit
-	return(0);
+	return(1);
 }
 
 int check_buildin(t_token *token)
