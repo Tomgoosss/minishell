@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/08 16:58:49 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:23:51 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,7 +326,7 @@ char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
 			if(line[i + 1] == '?')
 			{
 				i = add_exit_code(ret, j, line, i, ex->exit_status);
-				j += ft_strlen(ret);
+				j = ft_strlen(ret);
 				continue;
 			}
             if (ft_isalpha(line[i + 1]) || line[i + 1] == '_')

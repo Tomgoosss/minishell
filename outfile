@@ -5,4 +5,6 @@ minishell
 minishell.h
 minishell_tester
 outfile
+pwd
+tester
 unusedfunc
