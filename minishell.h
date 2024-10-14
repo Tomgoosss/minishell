@@ -11,6 +11,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+#include <dirent.h>
 
 extern int g_exit_status;
 
@@ -58,12 +59,14 @@ typedef struct execute
 	char					*path;
 	int 					amound_commands;
 	int 					exit_status;
+	int						in_dup;
+	int						out_dup;
 }	t_ex;
 
 void						free2pointers(char **str);
 char						*remove_white_spaces(char *line);
 char						*ft_strjoinfree(char const *s1, char const *s2);
-void						fill_nodes_env(t_env *man);
+void						fill_nodes_env(t_env *var, char **env);
 void						add_node(node_t **head, node_t *new);
 node_t						*make_node(char *line);
 t_token						*main_pars(char *line, t_env *var, t_ex *ex);
@@ -94,7 +97,8 @@ void						free_list(node_t *head);
 int							buildins_par(t_token *token, t_env *var);
 int							empty_line(char *line);
 int							echo(char **command);
-int						unset(t_token *token, t_env *var);
-void	remove_current_node(node_t *head, node_t *node);
+int							unset(t_token *token, t_env *var);
+void						remove_current_node(node_t **head, node_t *node);
+void						copy_dup(t_ex *ex, int i);
 
 #endif

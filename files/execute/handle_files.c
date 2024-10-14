@@ -12,8 +12,7 @@ static void heredoc_child_process(int write_fd, char *delimiter)
 
 	while (1)
 	{
-		ft_putstr_fd("> ", STDOUT_FILENO);
-		line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (!line)
 		{
 			perror("get_next_line");

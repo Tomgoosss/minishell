@@ -15,7 +15,7 @@ void check_unset_env(node_t *env, char **commands, t_env *var)
 				&& env->data[ft_strlen(commands[i])] == '=')
 			{
 				tmp = env->next;
-				remove_current_node(var->head_env, env);
+				remove_current_node(&var->head_env, env);
 				env = tmp;
 				i = 0;
 			}
@@ -41,7 +41,7 @@ void check_unset_exp(node_t *exp, char **commands, t_env *var)
 				&& exp->data[ft_strlen(commands[i])] == '=')
 			{
 				tmp = exp->next;
-				remove_current_node(var->head_exp, exp);
+				remove_current_node(&var->head_exp, exp);
 				exp = tmp;
 				i = 0;
 			}

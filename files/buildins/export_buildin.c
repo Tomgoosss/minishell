@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/10 17:51:25 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/14 18:46:10 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,29 @@ void	printf_export(t_env *var)
 	temp = var->head_env;
 }
 
-void	remove_current_node(node_t *head, node_t *node)
+void	remove_current_node(node_t **head, node_t *node)
 {
 	node_t	*temp;
 
-	temp = head;
-	while (temp->next != node)
+	if (!head || !*head || !node)
+		return;
+
+	if (*head == node)
+	{
+		*head = node->next;
+		free(node->data);
+		free(node);
+		return;
+	}
+	temp = *head;
+	while (temp && temp->next != node)
 		temp = temp->next;
-	temp->next = node->next;
-	free(node->data);
-	free(node);
+	if (temp)
+	{
+		temp->next = node->next;
+		free(node->data);
+		free(node);
+	}
 }
 
 int	remove_double_env(t_env *var, char *arg)
@@ -82,7 +95,7 @@ int	remove_double_env(t_env *var, char *arg)
 	{
 		if (ft_strncmp(temp->data, arg, len + 1) == 0)
 		{
-				remove_current_node(var->head_env, temp);
+				remove_current_node(&var->head_env, temp);
 				return 1;
 		}
 		temp = temp->next;
@@ -105,7 +118,7 @@ int	remove_double_exp(t_env *var, char *arg)
 		{
 			if (ft_strchr(temp->data, '=') != 0)
 			{
-				remove_current_node(var->head_exp, temp);
+				remove_current_node(&var->head_exp, temp);
 				return (1);
 			}
 			return (0);

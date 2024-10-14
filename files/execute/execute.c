@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <sys/stat.h>
 
 void	error_lines(char *arg, int i)
 {
@@ -20,6 +21,24 @@ void	error_lines(char *arg, int i)
 		ft_putstr_fd("not enough arguments: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd("\n", 2);
+	}
+	else if (i == 4)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": too many arguments\n", 2);
+	}
+	else if (i == 5)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+	}
+	else if (i == 6)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
 	}
 }
 
@@ -57,7 +76,7 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 	char **temp_path;
 
 	i = 0;
-	while(var->env && ft_strncmp(var->env[i], "PATH=", 5) != 0)
+	while(var->head_env && ft_strncmp(var->env[i], "PATH=", 5) != 0)
 		i++;
 	if(var->env[i] == NULL)
 		return ;
@@ -78,6 +97,8 @@ void make_path(t_token *token, t_ex *ex, t_env *var)
 // }
 
 
+
+
 void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	int temp;
@@ -95,6 +116,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 		ex->exit_status = 0;
 		exit(0);
 	}
+
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
 		error_lines(token->command[0], 1);
@@ -229,19 +251,96 @@ int count_nodes(t_token *token)
 // 	return(1);
 // }
 
+int find_slash(t_token *token)
+{
+	struct stat file_stat;
+	int i;
+
+	i = 0;
+	if(token->command == NULL)
+		return 0;
+	if (access(token->command[0], X_OK) == 0)
+	{
+		if (stat(token->command[0], &file_stat) == 0)
+		{
+			if (S_ISREG(file_stat.st_mode))
+				return (0);
+		}
+	}
+	while (token->command[0][i] != '\0')
+	{
+		if (token->command[0][i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int check_if_dir(t_token *token)
+{
+	DIR *dir;
+	
+	dir = opendir(token->command[0]);
+	// printf("DIR pointer: %p\n", (void *)dir);
+	if (dir)
+	{
+		closedir(dir);
+		error_lines(token->command[0], 5);
+		return 126;
+	}
+	else if (errno == ENOENT)
+	{
+		error_lines(token->command[0], 2);
+		return 127;
+	}
+	else if (errno == EACCES)
+	{
+		error_lines(token->command[0], 6);
+		return 126;
+	}
+	else
+	{
+		error_lines(token->command[0], 2);
+		return 1; 
+	}
+}
+
+void make_2d_env(t_env *env)
+{
+	int i;
+	node_t *temp;
+
+	i = count_nodes(env->head_env);
+	env->env = (char **)malloc(sizeof(char *) * (i + 1));
+	if (!env->env)
+		return ;
+	temp = env->head_env;
+	i = 0;
+	while (temp)
+	{
+		env->env[i] = temp->data;
+		temp = temp->next;
+		i++;
+	}
+	env->env[i] = NULL;
+}
+
 int execute(t_token *token, t_env *env, t_ex *ex, int count)
 {
 	int last_status;
 	int temp;
+	char **env_ex;
 
 	temp = 0;
 	last_status = 0;
+	make_2d_env(env);
+	if(find_slash(token) == 1)
+		return(check_if_dir(token));
 	if(check_buildin(token) == 1 && ex->amound_commands == 1)
 	{
 		temp = open_files(token);
 		if(temp == -1)
 		{
-			//free some struct
 			free(ex->path);
 			ex->path = NULL;		
 			return(errno);
@@ -249,9 +348,7 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 		last_status = check_if_buildin(token, env);
 	}
 	else
-	{
 		last_status = create_child(token, ex, env, count);
-	}
 	return(last_status);
 }
 
@@ -259,42 +356,16 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 
 void copy_dup(t_ex *ex, int i)
 {
-    static int saved_stdin = -1;
-    static int saved_stdout = -1;
-    static int stdin_changed = 0;
-    static int stdout_changed = 0;
 
     if (i == 1)
     {
-        if (ex->fd[0] != -1)
-        {
-            saved_stdin = dup(STDIN_FILENO);
-            dup2(ex->fd[0], STDIN_FILENO);
-            stdin_changed = 1;
-        }
-        if (ex->fd[1] != -1)
-        {
-            saved_stdout = dup(STDOUT_FILENO);
-            dup2(ex->fd[1], STDOUT_FILENO);
-            stdout_changed = 1;
-        }
+        ex->in_dup = dup(STDIN_FILENO);
+        ex->out_dup = dup(STDOUT_FILENO);
     }
     else if (i == 2)
     {
-        if (stdin_changed)
-        {
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
-            saved_stdin = -1;
-            stdin_changed = 0;
-        }
-        if (stdout_changed)
-        {
-            dup2(saved_stdout, STDOUT_FILENO);
-            close(saved_stdout);
-            saved_stdout = -1;
-            stdout_changed = 0;
-        }
+		dup2(ex->in_dup, STDIN_FILENO);
+		dup2(ex->out_dup, STDOUT_FILENO);
     }
 }
 
@@ -305,6 +376,7 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 
 	i = 0;
 	ex->amound_commands = count_nodes(token);
+	// printf("amound of commands= %d\n", ex->amound_commands);
 	while (token)
 	{
 		if (ex->amound_commands > 1 && i < ex->amound_commands - 1)
@@ -317,7 +389,6 @@ void	main_execute(t_token *token, t_env *env, t_ex *ex)
 		}
 		
 		last_status = execute(token, env, ex, i);
-		
 		if (i > 0)
 			close(ex->prev_fd[0]); // Close the previous read end
 		if (i < ex->amound_commands - 1)

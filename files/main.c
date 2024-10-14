@@ -74,8 +74,8 @@ void	loop(t_env *var)
 	ex = ft_calloc(1, sizeof(t_ex));
 	if (!ex)
 		exit(errno);
-	fill_nodes_env(var);
 	exitcode = 0;
+	copy_dup(ex, 1);
 	while (1)
 	{
 		signal(SIGINT, handle_sigint);
@@ -111,6 +111,7 @@ void	loop(t_env *var)
 		add_history(line);
 		free_token(token);
 		free(line);
+		copy_dup(ex, 2);
 	}
 	free(ex);
 	rl_clear_history();
@@ -128,7 +129,7 @@ int	main(int argc, char **argv, char **environment)
 	var = ft_calloc(1, sizeof(t_env));
 	if (!var)
 		exit(1);
-	var->env = environment;
+	fill_nodes_env(var, environment);
 	loop(var);
 	free_env(var);
 	return (0);

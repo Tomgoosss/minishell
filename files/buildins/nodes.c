@@ -39,15 +39,15 @@ void add_node(node_t **head, node_t *new)
 }
 
 // puts the env in a linked list
-void fill_nodes_env(t_env *var)
+void fill_nodes_env(t_env *var, char **env)
 {
 	int i;
 
 	i = 0;
-	while(var->env[i])
+	while(env[i])
 	{
-		add_node(&var->head_env, make_node(var->env[i]));
-		add_node(&var->head_exp, make_node(var->env[i]));
+		add_node(&var->head_env, make_node(env[i]));
+		add_node(&var->head_exp, make_node(env[i]));
 		i++;
 	}
 }
