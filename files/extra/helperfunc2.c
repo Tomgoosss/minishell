@@ -63,3 +63,4 @@ int	valid_redirection(char *str)
 	// printf("valid\n");
 	return (1);
 }
+

@@ -6,102 +6,12 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/14 18:46:10 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/15 17:00:59 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-char	*prepare_for_export(char *line)
-{
-	int		i;
-	char	*ret;
-
-	i = 0;
-	ret = malloc(sizeof(char) * ft_strlen(line) + 3);
-	while (line[i] && line[i] != '=')
-	{
-		ret[i] = line[i];
-		i++;
-	}
-	if (line[i] == '=')
-	{
-		ret[i] = line[i];
-		i++;
-	}
-	ret[i] = '"';
-	while (line[i])
-	{
-		ret[i + 1] = line[i];
-		i++;
-	}
-	ret[i + 1] = '"';
-	ret[i + 2] = '\0';
-	return (ret);
-}
-void	printf_export(t_env *var)
-{
-	node_t	*temp;
-	char 	*str;
-
-	temp = var->head_exp;
-	str = NULL;
-	while (temp)
-	{
-		str = prepare_for_export(temp->data);
-		printf("declare -x %s\n", temp->data);
-		temp = temp->next;
-		free(str);
-	}
-	temp = var->head_env;
-}
-
-void	remove_current_node(node_t **head, node_t *node)
-{
-	node_t	*temp;
-
-	if (!head || !*head || !node)
-		return;
-
-	if (*head == node)
-	{
-		*head = node->next;
-		free(node->data);
-		free(node);
-		return;
-	}
-	temp = *head;
-	while (temp && temp->next != node)
-		temp = temp->next;
-	if (temp)
-	{
-		temp->next = node->next;
-		free(node->data);
-		free(node);
-	}
-}
-
-int	remove_double_env(t_env *var, char *arg)
-{
-	node_t	*temp;
-
-	int len; // len of the arg until the = or end of string
-	len = 0;
-	temp = var->head_env;
-	while (arg[len] && arg[len] != '=')
-		len++;
-	while (temp)
-	{
-		if (ft_strncmp(temp->data, arg, len + 1) == 0)
-		{
-				remove_current_node(&var->head_env, temp);
-				return 1;
-		}
-		temp = temp->next;
-	}
-	return 1;
-}
 int	remove_double_exp(t_env *var, char *arg)
 {
 	node_t	*temp;
@@ -165,44 +75,48 @@ int is_valid_identifier(const char *str)
     return 1;
 }
 
+static int process_export_arg(t_env *var, char *arg)
+{
+	char *equal_sign;
+	int is_double;
+
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign)
+	{
+		*equal_sign = '\0';  // Temporarily split the string
+		if (!is_valid_identifier(arg))
+		{
+			fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+			*equal_sign = '=';  // Restore the string
+			return (1);
+		}
+		*equal_sign = '=';  // Restore the string
+	}
+	else if (!is_valid_identifier(arg))
+	{
+		fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+		return (1);
+	}
+	is_double = remove_double_env(var, arg) + remove_double_exp(var, arg);
+	if (is_double != 0)
+		add_to_lists(var, arg);
+	return (0);
+}
+
 int export(t_env *var, char **command)
 {
-    int i;
-    int is_double;
-    char *equal_sign;
-    
-    i = 1;
-    if (command[i] == NULL)
-    {
-        printf_export(var);
-        return (0);
-    }
-    while (command[i])
-    {
-        equal_sign = ft_strchr(command[i], '=');
-        if (equal_sign)
-        {
-            *equal_sign = '\0';  // Temporarily split the string
-            if (!is_valid_identifier(command[i]))
-            {
-                fprintf(stderr, "export: `%s': not a valid identifier\n", command[i]);
-                *equal_sign = '=';  // Restore the string
-                return (1);
-            }
-            *equal_sign = '=';  // Restore the string
-        }
-        else if (!is_valid_identifier(command[i]))
-        {
-            fprintf(stderr, "export: `%s': not a valid identifier\n", command[i]);
-            return (1);
-        }
-        
-        is_double = 0;
-        is_double = remove_double_env(var, command[i]);
-        is_double += remove_double_exp(var, command[i]);
-        if (is_double != 0)
-            add_to_lists(var, command[i]);
-        i++;
-    }
-    return (0);
+	int i = 1;
+	
+	if (command[i] == NULL)
+	{
+		printf_export(var);
+		return (0);
+	}
+	while (command[i])
+	{
+		if (process_export_arg(var, command[i]) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
 }

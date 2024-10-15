@@ -23,7 +23,6 @@ void	handle_sigquit(int sig)
 
 void	error_msg(char *line, int i)
 {
-	ft_putstr_fd("bash: ", 2);
 	if (i == 1)
 		ft_putstr_fd("command not found: ", 2);
 	ft_putstr_fd(line, 2);

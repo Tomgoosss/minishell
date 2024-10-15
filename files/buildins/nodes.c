@@ -58,18 +58,18 @@ char *create_shlvl(char *line)
 	return(shlvl);
 }
 
-void fill_nodes_env(t_env *var)
+void fill_nodes_env(t_env *var, char **env)
 {
     int i;
     char *shlvl;
     char *temp;
 
     i = 0;
-    while(var->env[i])
+    while(env[i])
     {
-        if(ft_strncmp(var->env[i], "SHLVL=", 6) == 0)
+        if(ft_strncmp(env[i], "SHLVL=", 6) == 0)
         {
-            shlvl = create_shlvl(var->env[i]);;
+            shlvl = create_shlvl(env[i]);;
             temp = ft_strjoin("SHLVL=", shlvl);
             if (!temp)
                 return (free(shlvl));
@@ -79,8 +79,8 @@ void fill_nodes_env(t_env *var)
         }
         else
         {
-            add_node(&var->head_env, make_node(var->env[i]));
-            add_node(&var->head_exp, make_node(var->env[i]));
+            add_node(&var->head_env, make_node(env[i]));
+            add_node(&var->head_exp, make_node(env[i]));
         }
         i++;
     }

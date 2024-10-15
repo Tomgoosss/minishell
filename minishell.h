@@ -11,7 +11,8 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <sys/wait.h>
-#include <dirent.h>
+# include <dirent.h>
+# include <sys/stat.h>
 
 extern int g_exit_status;
 
@@ -100,5 +101,27 @@ int							echo(char **command);
 int							unset(t_token *token, t_env *var);
 void						remove_current_node(node_t **head, node_t *node);
 void						copy_dup(t_ex *ex, int i);
-
+void						error_lines(char *arg, int i);
+void						make_path(t_token *token, t_ex *ex, t_env *var);
+int							find_path(char **temp_path, t_ex *ex, t_token *token);
+void 						close_pipes_par(t_ex *ex, int count);
+void						close_pipes_child(t_ex *ex, int count);
+void						make_2d_env(t_env *env);
+int							count_nodes(t_token *token);
+int 						find_slash(t_token *token);
+int							check_if_dir(t_token *token);
+void						cleanup_execution(t_ex *ex, int i);
+void						setup_pipe(t_ex *ex, int i);
+void						update_pwd(node_t *temp, const char *cwd);
+void						remove_current_node(node_t **head, node_t *node);
+void						printf_export(t_env *var);
+char						*prepare_for_export(char *line);
+int							remove_double_env(t_env *var, char *arg);
+void 						red_in_heredoc(t_redirection *red);
+char						*ft_strndup(const char *s, size_t n);
+int							get_token_length(const char *s, int *quote_len);
+int							is_quote(char c);
+int 						is_delimiter(const char *s);
+void						print_str_array(char **str);
+void						free_str_array(char **str, int i);
 #endif

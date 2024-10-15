@@ -21,5 +21,22 @@ int	check_env_variable(char *line)
 	return 1;
 }
 
+void make_2d_env(t_env *env)
+{
+	int i;
+	node_t *temp;
 
-
+	i = count_nodes(env->head_env);
+	env->env = (char **)malloc(sizeof(char *) * (i + 1));
+	if (!env->env)
+		return ;
+	temp = env->head_env;
+	i = 0;
+	while (temp)
+	{
+		env->env[i] = temp->data;
+		temp = temp->next;
+		i++;
+	}
+	env->env[i] = NULL;
+}

@@ -20,3 +20,9 @@ int	pwd_buildin()
 	printf("%s\n", getcwd(cwd, sizeof(cwd)));
 	return(0);
 }
+
+void update_pwd(node_t *temp, const char *cwd)
+{
+    free(temp->data);
+    temp->data = ft_strjoin("PWD=", cwd);
+}
