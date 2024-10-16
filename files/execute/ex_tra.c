@@ -22,7 +22,7 @@ int find_slash(t_token *token)
 	int i;
 
 	i = 0;
-	if(token->command == NULL)
+	if(token->command == NULL || token->command[0] == NULL)
 		return 0;
 	if (access(token->command[0], X_OK) == 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:09:26 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/15 17:01:30 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:26:12 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int check_numeric_argument(char *arg)
 
 int check_exit(char **cmd_array)
 {
-	if (cmd_array == NULL)
+	if (cmd_array == NULL || cmd_array[0] == NULL)
 		return (0);
 	if (ft_strncmp(cmd_array[0], "exit", 4) == 0)
 	{

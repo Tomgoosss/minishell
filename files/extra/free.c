@@ -35,7 +35,7 @@ void free_redirection(t_redirection *redirection)
 	t_redirection *next;
 
 	tmp = redirection;
-	while (tmp)
+	while (tmp->next)
 	{
 		next = tmp->next;
 		free(tmp->file);
