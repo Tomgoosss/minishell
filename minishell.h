@@ -13,8 +13,9 @@
 # include <sys/wait.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# include <signal.h>
 
-extern int g_exit_status;
+extern int g_signal;
 
 typedef struct node
 {
@@ -124,4 +125,9 @@ int							is_quote(char c);
 int 						is_delimiter(const char *s);
 void						print_str_array(char **str);
 void						free_str_array(char **str, int i);
+void setup_signals(void);
+void reset_signals(void);
+void handle_sigint(int sig);
+void handle_sigquit(int sig);
+
 #endif

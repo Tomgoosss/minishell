@@ -2,6 +2,7 @@
 
 static void heredoc_child_process(int write_fd, char *delimiter)
 {
+	reset_signals();
 	char *line;
 
 	while (1)
@@ -22,11 +23,12 @@ static void heredoc_child_process(int write_fd, char *delimiter)
 		}
 
 		write(write_fd, line, ft_strlen(line));
+		write(write_fd, "\n", 1);
 		free(line);
 	}
 }
 
-static int heredoc_parent_process(pid_t pid, int read_fd)
+static int heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 {
 	int status;
 
@@ -36,12 +38,17 @@ static int heredoc_parent_process(pid_t pid, int read_fd)
 	{
 		return read_fd;
 	}
-	else
+	if (g_signal == 1)  // Check for Ctrl+C
 	{
-		ft_putstr_fd("Heredoc was interrupted.\n", STDERR_FILENO);
+		ft_putstr_fd("\n", STDERR_FILENO);
 		close(read_fd);
 		return -1;
 	}
+	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `", STDERR_FILENO);
+	ft_putstr_fd(delimiter, STDERR_FILENO);
+	ft_putstr_fd("')\n", STDERR_FILENO);
+	close(read_fd);
+	return -1;
 }
 
 int heredoc(char *delimiter)
@@ -62,13 +69,15 @@ int heredoc(char *delimiter)
 	}
 	if (pid == 0) // Child process
 	{
+		reset_signals(); // Reset signals for child process
 		close(pipefd[0]); // Close read end
 		heredoc_child_process(pipefd[1], delimiter);
 	}
 	else // Parent process
 	{
+		setup_signals(); // Set up signals for parent process
 		close(pipefd[1]); // Close write end
-		return heredoc_parent_process(pid, pipefd[0]);
+		return heredoc_parent_process(pid, pipefd[0], delimiter);
 	}
 	return (1);
 }

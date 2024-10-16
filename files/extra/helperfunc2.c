@@ -47,20 +47,20 @@ int	is_meta_character(char *str)
 
 int	valid_redirection(char *str)
 {
-	if (!str)
+	if (!str || *str == '\0')
 	{
 		printf("syntax error near unexpected token `newline'\n");
 		return (0);
 	}
-	if (is_meta_character(str) || not_print_str(str))
+	if (is_meta_character(str))
 	{
-		// printf("not valid\n");
-		printf("%i\n", is_meta_character(str));
-		printf("%i\n", not_print_str(str));
 		printf("syntax error near unexpected token `%c'\n", str[0]);
 		return (0);
 	}
-	// printf("valid\n");
+	if (not_print_str(str))
+	{
+		printf("syntax error: invalid filename\n");
+		return (0);
+	}
 	return (1);
 }
-

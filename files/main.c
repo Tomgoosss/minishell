@@ -3,23 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int g_exit_status = 0;
-
-void	handle_sigint(int sig)
-{
-	(void)sig;
-	g_exit_status = 130;
-	write(STDERR_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-void	handle_sigquit(int sig)
-{
-	(void)sig;
-	// Do nothing, just return to keep the prompt intact
-}
+extern int g_signal;
 
 void	error_msg(char *line, int i)
 {
@@ -77,14 +61,19 @@ void	loop(t_env *var)
 	copy_dup(ex, 1);
 	while (1)
 	{
-		signal(SIGINT, handle_sigint);
+		setup_signals();
 		line = readline("minishell> ");
-		if (!line) // Handle ctrl-D (EOF)
+		if (!line) // Handle ctrl-D (EOF
 			break;
-		if (g_exit_status == 130)
+		if (g_signal)
 		{
-			ex->exit_status = 130;
-			g_exit_status = 0;
+			if (g_signal == 1)
+				ex->exit_status = 130;  // Ctrl+C
+			else if (g_signal == 2)
+				ex->exit_status = 0;    // Ctrl+D
+			g_signal = 0;
+			free(line);
+			continue;
 		}
 		if (unclosed_quote(line, ex))
 		{
@@ -94,10 +83,7 @@ void	loop(t_env *var)
 		sort_export(var);
 		token = main_pars(line, var, ex);
 		if (!token)
-		{
-			free(line);
 			continue;
-		}
 		if ((exitcode = check_exit(token->command)) != 0)
 		{
 			rl_clear_history();
@@ -105,7 +91,6 @@ void	loop(t_env *var)
 			free(ex);
 			exit(exitcode);
 		}
-		signal(SIGINT, SIG_IGN);
 		main_execute(token, var, ex);
 		add_history(line);
 		free_token(token);
@@ -120,8 +105,7 @@ int	main(int argc, char **argv, char **environment)
 {
 	t_env	*var;
 
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	setup_signals();
 
 	argc = 0;
 	argv = NULL;

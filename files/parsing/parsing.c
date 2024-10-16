@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/10 16:23:51 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/16 17:15:44 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,17 +171,23 @@ void	tokenize(t_token **token, char **temp)
 		}
 		else if (check_redirection(&(*token)->redirection, temp[i]))
 		{
-			if (valid_redirection(temp[i + 1]))
+			if (temp[i + 1] && valid_redirection(temp[i + 1]))
 			{
 				place_file(&(*token)->redirection, temp[i + 1]);
 				if (!(*token)->redirection->file)
 					return (free2pointers(temp),
 						free2pointers((*token)->command), free(*token));
+				i += 2;
 			}
 			else
-				return (free2pointers(temp), free2pointers((*token)->command),
-					free(*token));
-			i += 2;
+			{
+				printf("syntax error near unexpected token `%c'\n", temp[i][0]);
+				free2pointers(temp);
+				free2pointers((*token)->command);
+				free(*token);
+				*token = NULL;
+				return;
+			}
 		}
 		else
 		{
@@ -381,22 +387,16 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var, ex);
 	temp = ft_split_mod(updated_line, ' ');
-	int i = 0;
-	while (temp[i])
-	{
-		if(temp[i][0] == '|' && temp[i + 1] == NULL)
-		{			
-			ft_putstr_fd("syntax error near unexpected token `|'\n", 2);
-			return (free2pointers(temp), free(token), free(updated_line), NULL);
-		}
-		i++;
-	}
 	if (!temp)
-	{
-		free(token);
-		return (NULL);
-	}	
+		return (free(token), free(updated_line), NULL);
 	tokenize(&token, temp);
 	free(updated_line);
-	return (token);
+	if (!token)
+	{
+		// Tokenization failed, likely due to syntax error
+		ex->exit_status = 2;  // Set appropriate error status
+		return NULL;
+	}
+
+	return token;
 }

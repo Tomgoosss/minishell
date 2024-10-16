@@ -2,6 +2,7 @@
 
 void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
+	reset_signals(); // Reset signals for child process
 	int temp;
 	temp = open_files(token);
 	if(temp == -1)
@@ -62,6 +63,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 	if (p == 0)
 	{
+		reset_signals(); // Reset signals for child process
 		make_path(token, ex, var);
 		if (!ex->path)
 			exit(127);
@@ -102,18 +104,18 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 
 void main_execute(t_token *token, t_env *env, t_ex *ex) 
 {
-    int i;
-    int last_status;
+	int i;
+	int last_status;
 
-    i = 0;
-    ex->amound_commands = count_nodes(token);
-    while (token)
-    {
-        setup_pipe(ex, i);
-        last_status = execute(token, env, ex, i);
-        cleanup_execution(ex, i);
-        i++;
-        token = token->next;
-    }
-    ex->exit_status = last_status;
+	i = 0;
+	ex->amound_commands = count_nodes(token);
+	while (token)
+	{
+		setup_pipe(ex, i);
+		last_status = execute(token, env, ex, i);
+		cleanup_execution(ex, i);
+		i++;
+		token = token->next;
+	}
+	ex->exit_status = last_status;
 }
