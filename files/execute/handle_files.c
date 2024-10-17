@@ -59,7 +59,9 @@ int red_in(t_redirection *red)
 	return(0);
 }
 
-int open_files(t_token *token)
+
+
+int open_files(t_token *token, t_ex *ex, int i)
 {
 	t_redirection *red;
 	int result;
@@ -68,16 +70,14 @@ int open_files(t_token *token)
 	red = token->redirection;
 	while(red)
 	{
-		if(red->type == REDIR_OUT_APPEND)
+		if(red->type == REDIR_OUT_APPEND && i == 0)
 			result = red_out_append(red);
-		else if(red->type == REDIR_OUT)
+		else if(red->type == REDIR_OUT&& i == 0 )
 			result = red_out(red);
-		else if(red->type == REDIR_IN_HERE_DOC)
-			red_in_heredoc(red);
-		else if(red->type == REDIR_IN)
+		else if(red->type == REDIR_IN_HERE_DOC && i == 1)
+			result = red_in_heredoc(red, ex);
+		else if(red->type == REDIR_IN && i == 0)
 			result = red_in(red);
-		else 
-			result = 0;
 		if (result != 0)
 			return(result);
 		red = red->next;

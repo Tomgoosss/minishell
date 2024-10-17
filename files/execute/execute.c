@@ -4,7 +4,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	reset_signals(); // Reset signals for child process
 	int temp;
-	temp = open_files(token);
+	temp = open_files(token, ex , 0);
 	if(temp == -1)
 	{
 		//free some struct
@@ -86,19 +86,23 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 	make_2d_env(env);
 	if(find_slash(token) == 1)
 		return(check_if_dir(token));
+	
+	temp = open_files(token, ex, 1);
+	if(temp == -1)
+	{
+		free(ex->path);
+		ex->path = NULL;        
+		return(errno);
+	}
+	
 	if(check_buildin(token) == 1 && ex->amound_commands == 1)
 	{
-		temp = open_files(token);
-		if(temp == -1)
-		{
-			free(ex->path);
-			ex->path = NULL;		
-			return(errno);
-		}
 		last_status = check_if_buildin(token, env);
 	}
 	else
+	{
 		last_status = create_child(token, ex, env, count);
+	}
 	return(last_status);
 }
 

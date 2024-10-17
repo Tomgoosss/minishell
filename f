@@ -1,0 +1,12 @@
+f
+files
+infile
+libft
+ls
+makefile
+minishell
+minishell.h
+minishell_tester
+outfile
+pwd
+unusedfunc

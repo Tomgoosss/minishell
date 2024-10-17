@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void heredoc_child_process(int write_fd, char *delimiter)
+static void heredoc_child_process(int write_fd, char *delimiter, t_ex *ex)
 {
 	reset_signals();
 	char *line;
@@ -51,27 +51,34 @@ static int heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 	return -1;
 }
 
-int heredoc(char *delimiter)
+static int heredoc_fork(int *pipefd, pid_t *pid)
 {
-	int pipefd[2];
-	pid_t pid;
-
 	if (pipe(pipefd) == -1) 
 	{
 		perror("pipe");
 		return -1;
 	}
-
-	pid = fork();
-	if (pid == -1) {
+	*pid = fork();
+	if (*pid == -1) 
+	{
 		perror("fork");
 		return -1;
 	}
+	return 0;
+}
+
+int heredoc(char *delimiter, t_ex *ex)
+{
+	int pipefd[2];
+	pid_t pid;
+
+	if (heredoc_fork(pipefd, &pid) == -1)
+		return -1;
 	if (pid == 0) // Child process
 	{
 		reset_signals(); // Reset signals for child process
 		close(pipefd[0]); // Close read end
-		heredoc_child_process(pipefd[1], delimiter);
+			heredoc_child_process(pipefd[1], delimiter, ex);
 	}
 	else // Parent process
 	{
@@ -82,22 +89,23 @@ int heredoc(char *delimiter)
 	return (1);
 }
 
-void red_in_heredoc(t_redirection *red)
+int red_in_heredoc(t_redirection *red, t_ex *ex)
 {
 	int fd;
 
-	fd = heredoc(red->file);
+	fd = heredoc(red->file, ex);
 	if (fd == -1)
 	{
 		perror("ERROR");
-		return;
+		return -1;  // Return -1 to indicate an error
 	}
 
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("dup2 red_in_heredoc");
 		close(fd);
-		return;
+		return -1;  // Return -1 to indicate an error
 	}
 	close(fd);
+	return 0;  // Return 0 to indicate success
 }
