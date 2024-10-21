@@ -37,8 +37,7 @@ void check_unset_exp(node_t *exp, char **commands, t_env *var)
 	{
 		while(commands[i])
 		{
-			if(exp && ft_strncmp(exp->data, commands[i], ft_strlen(commands[i])) == 0
-				&& exp->data[ft_strlen(commands[i])] == '=')
+			if(exp && ft_strncmp(exp->data, commands[i], ft_strlen(commands[i])) == 0)
 			{
 				tmp = exp->next;
 				remove_current_node(&var->head_exp, exp);

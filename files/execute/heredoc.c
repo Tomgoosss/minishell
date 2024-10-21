@@ -12,7 +12,6 @@ static void heredoc_child_process(int write_fd, char *delimiter)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
-
 	while (1)
 	{
 		line = readline("> ");
@@ -41,14 +40,12 @@ static int heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 	int status;
 
 	waitpid(pid, &status, 0);
-
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		g_signal = 1;
 		close(read_fd);
 		return -1;
 	}
-
 	if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
 	{
 		return read_fd;

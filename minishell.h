@@ -130,6 +130,7 @@ void setup_signals(void);
 void reset_signals(void);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
+void signals_ignore(void);
 int handle_heredocs(t_token *token);
 
 #endif

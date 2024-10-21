@@ -89,6 +89,8 @@ void	loop(t_env *var)
 			free(ex);
 			exit(exitcode);
 		}
+		if(ft_strcmp(token->command[0], "minishell") == 0 || ft_strcmp(token->command[0], "./minishell") == 0)
+			signals_ignore();
 		main_execute(token, var, ex);
 		add_history(line);
 		free_token(token);

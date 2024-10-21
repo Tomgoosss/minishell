@@ -84,8 +84,10 @@ int	remove_double_env(t_env *var, char *arg)
 	int len; // len of the arg until the = or end of string
 	len = 0;
 	temp = var->head_env;
-	while (arg[len] && arg[len] != '=')
+	while (arg[len] && (arg[len] != '=' || arg[len] == '\0'))
 		len++;
+	if(arg[len] == '\0')
+		len--;
 	while (temp)
 	{
 		if (ft_strncmp(temp->data, arg, len + 1) == 0)

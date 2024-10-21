@@ -6,7 +6,7 @@ void handle_sigint(int sig)
 {
     (void)sig;
     g_signal = 1;  // Set to 1 for Ctrl+C
-    write(STDERR_FILENO, "\n", 1);
+    ft_putstr_fd("\n", STDOUT_FILENO);
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
@@ -27,4 +27,10 @@ void reset_signals(void)
 {
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
+}
+
+void signals_ignore(void)
+{
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
 }

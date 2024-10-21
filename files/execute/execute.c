@@ -2,7 +2,7 @@
 
 void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
-	reset_signals(); // Reset signals for child process
+	reset_signals();
 	int temp;
 	temp = open_files(token, 0);
 	if(temp == -1)
@@ -12,13 +12,11 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 		ex->path = NULL;		
 		exit(1);
 	}
-	// dup_choose(ex, count);
 	if (check_if_buildin(token, var) == 0)
 	{
 		ex->exit_status = 0;
 		exit(0);
 	}
-
 	if(execve(ex->path, token->command, var->env) == -1)
 	{
 		error_lines(token->command[0], 1);
@@ -54,7 +52,7 @@ int parent_process(t_ex *ex, int p, int count)
 int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
 	int p;
-
+	signals_ignore();
 	p = fork();
 	if (p == -1)
 	{
@@ -63,7 +61,7 @@ int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 	if (p == 0)
 	{
-		reset_signals(); // Reset signals for child process
+		reset_signals();
 		make_path(token, ex, var);
 		if (!ex->path)
 			exit(127);

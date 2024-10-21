@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/16 17:22:56 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/21 17:27:21 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,13 @@ int	remove_double_exp(t_env *var, char *arg)
 	len = 0;
 	while (arg[len] && arg[len] != '=')
 		len++;
+	printf("len is %d\n", len);
 	while (temp)
 	{
-		if (ft_strncmp(temp->data, arg, len + 1) == 0)
+		if (ft_strncmp(temp->data, arg, len) == 0)
 		{
-			if (ft_strchr(temp->data, '=') != 0)
-			{
 				remove_current_node(&var->head_exp, temp);
 				return (1);
-			}
-			return (0);
 		}
 		temp = temp->next;
 	}
