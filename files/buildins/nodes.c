@@ -43,18 +43,16 @@ char *create_shlvl(char *line)
 	char *shlvl;
 	int temp;
 
-	shlvl = malloc(sizeof(char) * 4);
-	temp = line[6] - '0';
+	temp = ft_atoi(line + 6);
 	temp++;
-	if(temp > 1000)
+	if(temp >= 1000)
 	{
 		ft_putstr_fd("minishell: warning: shell level (", 2);
 		ft_putnbr_fd(temp, 2);
 		ft_putstr_fd(") too high, resetting to 1\n", 2);
 		temp = 1;
 	}
-	shlvl[0] = temp + '0';
-	shlvl[1] = '\0';
+	shlvl = ft_itoa(temp);
 	return(shlvl);
 }
 
@@ -69,11 +67,15 @@ void fill_nodes_env(t_env *var, char **env)
     {
         if(ft_strncmp(env[i], "SHLVL=", 6) == 0)
         {
-            shlvl = create_shlvl(env[i]);;
+            shlvl = create_shlvl(env[i]);
             temp = ft_strjoin("SHLVL=", shlvl);
             if (!temp)
-                return (free(shlvl));
+            {
+                free(shlvl);
+                return;
+            }
             add_node(&var->head_env, make_node(temp));
+            add_node(&var->head_exp, make_node(temp));  // Add this line
             free(temp);
             free(shlvl);
         }

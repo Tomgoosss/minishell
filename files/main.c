@@ -62,9 +62,6 @@ void	loop(t_env *var)
 	while (1)
 	{
 		setup_signals();
-		line = readline("minishell> ");
-		if (!line) // Handle ctrl-D (EOF
-			break;
 		if (g_signal)
 		{
 			if (g_signal == 1)
@@ -72,9 +69,10 @@ void	loop(t_env *var)
 			else if (g_signal == 2)
 				ex->exit_status = 0;    // Ctrl+D
 			g_signal = 0;
-			free(line);
-			continue;
 		}
+		line = readline("minishell> ");
+		if (!line) // Handle ctrl-D (EOF
+			break;
 		if (unclosed_quote(line, ex))
 		{
 			free(line);

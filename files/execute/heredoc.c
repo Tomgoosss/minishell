@@ -2,20 +2,26 @@
 
 static void heredoc_child_process(int write_fd, char *delimiter, t_ex *ex)
 {
-	reset_signals();
 	char *line;
+	struct sigaction sa;
+
+	// Set up a custom signal handler for SIGINT in the child process
+	sa.sa_handler = SIG_DFL;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
 
 	while (1)
 	{
 		line = readline("> ");
-		if (!line)
+		if (!line || g_signal == 1)
 		{
-			perror("get_next_line");
+			close(write_fd);
 			exit(EXIT_FAILURE);
 		}
 
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 &&
-			(line[ft_strlen(delimiter)] == '\n' || line[ft_strlen(delimiter)] == '\0'))
+				(line[ft_strlen(delimiter)] == '\n' || line[ft_strlen(delimiter)] == '\0'))
 		{
 			free(line);
 			close(write_fd);
@@ -34,19 +40,24 @@ static int heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 
 	waitpid(pid, &status, 0);
 
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		g_signal = 1;
+		close(read_fd);
+		return -1;
+	}
+
 	if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
 	{
 		return read_fd;
 	}
-	if (g_signal == 1)  // Check for Ctrl+C
+
+	if (g_signal != 1)  // Only print this message if not interrupted by SIGINT
 	{
-		ft_putstr_fd("\n", STDERR_FILENO);
-		close(read_fd);
-		return -1;
+		ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `", STDERR_FILENO);
+		ft_putstr_fd(delimiter, STDERR_FILENO);
+		ft_putstr_fd("')\n", STDERR_FILENO);
 	}
-	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `", STDERR_FILENO);
-	ft_putstr_fd(delimiter, STDERR_FILENO);
-	ft_putstr_fd("')\n", STDERR_FILENO);
 	close(read_fd);
 	return -1;
 }
@@ -76,13 +87,11 @@ int heredoc(char *delimiter, t_ex *ex)
 		return -1;
 	if (pid == 0) // Child process
 	{
-		reset_signals(); // Reset signals for child process
 		close(pipefd[0]); // Close read end
-			heredoc_child_process(pipefd[1], delimiter, ex);
+		heredoc_child_process(pipefd[1], delimiter, ex);
 	}
 	else // Parent process
 	{
-		setup_signals(); // Set up signals for parent process
 		close(pipefd[1]); // Close write end
 		return heredoc_parent_process(pid, pipefd[0], delimiter);
 	}
@@ -96,7 +105,7 @@ int red_in_heredoc(t_redirection *red, t_ex *ex)
 	fd = heredoc(red->file, ex);
 	if (fd == -1)
 	{
-		perror("ERROR");
+		// perror("ERROR");
 		return -1;  // Return -1 to indicate an error
 	}
 
