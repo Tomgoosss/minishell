@@ -20,13 +20,27 @@ int	check_env_variable(char *line)
 	printf("len%i\n", ft_strlen(line));
 	return 1;
 }
+int count_nodes_extra(node_t *token)
+{
+	node_t *temp;
+	int count;
+
+	count = 0;
+	temp = token;
+	while(temp)
+	{
+		count++;
+		temp = temp->next;
+	}
+	return(count);
+}
 
 void make_2d_env(t_env *env)
 {
 	int i;
 	node_t *temp;
 
-	i = count_nodes(env->head_env);
+	i = count_nodes_extra(env->head_env);
 	env->env = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!env->env)
 		return ;

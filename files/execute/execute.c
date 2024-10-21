@@ -4,7 +4,7 @@ void execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	reset_signals(); // Reset signals for child process
 	int temp;
-	temp = open_files(token, ex , 0);
+	temp = open_files(token, 0);
 	if(temp == -1)
 	{
 		//free some struct
@@ -87,7 +87,7 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 	if(find_slash(token) == 1)
 		return(check_if_dir(token));
 	
-	temp = open_files(token, ex, 1);
+	temp = open_files(token, 1);
 	if(temp == -1)
 	{
 		free(ex->path);

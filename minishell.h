@@ -90,7 +90,7 @@ int							check_if_buildin(t_token *token, t_env *var);
 int							env_buildin(t_env *var);
 int							pwd_buildin();
 void						error_lines(char *arg, int i);
-int open_files(t_token *token, t_ex *ex, int i);
+int open_files(t_token *token, int i);
 int							is_space(char c);
 int							check_buildin(t_token *token);
 int							cd_buildin(t_token *token, t_env *var);
@@ -119,7 +119,7 @@ void						remove_current_node(node_t **head, node_t *node);
 void						printf_export(t_env *var);
 char						*prepare_for_export(char *line);
 int							remove_double_env(t_env *var, char *arg);
-int							red_in_heredoc(t_redirection *red, t_ex *ex);
+int							red_in_heredoc(t_redirection *red);
 char						*ft_strndup(const char *s, size_t n);
 int							get_token_length(const char *s, int *quote_len);
 int							is_quote(char c);
@@ -130,6 +130,6 @@ void setup_signals(void);
 void reset_signals(void);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
-int handle_heredocs(t_token *token, t_ex *ex);
+int handle_heredocs(t_token *token);
 
 #endif

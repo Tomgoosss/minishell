@@ -1,6 +1,8 @@
 #include "minishell.h"
+#include <signal.h>
 
-static void heredoc_child_process(int write_fd, char *delimiter, t_ex *ex)
+
+static void heredoc_child_process(int write_fd, char *delimiter)
 {
 	char *line;
 	struct sigaction sa;
@@ -78,7 +80,7 @@ static int heredoc_fork(int *pipefd, pid_t *pid)
 	return 0;
 }
 
-int heredoc(char *delimiter, t_ex *ex)
+int heredoc(char *delimiter)
 {
 	int pipefd[2];
 	pid_t pid;
@@ -88,7 +90,7 @@ int heredoc(char *delimiter, t_ex *ex)
 	if (pid == 0) // Child process
 	{
 		close(pipefd[0]); // Close read end
-		heredoc_child_process(pipefd[1], delimiter, ex);
+		heredoc_child_process(pipefd[1], delimiter);
 	}
 	else // Parent process
 	{
@@ -98,11 +100,11 @@ int heredoc(char *delimiter, t_ex *ex)
 	return (1);
 }
 
-int red_in_heredoc(t_redirection *red, t_ex *ex)
+int red_in_heredoc(t_redirection *red)
 {
 	int fd;
 
-	fd = heredoc(red->file, ex);
+	fd = heredoc(red->file);
 	if (fd == -1)
 	{
 		// perror("ERROR");
