@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/21 17:27:21 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:08:13 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,37 @@ int	remove_double_exp(t_env *var, char *arg)
 	len = 0;
 	while (arg[len] && arg[len] != '=')
 		len++;
-	printf("len is %d\n", len);
 	while (temp)
 	{
 		if (ft_strncmp(temp->data, arg, len) == 0)
 		{
-				remove_current_node(&var->head_exp, temp);
+			if(ft_strlen(temp->data) > len)
 				return (1);
+			remove_current_node(&var->head_exp, temp);
+			return (1);
 		}
 		temp = temp->next;
 	}
 	return 1;
 }
+int check_no_def(node_t *head, char *arg)
+{
+	node_t	*temp;
+	int len;
 
+	temp = head;
+	len = 0;
+	while (arg[len] && arg[len] != '=')
+		len++;
+	while (temp)
+	{
+		if(ft_strncmp(temp->data, arg, len) == 0)
+			if(ft_strlen(temp->data) > len)
+				return (0);
+		temp = temp->next;
+	}
+	return (1);
+}
 int	add_to_lists(t_env *var, char *arg)
 {
 	char	*temp;
@@ -48,7 +66,8 @@ int	add_to_lists(t_env *var, char *arg)
 		temp = ft_strdup(arg);
 	if (!temp)
 		return (1);
-	add_node(&var->head_exp, make_node(temp));
+	if(check_no_def(var->head_exp, temp))
+		add_node(&var->head_exp, make_node(temp));
 	sort_export(var);
 	free(temp);
 	temp = NULL;

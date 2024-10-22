@@ -50,7 +50,6 @@ static int heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 	{
 		return read_fd;
 	}
-
 	if (g_signal != 1)  // Only print this message if not interrupted by SIGINT
 	{
 		ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `", STDERR_FILENO);

@@ -31,13 +31,14 @@ int parent_process(t_ex *ex, int p, int count)
 
 	if (ex->amound_commands > 1)
 		close_pipes_par(ex, count);
-	if (ex->path)
+	if (ex->path)I
 	{
 		free(ex->path);
 		ex->path = NULL;
 	}
 	if (count == ex->amound_commands - 1)
 	{
+		signals_ignore();
 		waitpid(p, &status, 0);
 		while (count > 0)
 		{
@@ -52,7 +53,7 @@ int parent_process(t_ex *ex, int p, int count)
 int create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
 	int p;
-	signals_ignore();
+	signals_ignore();  // Ignore signals in parent before forking
 	p = fork();
 	if (p == -1)
 	{
@@ -92,7 +93,6 @@ int execute(t_token *token, t_env *env, t_ex *ex, int count)
 		ex->path = NULL;        
 		return(errno);
 	}
-	
 	if(check_buildin(token) == 1 && ex->amound_commands == 1)
 	{
 		last_status = check_if_buildin(token, env);
