@@ -1,9 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helperfunc4.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:39:23 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:39:24 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// Concatenates two strings and frees the first one.
-// s1: The first string (will be freed).
-// s2: The second string.
-// Returns: A new string containing the concatenation of s1 and s2, or NULL if allocation fails.
 char	*ft_strjoinfree(char const *s1, char const *s2)
 {
 	int		i;
@@ -50,6 +58,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return (0);
 }
+
 void	free_str_array(char **str, int i)
 {
 	while (i >= 0)
@@ -59,6 +68,7 @@ void	free_str_array(char **str, int i)
 	}
 	free(str);
 }
+
 char	*ft_substr_mod(char const *s, unsigned int start, size_t len)
 {
 	char	*countm;

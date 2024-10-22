@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/22 15:08:13 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:43:01 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 int	remove_double_exp(t_env *var, char *arg)
 {
-	node_t	*temp;
-
-	int len;
+	t_node	*temp;
+	int		len;
 
 	temp = var->head_exp;
 	len = 0;
@@ -26,19 +25,20 @@ int	remove_double_exp(t_env *var, char *arg)
 	{
 		if (ft_strncmp(temp->data, arg, len) == 0)
 		{
-			if(ft_strlen(temp->data) > len)
+			if (ft_strlen(temp->data) > len)
 				return (1);
 			remove_current_node(&var->head_exp, temp);
 			return (1);
 		}
 		temp = temp->next;
 	}
-	return 1;
+	return (1);
 }
-int check_no_def(node_t *head, char *arg)
+
+int	check_no_def(t_node *head, char *arg)
 {
-	node_t	*temp;
-	int len;
+	t_node	*temp;
+	int		len;
 
 	temp = head;
 	len = 0;
@@ -46,13 +46,14 @@ int check_no_def(node_t *head, char *arg)
 		len++;
 	while (temp)
 	{
-		if(ft_strncmp(temp->data, arg, len) == 0)
-			if(ft_strlen(temp->data) > len)
+		if (ft_strncmp(temp->data, arg, len) == 0)
+			if (ft_strlen(temp->data) > len)
 				return (0);
 		temp = temp->next;
 	}
 	return (1);
 }
+
 int	add_to_lists(t_env *var, char *arg)
 {
 	char	*temp;
@@ -66,7 +67,7 @@ int	add_to_lists(t_env *var, char *arg)
 		temp = ft_strdup(arg);
 	if (!temp)
 		return (1);
-	if(check_no_def(var->head_exp, temp))
+	if (check_no_def(var->head_exp, temp))
 		add_node(&var->head_exp, make_node(temp));
 	sort_export(var);
 	free(temp);
@@ -74,39 +75,39 @@ int	add_to_lists(t_env *var, char *arg)
 	return (0);
 }
 
-int is_valid_identifier(const char *str)
+int	is_valid_identifier(const char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
-    if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
-        return 0;
-    str++;
-    while (str[i] && str[i] != '=')
-    {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
-            return 0;
-        i++;
-    }
-    return 1;
+	if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
+		return (0);
+	str++;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-static int process_export_arg(t_env *var, char *arg)
+static int	process_export_arg(t_env *var, char *arg)
 {
-	char *equal_sign;
-	int is_double;
+	char	*equal_sign;
+	int		is_double;
 
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
 	{
-		*equal_sign = '\0';  // Temporarily split the string
+		*equal_sign = '\0';
 		if (!is_valid_identifier(arg))
 		{
 			fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
-			*equal_sign = '=';  // Restore the string
+			*equal_sign = '=';
 			return (1);
 		}
-		*equal_sign = '=';  // Restore the string
+		*equal_sign = '=';
 	}
 	else if (!is_valid_identifier(arg))
 	{
@@ -119,10 +120,11 @@ static int process_export_arg(t_env *var, char *arg)
 	return (0);
 }
 
-int export(t_env *var, char **command)
+int	export(t_env *var, char **command)
 {
-	int i = 1;
-	
+	int	i;
+
+	i = 1;
 	if (command[i] == NULL)
 	{
 		printf_export(var);

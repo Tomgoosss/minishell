@@ -1,29 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ex_tra.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:38:56 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:38:57 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int count_nodes(t_token *token)
+int	count_nodes(t_token *token)
 {
-	t_token *temp;
-	int count;
+	t_token	*temp;
+	int		count;
 
 	count = 0;
 	temp = token;
-	while(temp)
+	while (temp)
 	{
 		count++;
 		temp = temp->next;
 	}
-	return(count);
+	return (count);
 }
 
-
-int find_slash(t_token *token)
+int	find_slash(t_token *token)
 {
-	struct stat file_stat;
-	int i;
+	struct stat	file_stat;
+	int			i;
 
 	i = 0;
-	if(token->command == NULL || token->command[0] == NULL)
-		return 0;
+	if (token->command == NULL || token->command[0] == NULL)
+		return (0);
 	if (access(token->command[0], X_OK) == 0)
 	{
 		if (stat(token->command[0], &file_stat) == 0)
@@ -41,31 +52,30 @@ int find_slash(t_token *token)
 	return (0);
 }
 
-int check_if_dir(t_token *token)
+int	check_if_dir(t_token *token)
 {
-	DIR *dir;
-	
+	DIR	*dir;
+
 	dir = opendir(token->command[0]);
-	// printf("DIR pointer: %p\n", (void *)dir);
 	if (dir)
 	{
 		closedir(dir);
 		error_lines(token->command[0], 5);
-		return 126;
+		return (126);
 	}
 	else if (errno == ENOENT)
 	{
 		error_lines(token->command[0], 2);
-		return 127;
+		return (127);
 	}
 	else if (errno == EACCES)
 	{
 		error_lines(token->command[0], 6);
-		return 126;
+		return (126);
 	}
 	else
 	{
 		error_lines(token->command[0], 2);
-		return 1; 
+		return (1);
 	}
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:38:16 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:42:34 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	skip_whitespaces(char *line, int i)
@@ -8,37 +20,34 @@ int	skip_whitespaces(char *line, int i)
 	return (i);
 }
 
-// needs to be changed
-// check if the variable is valid. there should be no whitespace in the variable name
-// aswell as there should be no whitespace in the value of the variable
 int	check_env_variable(char *line)
 {
- 
-	if(skip_whitespaces(line, 0) == ft_strlen(line))
+	if (skip_whitespaces(line, 0) == ft_strlen(line))
 		return (0);
 	printf("line %c\n", line[0]);
 	printf("len%i\n", ft_strlen(line));
-	return 1;
+	return (1);
 }
-int count_nodes_extra(node_t *token)
+
+int	count_nodes_extra(t_node *token)
 {
-	node_t *temp;
-	int count;
+	t_node	*temp;
+	int		count;
 
 	count = 0;
 	temp = token;
-	while(temp)
+	while (temp)
 	{
 		count++;
 		temp = temp->next;
 	}
-	return(count);
+	return (count);
 }
 
-void make_2d_env(t_env *env)
+void	make_2d_env(t_env *env)
 {
-	int i;
-	node_t *temp;
+	int		i;
+	t_node	*temp;
 
 	i = count_nodes_extra(env->head_env);
 	env->env = (char **)malloc(sizeof(char *) * (i + 1));

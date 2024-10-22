@@ -1,64 +1,79 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helperfunc3.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:39:21 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:39:22 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void print_str_array(char **str)
+void	print_str_array(char **str)
 {
-    if (str == NULL)
-    {
-        printf("Array is NULL\n");
-        return;
-    }
-
-    for (int i = 0; str[i] != NULL; i++)
-    {
-        printf("[%d]: %s\n", i, str[i]);
-    }
-    printf("End of array\n");
+	if (str == NULL)
+	{
+		printf("Array is NULL\n");
+		return ;
+	}
+	for (int i = 0; str[i] != NULL; i++)
+	{
+		printf("[%d]: %s\n", i, str[i]);
+	}
+	printf("End of array\n");
 }
-int is_delimiter(const char *s)
+int	is_delimiter(const char *s)
 {
-    return (*s == '<' || *s == '>' || *s == '|');
-}
-
-int is_quote(char c)
-{
-    return (c == '\'' || c == '"');
+	return (*s == '<' || *s == '>' || *s == '|');
 }
 
-int get_token_length(const char *s, int *quote_len)
+int	is_quote(char c)
 {
-    int len = 0;
-    char quote_char = 0;
-    
-    *quote_len = 0;
-    if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
-        return 2;
-    if (is_delimiter(s))
-        return 1;
-    while (s[len])
-    {
-        if (is_quote(s[len]) && quote_char == 0)
-        {
-            quote_char = s[len];
-            (*quote_len)++;
-        }
-        else if (s[len] == quote_char)
-        {
-            quote_char = 0;
-            (*quote_len)++;
-        }
-        else if (quote_char == 0 && (is_delimiter(s + len) || s[len] == ' '))
-            break;
-        len++;
-    }
-    return len;
+	return (c == '\'' || c == '"');
 }
 
-char *ft_strndup(const char *s, size_t n)
+int	get_token_length(const char *s, int *quote_len)
 {
-    char *result = malloc(n + 1);
-    if (result == NULL)
-        return NULL;
-    strncpy(result, s, n);
-    result[n] = '\0';
-    return result;
+	int		len;
+	char	quote_char;
+
+	len = 0;
+	quote_char = 0;
+	*quote_len = 0;
+	if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
+		return (2);
+	if (is_delimiter(s))
+		return (1);
+	while (s[len])
+	{
+		if (is_quote(s[len]) && quote_char == 0)
+		{
+			quote_char = s[len];
+			(*quote_len)++;
+		}
+		else if (s[len] == quote_char)
+		{
+			quote_char = 0;
+			(*quote_len)++;
+		}
+		else if (quote_char == 0 && (is_delimiter(s + len) || s[len] == ' '))
+			break ;
+		len++;
+	}
+	return (len);
+}
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	char	*result;
+
+	result = malloc(n + 1);
+	if (result == NULL)
+		return (NULL);
+	strncpy(result, s, n);
+	result[n] = '\0';
+	return (result);
 }

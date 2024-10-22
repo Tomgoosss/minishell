@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:39:28 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:39:29 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int g_signal;
+extern int	g_signal;
 
 void	error_msg(char *line, int i)
 {
@@ -38,7 +50,8 @@ int	unclosed_quote(char *line, t_ex *ex)
 	}
 	if (in_quote)
 	{
-		ft_putstr_fd("minishell: unexpected EOF while looking for matching `", 2);
+		ft_putstr_fd("minishell: unexpected EOF while looking for matching `",
+			2);
 		ft_putchar_fd(quote_type, 2);
 		ft_putstr_fd("'\n", 2);
 		ex->exit_status = 2;
@@ -50,10 +63,11 @@ int	unclosed_quote(char *line, t_ex *ex)
 void	loop(t_env *var)
 {
 	char	*line;
-	t_token	*token = NULL;
+	t_token	*token;
 	t_ex	*ex;
 	int		exitcode;
 
+	token = NULL;
 	ex = ft_calloc(1, sizeof(t_ex));
 	if (!ex)
 		exit(errno);
@@ -65,23 +79,23 @@ void	loop(t_env *var)
 		if (g_signal)
 		{
 			if (g_signal == 1)
-				ex->exit_status = 130;  // Ctrl+C
+				ex->exit_status = 130; // Ctrl+C
 			else if (g_signal == 2)
-				ex->exit_status = 0;    // Ctrl+D
+				ex->exit_status = 0; // Ctrl+D
 			g_signal = 0;
 		}
 		line = readline("minishell> ");
 		if (!line) // Handle ctrl-D (EOF
-			break;
+			break ;
 		if (unclosed_quote(line, ex))
 		{
 			free(line);
-			continue;
+			continue ;
 		}
 		sort_export(var);
 		token = main_pars(line, var, ex);
 		if (!token)
-			continue;
+			continue ;
 		if ((exitcode = check_exit(token->command)) != 0)
 		{
 			rl_clear_history();
@@ -89,7 +103,8 @@ void	loop(t_env *var)
 			free(ex);
 			exit(exitcode);
 		}
-		if(ft_strcmp(token->command[0], "minishell") == 0 || ft_strcmp(token->command[0], "./minishell") == 0)
+		if (ft_strcmp(token->command[0], "minishell") == 0
+			|| ft_strcmp(token->command[0], "./minishell") == 0)
 			signals_ignore();
 		main_execute(token, var, ex);
 		add_history(line);
@@ -106,7 +121,6 @@ int	main(int argc, char **argv, char **environment)
 	t_env	*var;
 
 	setup_signals();
-
 	argc = 0;
 	argv = NULL;
 	var = ft_calloc(1, sizeof(t_env));

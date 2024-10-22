@@ -1,31 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_files.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:39:03 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:39:04 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int red_out_append(t_redirection *red)
+int	red_out_append(t_redirection *red)
 {
-	int fd;
+	int	fd;
 
 	fd = open(red->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 	{
 		perror("ERROR");
-		return(fd);
+		return (fd);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2 red_out_append");
 		close(fd);
-		return(1);
+		return (1);
 	}
 	close(fd);
-	return(0);
+	return (0);
 }
-int red_out(t_redirection *red)
-{
-	int fd;
 
+int	red_out(t_redirection *red)
+{
+	int	fd;
 
 	fd = open(red->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if(fd == -1)
+	if (fd == -1)
 	{
 		perror("ERROR");
 		return (fd);
@@ -34,15 +46,15 @@ int red_out(t_redirection *red)
 	{
 		perror("dup2 red_out");
 		close(fd);
-		return(1);
+		return (1);
 	}
 	close(fd);
-	return(0);
+	return (0);
 }
 
-int red_in(t_redirection *red)
+int	red_in(t_redirection *red)
 {
-	int fd;
+	int	fd;
 
 	fd = open(red->file, O_RDONLY);
 	if (fd == -1)
@@ -54,15 +66,14 @@ int red_in(t_redirection *red)
 	{
 		perror("dup2 red_in");
 		close(fd);
-		return(1);
+		return (1);
 	}
 	close(fd);
 	return (0);
 }
 
-int open_files(t_token *token, int i)
+int	open_files(t_token *token, int i)
 {
-
 	t_redirection	*red;
 	int				result;
 
@@ -72,14 +83,14 @@ int open_files(t_token *token, int i)
 	{
 		if (red->type == REDIR_OUT_APPEND && i == 0)
 			result = red_out_append(red);
-		else if (red->type == REDIR_OUT&& i == 0 )
+		else if (red->type == REDIR_OUT && i == 0)
 			result = red_out(red);
 		else if (red->type == REDIR_IN_HERE_DOC && i == 1)
 			result = red_in_heredoc(red);
 		else if (red->type == REDIR_IN && i == 0)
 			result = red_in(red);
 		if (result != 0)
-			return(result);
+			return (result);
 		red = red->next;
 	}
 	return (0);

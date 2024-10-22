@@ -1,17 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:38:46 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:43:08 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-
-void check_unset_env(node_t *env, char **commands, t_env *var)
+void	check_unset_env(t_node *env, char **commands, t_env *var)
 {
-	int i;
-	node_t *tmp;
+	int		i;
+	t_node	*tmp;
 
 	i = 1;
 	while (env)
 	{
-		while(commands[i])
+		while (commands[i])
 		{
-			if(env && ft_strncmp(env->data, commands[i], ft_strlen(commands[i])) == 0 
+			if (env && ft_strncmp(env->data, commands[i],
+					ft_strlen(commands[i])) == 0
 				&& env->data[ft_strlen(commands[i])] == '=')
 			{
 				tmp = env->next;
@@ -27,17 +39,18 @@ void check_unset_env(node_t *env, char **commands, t_env *var)
 	}
 }
 
-void check_unset_exp(node_t *exp, char **commands, t_env *var)
+void	check_unset_exp(t_node *exp, char **commands, t_env *var)
 {
-	int i;
-	node_t *tmp;
+	int		i;
+	t_node	*tmp;
 
 	i = 1;
 	while (exp)
 	{
-		while(commands[i])
+		while (commands[i])
 		{
-			if(exp && ft_strncmp(exp->data, commands[i], ft_strlen(commands[i])) == 0)
+			if (exp && ft_strncmp(exp->data, commands[i],
+					ft_strlen(commands[i])) == 0)
 			{
 				tmp = exp->next;
 				remove_current_node(&var->head_exp, exp);
@@ -51,13 +64,14 @@ void check_unset_exp(node_t *exp, char **commands, t_env *var)
 			exp = exp->next;
 	}
 }
-int unset(t_token *token, t_env *var)
-{
-	node_t *tmp_env;
-	node_t *tmp_exp;
-	char **commands;
 
-	if(token->command == NULL || token->command[1] == NULL)
+int	unset(t_token *token, t_env *var)
+{
+	t_node	*tmp_env;
+	t_node	*tmp_exp;
+	char	**commands;
+
+	if (token->command == NULL || token->command[1] == NULL)
 		return (0);
 	tmp_env = var->head_env;
 	tmp_exp = var->head_exp;

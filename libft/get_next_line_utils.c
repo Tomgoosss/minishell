@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tomgoossens <tomgoossens@student.42.fr>    +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 12:33:39 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/02/02 23:06:22 by tomgoossens      ###   ########.fr       */
+/*   Updated: 2024/10/22 15:35:08 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	ft_nlcheck(char	*str)
 	}
 	return (-1);
 }
-
 
 char	*ft_strjoin2(char *s1, char *s2)
 {

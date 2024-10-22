@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: knockla <knockla@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:15:56 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/09/17 14:34:03 by knockla          ###   ########.fr       */
+/*   Updated: 2024/10/22 15:34:56 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@
 # include <unistd.h>
 # include <ctype.h>
 # include <string.h>
-#include <stdlib.h>
+# include <stdlib.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
 # endif
-
 
 int		ft_atoi(const char *nptr);
 void	ft_bzero(void *s, size_t n);

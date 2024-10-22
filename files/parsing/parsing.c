@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/16 17:15:44 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/22 15:43:22 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	closing_quote(char *line, int i, char c, int extra)
 			return (i + 1);
 		i++;
 	}
-	if(extra == 0)
+	if (extra == 0)
 		return (0);
 	return (-1);
 }
@@ -81,14 +81,14 @@ void	add_command(t_token *token, char *cmd, int array_len)
 
 	i = 0;
 	ret = malloc(sizeof(char *) * (array_len + 2));
-	if (!ret) // Check for malloc failure
-		return;
+	if (!ret)
+		return ;
 	while (i != array_len)
 	{
 		ret[i] = ft_strdup(token->command[i]);
 		if (!ret[i])
 		{
-			free2pointers(ret); // Free ret on failure
+			free2pointers(ret);
 			return (free2pointers(token->command));
 		}
 		i++;
@@ -96,7 +96,7 @@ void	add_command(t_token *token, char *cmd, int array_len)
 	ret[i] = ft_strdup(cmd);
 	if (!ret[i])
 	{
-		free2pointers(ret); // Free ret on failure
+		free2pointers(ret);
 		return (free2pointers(token->command));
 	}
 	ret[i + 1] = 0;
@@ -156,7 +156,7 @@ void	tokenize(t_token **token, char **temp)
 	{
 		if (temp[i][0] == '|')
 		{
-			if(temp[i + 1] == NULL)
+			if (temp[i + 1] == NULL)
 			{
 				printf("syntax error near unexpected token `|'\n");
 				return (free2pointers(temp), free2pointers(temp_token->command),
@@ -186,7 +186,7 @@ void	tokenize(t_token **token, char **temp)
 				free2pointers((*token)->command);
 				free(*token);
 				*token = NULL;
-				return;
+				return ;
 			}
 		}
 		else
@@ -228,38 +228,39 @@ int	end_of_var(char *line)
 
 char	*replace_variable(char *line, t_env *var)
 {
-    node_t *temp;
-    char *var_name;
-    char *ret;
+	t_node	*temp;
+	char	*var_name;
+	char	*ret;
+	int		var_length;
 
-    if (is_space(line[0]))
-		return ft_strdup("$");
-    int var_length = end_of_var(line);
-    var_name = malloc(sizeof(char) * (var_length + 1));
-    if (!var_name)
-        return (NULL);
-    ft_memcpy(var_name, line, var_length);
-    var_name[var_length] = '\0';
-    temp = var->head_env;
-    while (temp)
-    {
-        if (ft_strncmp(temp->data, var_name, var_length) == 0 &&
-            temp->data[var_length] == '=')
-        {
-            ret = ft_strdup(temp->data + var_length + 1);
-            return (free(var_name), ret);
-        }
-        temp = temp->next;
-    }
-    return (free(var_name), NULL);
+	if (is_space(line[0]))
+		return (ft_strdup("$"));
+	var_length = end_of_var(line);
+	var_name = malloc(sizeof(char) * (var_length + 1));
+	if (!var_name)
+		return (NULL);
+	ft_memcpy(var_name, line, var_length);
+	var_name[var_length] = '\0';
+	temp = var->head_env;
+	while (temp)
+	{
+		if (ft_strncmp(temp->data, var_name, var_length) == 0
+			&& temp->data[var_length] == '=')
+		{
+			ret = ft_strdup(temp->data + var_length + 1);
+			return (free(var_name), ret);
+		}
+		temp = temp->next;
+	}
+	return (free(var_name), NULL);
 }
 
-int max_expansion(t_env *var)
+int	max_expansion(t_env *var)
 {
-	int i;
-	int size;
-	node_t *temp;
-	
+	int		i;
+	int		size;
+	t_node	*temp;
+
 	temp = var->head_exp;
 	i = 0;
 	size = 0;
@@ -273,27 +274,28 @@ int max_expansion(t_env *var)
 	return (size);
 }
 
-int add_exit_code(char *ret, int j, char *line, int i, int exit_status)
+int	add_exit_code(char *ret, int j, char *line, int i, int exit_status)
 {
-	char *exit_code;
+	char	*exit_code;
 
 	exit_code = ft_itoa(exit_status);
 	ft_strlcpy(&ret[j], exit_code, ft_strlen(exit_code) + 1);
 	j += ft_strlen(exit_code);
 	i += 2;
-	while(line [i] && !is_space(line[i]))
+	while (line[i] && !is_space(line[i]))
 		ret[j++] = line[i++];
 	return (i);
 }
-int inside_double_quote(char *line, int i)
+
+int	inside_double_quote(char *line, int i)
 {
-	int j;
-	int end;	
-	
+	int	j;
+	int	end;
+
 	j = 0;
 	while (j < i)
 	{
-		if(line[j] == '"')
+		if (line[j] == '"')
 		{
 			end = closing_quote(line, j, '"', 0);
 			if (end - 1 > j)
@@ -303,75 +305,82 @@ int inside_double_quote(char *line, int i)
 	}
 	return (0);
 }
-char *check_dollar_sign(char *line, t_env *var, t_ex *ex)
+
+char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
-    int i = 0;
-    int j = 0; 
-    char *ret, *temp;
-	
-    if (!line)
-    	return (NULL);
-    if (ft_strchr(line, '$') == NULL)
-        return (ft_strdup(line));
-    ret = malloc(sizeof(char) * (max_expansion(var)));
-    if (!ret)
-        return (NULL);
-    while (line[i] != '\0')
-    {
-        if (line[i] == '\'' && closing_quote(line, i, '\'', 0) && !inside_double_quote(line, i))
-        {
-            ret[j++] = line[i++]; 
-            while (line[i] && line[i] != '\'')
-                ret[j++] = line[i++];
-            if (line[i] == '\'')
-                ret[j++] = line[i++]; 
-            continue;  
-        }
-        if (line[i] == '$')
-        {
-			if(line[i + 1] == '?')
+	int		i;
+	int		j;
+	int		var_length;
+	char	*var_name;
+	size_t	temp_len;
+
+	i = 0;
+	j = 0;
+	char *ret, *temp;
+	if (!line)
+		return (NULL);
+	if (ft_strchr(line, '$') == NULL)
+		return (ft_strdup(line));
+	ret = malloc(sizeof(char) * (max_expansion(var)));
+	if (!ret)
+		return (NULL);
+	while (line[i] != '\0')
+	{
+		if (line[i] == '\'' && closing_quote(line, i, '\'', 0)
+			&& !inside_double_quote(line, i))
+		{
+			ret[j++] = line[i++];
+			while (line[i] && line[i] != '\'')
+				ret[j++] = line[i++];
+			if (line[i] == '\'')
+				ret[j++] = line[i++];
+			continue ;
+		}
+		if (line[i] == '$')
+		{
+			if (line[i + 1] == '?')
 			{
 				i = add_exit_code(ret, j, line, i, ex->exit_status);
 				j = ft_strlen(ret);
-				continue;
+				continue ;
 			}
-            if (ft_isalpha(line[i + 1]) || line[i + 1] == '_')
-            {
-                int var_length = end_of_var(&line[i + 1]);
-                if (var_length > 0)
-                {
-                    char *var_name = malloc(sizeof(char) * (var_length + 1));
-                    if (!var_name)
-                    {
-                        free(ret);
-                        return (NULL);
-                    }
-                    ft_strlcpy(var_name, &line[i + 1], var_length + 1);
-                    temp = replace_variable(var_name, var);
-                    free(var_name);
-                    if (temp)
-                    {
-                        size_t temp_len = ft_strlen(temp);
-                        ft_strlcpy(&ret[j], temp, temp_len + 1); // Copy the variable value
-                        j += temp_len;
-                        free(temp);
-                    }
-                    else
-                        ret[j] = '\0';
-                    i += var_length + 1;
-                    continue;
-                }
-            }
-            else
-            {
-                ret[j++] = line[i++];
-                continue;
-            }
-        }
-        ret[j++] = line[i++];
-    }
-    ret[j] = '\0';
-    return ret;
+			if (ft_isalpha(line[i + 1]) || line[i + 1] == '_')
+			{
+				var_length = end_of_var(&line[i + 1]);
+				if (var_length > 0)
+				{
+					var_name = malloc(sizeof(char) * (var_length + 1));
+					if (!var_name)
+					{
+						free(ret);
+						return (NULL);
+					}
+					ft_strlcpy(var_name, &line[i + 1], var_length + 1);
+					temp = replace_variable(var_name, var);
+					free(var_name);
+					if (temp)
+					{
+						temp_len = ft_strlen(temp);
+						ft_strlcpy(&ret[j], temp, temp_len + 1);
+						j += temp_len;
+						free(temp);
+					}
+					else
+						ret[j] = '\0';
+					i += var_length + 1;
+					continue ;
+				}
+			}
+			else
+			{
+				ret[j++] = line[i++];
+				continue ;
+			}
+		}
+		ret[j++] = line[i++];
+	}
+	ret[j] = '\0';
+	return (ret);
 }
 
 t_token	*main_pars(char *line, t_env *var, t_ex *ex)
@@ -393,10 +402,8 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 	free(updated_line);
 	if (!token)
 	{
-		// Tokenization failed, likely due to syntax error
-		ex->exit_status = 2;  // Set appropriate error status
-		return NULL;
+		ex->exit_status = 2;
+		return (NULL);
 	}
-
-	return token;
+	return (token);
 }

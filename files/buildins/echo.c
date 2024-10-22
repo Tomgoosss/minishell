@@ -1,10 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/22 15:38:08 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/22 15:38:09 by tgoossen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int echo(char **command)
+int	echo(char **command)
 {
-	int i = 1;
-	int newline = 1;
+	int	i;
+	int	newline;
 
+	i = 1;
+	newline = 1;
 	if (command[i] && ft_strncmp(command[i], "-n", 2) == 0)
 	{
 		newline = 0;
@@ -19,6 +33,5 @@ int echo(char **command)
 	}
 	if (newline)
 		printf("\n");
-	return 0;
+	return (0);
 }
-
