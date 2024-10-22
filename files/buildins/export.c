@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:24 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:42:41 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:39:35 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ void	printf_export(t_env *var)
 int	remove_double_env(t_env *var, char *arg)
 {
 	t_node	*temp;
+	int		len;
 
-	int len; // len of the arg until the = or end of string
 	len = 0;
 	temp = var->head_env;
 	while (arg[len] && (arg[len] != '=' || arg[len] == '\0'))

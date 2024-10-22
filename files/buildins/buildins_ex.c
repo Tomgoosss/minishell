@@ -3,24 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   buildins_ex.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:37:11 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:37:16 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:38:42 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// int buildins_par(t_token *token, t_env *var)
-// {
-// 	if(token->command == NULL)
-// 		return(0);
-// 	if(strncmp(token->command[0], "cd", 2) == 0)
-// 		return(cd_buildin(token, var));
-// 	if(strncmp(token->command[0], "export", 6) == 0)
-// 		return(export(var, token->command));
-// }
 
 int	check_if_buildin(t_token *token, t_env *var)
 {
