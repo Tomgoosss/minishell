@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:00 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:01 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:20:29 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,21 @@ void	execute_child(t_token *token, t_ex *ex, t_env *var)
 	exit(1);
 }
 
+void handle_child_signal(int status)
+{
+    if (WIFSIGNALED(status))
+    {
+        if (WTERMSIG(status) == SIGINT)
+        {
+            ft_putstr_fd("\n", STDOUT_FILENO);
+        }
+        else if (WTERMSIG(status) == SIGQUIT)
+        {
+            ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+        }
+    }
+}
+
 int	parent_process(t_ex *ex, int p, int count)
 {
 	int	status;
@@ -52,6 +67,7 @@ int	parent_process(t_ex *ex, int p, int count)
 	{
 		signals_ignore();
 		waitpid(p, &status, 0);
+		handle_child_signal(status);
 		while (count > 0)
 		{
 			wait(NULL);
@@ -75,7 +91,6 @@ int	create_child(t_token *token, t_ex *ex, t_env *var, int count)
 	}
 	if (p == 0)
 	{
-		reset_signals();
 		make_path(token, ex, var);
 		if (!ex->path)
 			exit(127);
