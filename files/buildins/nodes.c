@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nodes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:41 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:42:48 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:33:21 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ t_node	*make_node(char *line)
 	return (new);
 }
 
-// adds a node behind the last node
 void	add_node(t_node **head, t_node *new)
 {
 	t_node	*temp;
@@ -88,7 +87,7 @@ void	fill_nodes_env(t_env *var, char **env)
 				return ;
 			}
 			add_node(&var->head_env, make_node(temp));
-			add_node(&var->head_exp, make_node(temp)); // Add this line
+			add_node(&var->head_exp, make_node(temp));
 			free(temp);
 			free(shlvl);
 		}

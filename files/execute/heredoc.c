@@ -3,69 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:06 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 15:05:58 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:43:33 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include "minishell.h"
-
-static void	heredoc_child_process(int write_fd, char *delimiter)
-{
-	char				*line;
-	struct sigaction	sa;
-
-	sa.sa_handler = SIG_DFL;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || g_signal == 1)
-		{
-			close(write_fd);
-			exit(EXIT_FAILURE);
-		}
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-			&& (line[ft_strlen(delimiter)] == '\n'
-				|| line[ft_strlen(delimiter)] == '\0'))
-		{
-			free(line);
-			close(write_fd);
-			exit(EXIT_SUCCESS);
-		}
-		write(write_fd, line, ft_strlen(line));
-		write(write_fd, "\n", 1);
-		free(line);
-	}
-}
-
-static int	heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
-{
-	int	status;
-
-	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-	{
-		close(read_fd);
-		ft_putstr_fd("\n", STDOUT_FILENO);  // Print newline after ^C
-		return (-1);
-	}
-	if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
-	{
-		return (read_fd);
-	}
-	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `",
-		STDERR_FILENO);
-	ft_putstr_fd(delimiter, STDERR_FILENO);
-	ft_putstr_fd("')\n", STDERR_FILENO);
-	close(read_fd);
-	return (-1);
-}
 
 static int	heredoc_fork(int *pipefd, pid_t *pid)
 {
@@ -94,14 +40,13 @@ int	heredoc(char *delimiter)
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		heredoc_child_process(pipefd[1], delimiter);
+		heredoc_c_process(pipefd[1], delimiter);
 	}
-	else // Parent process
+	else
 	{
 		close(pipefd[1]);
-		signal(SIGINT, SIG_IGN);  // Temporarily ignore SIGINT in parent
-		result = heredoc_parent_process(pid, pipefd[0], delimiter);
-		// setup_signals();  // Restore original signal handling
+		signal(SIGINT, SIG_IGN);
+		result = heredoc_p_process(pid, pipefd[0], delimiter);
 		return (result);
 	}
 	return (-1);

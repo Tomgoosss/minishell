@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:52:11 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/22 16:31:36 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/25 18:09:14 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ int	end_of_var(char *line)
 		i++;
 	return (i);
 }
-int	check_redirection(t_redirection **redirection, char *temp)
+
+int	check_redir(t_redirection **redirection, char *temp)
 {
 	t_redirection	*new_node;
 	t_redirection	*last;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:00 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 14:45:29 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:21:32 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	int	temp;
-
 
 	temp = open_files(token, 0);
 	if (temp == -1)
@@ -36,8 +35,6 @@ void	execute_child(t_token *token, t_ex *ex, t_env *var)
 	}
 	exit(1);
 }
-
-
 
 int	parent_process(t_ex *ex, int p, int count)
 {

@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 15:03:06 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:55:51 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -27,7 +26,6 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
 
 extern int				g_signal;
 
@@ -80,6 +78,12 @@ typedef struct execute
 	int					heredoc_fd;
 }						t_ex;
 
+void					sort_export(t_env *var);
+void					print_error_prefix(void);
+void					print_too_many_args(char *arg);
+void					print_command_not_found(char *arg);
+void					print_no_such_file(char *arg);
+void					print_not_enough_args(char *arg);
 void					free2pointers(char **str);
 char					*remove_white_spaces(char *line);
 char					*ft_strjoinfree(char const *s1, char const *s2);
@@ -147,10 +151,18 @@ void					handle_sigquit(int sig);
 void					signals_ignore(void);
 int						handle_heredocs(t_token *token);
 char					*check_dollar_sign(char *line, t_env *var, t_ex *ex);
-int	check_redirection(t_redirection **redirection, char *temp);
-void	add_command(t_token *token, char *cmd, int array_len);
-void	place_file(t_redirection **redirection, char *temp);
-int	end_of_var(char *line);
-void handle_child_signal(int status);
-void	tokenize(t_token **token, char **temp);
+int						check_redir(t_redirection **redirection, char *temp);
+void					add_command(t_token *token, char *cmd, int array_len);
+void					place_file(t_redirection **redirection, char *temp);
+int						end_of_var(char *line);
+void					handle_child_signal(int status);
+void					tokenize(t_token **token, char **temp);
+void					heredoc_c_process(int write_fd, char *delimiter);
+int						heredoc_p_process(pid_t pid, int read_fd, char *del);
+void					handle_dollar_sign(char *ret, int *j, char *line, int *i, t_env *var, t_ex *ex);
+void					handle_single_quote(char *line, char *ret, int *i, int *j);
+int						inside_double_quote(char *line, int i);
+char					*replace_variable(char *line, t_env *var);
+int						add_exit_code(char *ret, int j, char *line, int i, int exit_status);
+
 #endif

@@ -3,52 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   error_lines.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:11 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:12 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:27:24 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	print_is_directory(char *arg)
+{
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": Is a directory\n", 2);
+}
+
+void	print_permission_denied(char *arg)
+{
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": Permission denied\n", 2);
+}
+
 void	error_lines(char *arg, int i)
 {
 	if (i == 1)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": command not found\n", 2);
-	}
+		print_command_not_found(arg);
 	else if (i == 2)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-	}
+		print_no_such_file(arg);
 	else if (i == 3)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd("not enough arguments: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd("\n", 2);
-	}
+		print_not_enough_args(arg);
 	else if (i == 4)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": too many arguments\n", 2);
-	}
+		print_too_many_args(arg);
 	else if (i == 5)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-	}
+		print_is_directory(arg);
 	else if (i == 6)
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(": Permission denied\n", 2);
-	}
+		print_permission_denied(arg);
 }

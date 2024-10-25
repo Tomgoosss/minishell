@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:36:28 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/22 16:37:37 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:43:47 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_token(t_token **token, int pipe)
 		(*token)->next = malloc(sizeof(t_token));
 		if (!(*token)->next)
 		{
-			free(*token); // Free token on failure
+			free(*token);
 			return ;
 		}
 		(*token) = (*token)->next;
@@ -58,7 +58,7 @@ void	tokenize(t_token **token, char **temp)
 			i++;
 			cmd = 0;
 		}
-		else if (check_redirection(&(*token)->redirection, temp[i]))
+		else if (check_redir(&(*token)->redirection, temp[i]))
 		{
 			if (temp[i + 1] && valid_redirection(temp[i + 1]))
 			{

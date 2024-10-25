@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:28 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 14:05:36 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 18:08:14 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,13 @@ void	loop(t_env *var)
 		if (g_signal)
 		{
 			if (g_signal == 1)
-				ex->exit_status = 130; // Ctrl+C
+				ex->exit_status = 130;
 			else if (g_signal == 2)
-				ex->exit_status = 0; // Ctrl+D
+				ex->exit_status = 0;
 			g_signal = 0;
 		}
 		line = readline("minishell> ");
-		if (!line) // Handle ctrl-D (EOF
+		if (!line)
 			break ;
 		if (unclosed_quote(line, ex))
 		{

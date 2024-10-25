@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helperfunc3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:21 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:22 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 17:28:46 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	print_str_array(char **str)
 	}
 	printf("End of array\n");
 }
+
 int	is_delimiter(const char *s)
 {
 	return (*s == '<' || *s == '>' || *s == '|');
