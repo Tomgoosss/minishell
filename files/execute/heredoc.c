@@ -6,12 +6,12 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:06 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 14:30:49 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 15:05:58 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include <signal.h>
+#include "minishell.h"
 
 static void	heredoc_child_process(int write_fd, char *delimiter)
 {
@@ -51,21 +51,18 @@ static int	heredoc_parent_process(pid_t pid, int read_fd, char *delimiter)
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
-		g_signal = 1;
 		close(read_fd);
+		ft_putstr_fd("\n", STDOUT_FILENO);  // Print newline after ^C
 		return (-1);
 	}
 	if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
 	{
 		return (read_fd);
 	}
-	if (g_signal != 1)
-	{
-		ft_putstr_fd("warning:here-document delimited by end-of-file (wanted `",
-			STDERR_FILENO);
-		ft_putstr_fd(delimiter, STDERR_FILENO);
-		ft_putstr_fd("')\n", STDERR_FILENO);
-	}
+	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `",
+		STDERR_FILENO);
+	ft_putstr_fd(delimiter, STDERR_FILENO);
+	ft_putstr_fd("')\n", STDERR_FILENO);
 	close(read_fd);
 	return (-1);
 }
@@ -90,6 +87,7 @@ int	heredoc(char *delimiter)
 {
 	int		pipefd[2];
 	pid_t	pid;
+	int		result;
 
 	if (heredoc_fork(pipefd, &pid) == -1)
 		return (-1);
@@ -101,9 +99,12 @@ int	heredoc(char *delimiter)
 	else // Parent process
 	{
 		close(pipefd[1]);
-		return (heredoc_parent_process(pid, pipefd[0], delimiter));
+		signal(SIGINT, SIG_IGN);  // Temporarily ignore SIGINT in parent
+		result = heredoc_parent_process(pid, pipefd[0], delimiter);
+		// setup_signals();  // Restore original signal handling
+		return (result);
 	}
-	return (1);
+	return (-1);
 }
 
 int	red_in_heredoc(t_redirection *red)

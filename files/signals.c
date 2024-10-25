@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:31 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 14:20:37 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:45:38 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,21 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+}
+
+void handle_child_signal(int status)
+{
+    if (WIFSIGNALED(status))
+    {
+        if (WTERMSIG(status) == SIGINT)
+        {
+            ft_putstr_fd("\n", STDOUT_FILENO);
+        }
+        else if (WTERMSIG(status) == SIGQUIT)
+        {
+            ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+        }
+    }
 }
 
 void	handle_sigquit(int sig)

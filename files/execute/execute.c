@@ -6,7 +6,7 @@
 /*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:00 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 14:20:29 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:45:29 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	execute_child(t_token *token, t_ex *ex, t_env *var)
 {
 	int	temp;
 
-	reset_signals();
+
 	temp = open_files(token, 0);
 	if (temp == -1)
 	{
@@ -37,20 +37,7 @@ void	execute_child(t_token *token, t_ex *ex, t_env *var)
 	exit(1);
 }
 
-void handle_child_signal(int status)
-{
-    if (WIFSIGNALED(status))
-    {
-        if (WTERMSIG(status) == SIGINT)
-        {
-            ft_putstr_fd("\n", STDOUT_FILENO);
-        }
-        else if (WTERMSIG(status) == SIGQUIT)
-        {
-            ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
-        }
-    }
-}
+
 
 int	parent_process(t_ex *ex, int p, int count)
 {
@@ -82,7 +69,6 @@ int	create_child(t_token *token, t_ex *ex, t_env *var, int count)
 {
 	int	p;
 
-	signals_ignore();
 	p = fork();
 	if (p == -1)
 	{

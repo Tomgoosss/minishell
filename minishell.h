@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 15:40:27 by tgoossen          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/10/25 14:01:59 by tgoossen         ###   ########.fr       */
-=======
-/*   Updated: 2024/10/22 16:37:05 by fbiberog         ###   ########.fr       */
->>>>>>> f910eb63f45a9595ac490c744fd8c22e04590e9f
+/*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
+/*   Updated: 2024/10/25 15:03:06 by tgoossen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,5 +151,6 @@ int	check_redirection(t_redirection **redirection, char *temp);
 void	add_command(t_token *token, char *cmd, int array_len);
 void	place_file(t_redirection **redirection, char *temp);
 int	end_of_var(char *line);
-void	tokenize(t_token **token, char **temp)
+void handle_child_signal(int status);
+void	tokenize(t_token **token, char **temp);
 #endif
