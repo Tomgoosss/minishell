@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:40:27 by tgoossen          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/10/25 14:01:59 by tgoossen         ###   ########.fr       */
+=======
+/*   Updated: 2024/10/22 16:37:05 by fbiberog         ###   ########.fr       */
+>>>>>>> f910eb63f45a9595ac490c744fd8c22e04590e9f
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,5 +150,10 @@ void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
 void					signals_ignore(void);
 int						handle_heredocs(t_token *token);
-
+char					*check_dollar_sign(char *line, t_env *var, t_ex *ex);
+int	check_redirection(t_redirection **redirection, char *temp);
+void	add_command(t_token *token, char *cmd, int array_len);
+void	place_file(t_redirection **redirection, char *temp);
+int	end_of_var(char *line);
+void	tokenize(t_token **token, char **temp)
 #endif
