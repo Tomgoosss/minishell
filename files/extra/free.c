@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:13 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:43:17 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:04:59 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,14 @@ void	free_redirection(t_redirection *redirection)
 	}
 }
 
-void	free_token(t_token *token)
+void	free_token_line(t_token *token, char *line)
 {
 	t_token	*tmp;
 	t_token	*next;
 
 	tmp = token;
+	if (line)
+		free(line);
 	while (tmp)
 	{
 		if (tmp->redirection)

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 17:55:51 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:12:09 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,27 @@ typedef struct execute
 	int					heredoc_fd;
 }						t_ex;
 
+// Add this with your other struct definitions
+typedef struct s_var_exp
+{
+	char				*line;
+	char				*ret;
+	t_env				*var;
+	t_ex				*ex;
+	int					i;
+	int					j;
+}						t_var_exp;
+
+typedef struct s_quote_info
+{
+	char				outer_quote;
+	char				inner_quote;
+	char				*token;
+	int					j;
+}						t_quote_info;
+
+int						process(char *l, t_token **t, t_env *var, t_ex *ex);
+void					cleanup_and_exit(char *line, t_ex *ex, int exitcode);
 void					sort_export(t_env *var);
 void					print_error_prefix(void);
 void					print_too_many_args(char *arg);
@@ -113,7 +134,7 @@ int						is_space(char c);
 int						check_buildin(t_token *token);
 int						cd_buildin(t_token *token, t_env *var);
 void					free_env(t_env *var);
-void					free_token(t_token *token);
+void					free_token_line(t_token *token, char *line);
 void					free_list(t_node *head);
 int						buildins_par(t_token *token, t_env *var);
 int						empty_line(char *line);
@@ -159,10 +180,12 @@ void					handle_child_signal(int status);
 void					tokenize(t_token **token, char **temp);
 void					heredoc_c_process(int write_fd, char *delimiter);
 int						heredoc_p_process(pid_t pid, int read_fd, char *del);
-void					handle_dollar_sign(char *ret, int *j, char *line, int *i, t_env *var, t_ex *ex);
-void					handle_single_quote(char *line, char *ret, int *i, int *j);
 int						inside_double_quote(char *line, int i);
 char					*replace_variable(char *line, t_env *var);
-int						add_exit_code(char *ret, int j, char *line, int i, int exit_status);
+void					handle_single_quote(t_var_exp *exp);
+void					handle_exit_status(t_var_exp *exp);
+int						handle_variable(t_var_exp *exp);
+void					handle_dollar_sign(t_var_exp *exp);
+int						is_valid_identifier(const char *str);
 
 #endif

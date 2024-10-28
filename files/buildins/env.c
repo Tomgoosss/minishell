@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:16 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:42:34 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:58:56 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,11 @@ void	make_2d_env(t_env *env)
 	int		i;
 	t_node	*temp;
 
+	if (env->env)
+	{
+		free(env->env);
+		env->env = NULL;
+	}
 	i = count_nodes_extra(env->head_env);
 	env->env = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!env->env)

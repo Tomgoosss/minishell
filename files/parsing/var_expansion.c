@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:16:01 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 15:56:46 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:28:57 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,6 @@ int	max_expansion(t_env *var)
 	}
 	return (size);
 }
-
-int	add_exit_code(char *ret, int j, char *line, int i, int exit_status)
-{
-	char	*exit_code;
-
-	exit_code = ft_itoa(exit_status);
-	ft_strlcpy(&ret[j], exit_code, ft_strlen(exit_code) + 1);
-	j += ft_strlen(exit_code);
-	i += 2;
-	while (line[i] && !is_space(line[i]))
-		ret[j++] = line[i++];
-	return (i);
-}
-
 
 char	*replace_variable(char *line, t_env *var)
 {
@@ -74,31 +60,42 @@ char	*replace_variable(char *line, t_env *var)
 	return (free(var_name), NULL);
 }
 
+static t_var_exp	init_var_exp(char *line, t_env *var, t_ex *ex)
+{
+	t_var_exp	exp;
+
+	exp.line = line;
+	exp.var = var;
+	exp.ex = ex;
+	exp.i = 0;
+	exp.j = 0;
+	exp.ret = malloc(sizeof(char) * (max_expansion(var)));
+	if (!exp.ret)
+	{
+		exp.ret = NULL;
+	}
+	return (exp);
+}
+
 char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
-	int		i;
-	int		j;
-	char	*ret;
+	t_var_exp	exp;
 
-	i = 0;
-	j = 0;
-	if (!line)
+	exp = init_var_exp(line, var, ex);
+	if (!line || !exp.ret)
 		return (NULL);
 	if (ft_strchr(line, '$') == NULL)
 		return (ft_strdup(line));
-	ret = malloc(sizeof(char) * (max_expansion(var)));
-	if (!ret)
-		return (NULL);
-	while (line[i] != '\0')
+	while (exp.line[exp.i] != '\0')
 	{
-		if (line[i] == '\'' && closing_quote(line, i, '\'', 0)
-			&& !inside_double_quote(line, i))
-			handle_single_quote(line, ret, &i, &j);
-		else if (line[i] == '$')
-			handle_dollar_sign(ret, &j, line, &i, var, ex);
+		if (exp.line[exp.i] == '\'' && closing_quote(exp.line, exp.i, '\'', 0)
+			&& !inside_double_quote(exp.line, exp.i))
+			handle_single_quote(&exp);
+		else if (exp.line[exp.i] == '$')
+			handle_dollar_sign(&exp);
 		else
-			ret[j++] = line[i++];
+			exp.ret[exp.j++] = exp.line[exp.i++];
 	}
-	ret[j] = '\0';
-	return (ret);
+	exp.ret[exp.j] = '\0';
+	return (exp.ret);
 }

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:52:11 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 15:54:28 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:37:52 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,7 @@ void	add_command(t_token *token, char *cmd, int array_len)
 	{
 		ret[i] = ft_strdup(token->command[i]);
 		if (!ret[i])
-		{
-			free2pointers(ret);
-			return (free2pointers(token->command));
-		}
+			return (free2pointers(ret), free2pointers(token->command));
 		i++;
 	}
 	ret[i] = ft_strdup(cmd);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helperfunc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:16 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:17 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:20:11 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,50 +35,46 @@ static int	count_strings(char const *s, char c)
 	return (strings);
 }
 
-static void	handle_quote(char s_k, char *outer_quote, char *inner_quote,
-		char *token, int *j)
+static void	handle_quote(char s_k, t_quote_info *q)
 {
-	if (*outer_quote == 0)
-		*outer_quote = s_k;
-	else if (s_k == *outer_quote)
-		*outer_quote = 0;
-	else if (*inner_quote == 0)
+	if (q->outer_quote == 0)
+		q->outer_quote = s_k;
+	else if (s_k == q->outer_quote)
+		q->outer_quote = 0;
+	else if (q->inner_quote == 0)
 	{
-		*inner_quote = s_k;
-		token[(*j)++] = s_k;
+		q->inner_quote = s_k;
+		q->token[q->j++] = s_k;
 	}
-	else if (s_k == *inner_quote)
+	else if (s_k == q->inner_quote)
 	{
-		*inner_quote = 0;
-		token[(*j)++] = s_k;
+		q->inner_quote = 0;
+		q->token[q->j++] = s_k;
 	}
 }
 
 static char	*extract_token(const char *s, int len)
 {
-	char	*token;
-	int		j;
-	int		k;
-	char	outer_quote;
-	char	inner_quote;
+	t_quote_info	q;
+	int				k;
 
-	token = malloc(len + 1);
-	if (!token)
+	q.token = malloc(len + 1);
+	if (!q.token)
 		return (NULL);
-	j = 0;
 	k = 0;
-	outer_quote = 0;
-	inner_quote = 0;
+	q.j = 0;
+	q.outer_quote = 0;
+	q.inner_quote = 0;
 	while (k < len)
 	{
 		if (is_quote(s[k]))
-			handle_quote(s[k], &outer_quote, &inner_quote, token, &j);
+			handle_quote(s[k], &q);
 		else
-			token[j++] = s[k];
+			q.token[q.j++] = s[k];
 		k++;
 	}
-	token[j] = '\0';
-	return (token);
+	q.token[q.j] = '\0';
+	return (q.token);
 }
 
 static char	**allocate_and_fill(char const *s, char c, int strings)

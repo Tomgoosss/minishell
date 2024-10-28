@@ -6,76 +6,79 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:16:01 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/25 17:52:04 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:38:54 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_single_quote(char *line, char *ret, int *i, int *j)
+void	handle_single_quote(t_var_exp *exp)
 {
-	ret[(*j)++] = line[(*i)++];
-	while (line[*i] && line[*i] != '\'')
-		ret[(*j)++] = line[(*i)++];
-	if (line[*i] == '\'')
-		ret[(*j)++] = line[(*i)++];
+	exp->ret[exp->j++] = exp->line[exp->i++];
+	while (exp->line[exp->i] && exp->line[exp->i] != '\'')
+		exp->ret[exp->j++] = exp->line[exp->i++];
+	if (exp->line[exp->i] == '\'')
+		exp->ret[exp->j++] = exp->line[exp->i++];
 }
 
-void	handle_exit_status(char *ret, int *j, char *line, int *i,
-		int exit_status)
+void	handle_exit_status(t_var_exp *exp)
 {
-	*i = add_exit_code(ret, *j, line, *i, exit_status);
-	*j = ft_strlen(ret);
+	char	*exit_code;
+
+	exit_code = ft_itoa(exp->ex->exit_status);
+	ft_strlcpy(&exp->ret[exp->j], exit_code, ft_strlen(exit_code) + 1);
+	exp->j += ft_strlen(exit_code);
+	exp->i += 2;
+	while (exp->line[exp->i] && !is_space(exp->line[exp->i]))
+		exp->ret[exp->j++] = exp->line[exp->i++];
+	free(exit_code);
 }
 
-int	handle_variable(char *ret, int *j, char *line, int *i, t_env *var)
+int	handle_variable(t_var_exp *exp)
 {
 	int		var_length;
 	char	*var_name;
 	char	*temp;
-	size_t	temp_len;
 
-	var_length = end_of_var(&line[*i + 1]);
+	var_length = end_of_var(&exp->line[exp->i + 1]);
 	if (var_length > 0)
 	{
 		var_name = malloc(sizeof(char) * (var_length + 1));
 		if (!var_name)
 			return (0);
-		ft_strlcpy(var_name, &line[*i + 1], var_length + 1);
-		temp = replace_variable(var_name, var);
+		ft_strlcpy(var_name, &exp->line[exp->i + 1], var_length + 1);
+		temp = replace_variable(var_name, exp->var);
 		free(var_name);
 		if (temp)
 		{
-			temp_len = ft_strlen(temp);
-			ft_strlcpy(&ret[*j], temp, temp_len + 1);
-			*j += temp_len;
+			ft_strlcpy(&exp->ret[exp->j], temp, ft_strlen(temp) + 1);
+			exp->j += ft_strlen(temp);
 			free(temp);
 		}
 		else
-			ret[*j] = '\0';
-		*i += var_length + 1;
+			exp->ret[exp->j] = '\0';
+		exp->i += var_length + 1;
 		return (1);
 	}
 	return (0);
 }
 
-void	handle_dollar_sign(char *ret, int *j, char *line, int *i, t_env *var,
-		t_ex *ex)
+void	handle_dollar_sign(t_var_exp *exp)
 {
-	if (line[*i + 1] == '?')
+	if (exp->line[exp->i + 1] == '?')
 	{
-		handle_exit_status(ret, j, line, i, ex->exit_status);
+		handle_exit_status(exp);
 	}
-	else if (ft_isalpha(line[*i + 1]) || line[*i + 1] == '_')
+	else if (ft_isalpha(exp->line[exp->i + 1]) || exp->line[exp->i + 1] == '_')
 	{
-		if (!handle_variable(ret, j, line, i, var))
+		if (!handle_variable(exp))
 		{
-			ret[(*j)++] = line[(*i)++];
+			exp->ret[exp->j++] = exp->line[exp->i++];
 		}
 	}
 	else
 	{
-		ret[(*j)++] = line[(*i)++];
+		exp->ret[exp->j++] = exp->line[exp->i++];
 	}
 }
 

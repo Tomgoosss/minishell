@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:41 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 17:33:21 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:36:12 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,17 +75,14 @@ void	fill_nodes_env(t_env *var, char **env)
 	char	*temp;
 
 	i = 0;
+	shlvl = NULL;
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "SHLVL=", 6) == 0)
 		{
-			shlvl = create_shlvl(env[i]);
-			temp = ft_strjoin("SHLVL=", shlvl);
+			temp = ft_strjoin("SHLVL=", create_shlvl(env[i]));
 			if (!temp)
-			{
-				free(shlvl);
 				return ;
-			}
 			add_node(&var->head_env, make_node(temp));
 			add_node(&var->head_exp, make_node(temp));
 			free(temp);

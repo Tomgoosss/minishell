@@ -6,25 +6,11 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:21 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 17:28:46 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:33:32 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_str_array(char **str)
-{
-	if (str == NULL)
-	{
-		printf("Array is NULL\n");
-		return ;
-	}
-	for (int i = 0; str[i] != NULL; i++)
-	{
-		printf("[%d]: %s\n", i, str[i]);
-	}
-	printf("End of array\n");
-}
 
 int	is_delimiter(const char *s)
 {
@@ -36,6 +22,15 @@ int	is_quote(char c)
 	return (c == '\'' || c == '"');
 }
 
+static int	extra_check(const char *s)
+{
+	if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
+		return (2);
+	if (is_delimiter(s))
+		return (1);
+	return (0);
+}
+
 int	get_token_length(const char *s, int *quote_len)
 {
 	int		len;
@@ -44,10 +39,8 @@ int	get_token_length(const char *s, int *quote_len)
 	len = 0;
 	quote_char = 0;
 	*quote_len = 0;
-	if ((*s == '<' && *(s + 1) == '<') || (*s == '>' && *(s + 1) == '>'))
-		return (2);
-	if (is_delimiter(s))
-		return (1);
+	if (extra_check(s))
+		return (extra_check(s));
 	while (s[len])
 	{
 		if (is_quote(s[len]) && quote_char == 0)

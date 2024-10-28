@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_buildin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/22 15:43:01 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:37:04 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,23 +73,6 @@ int	add_to_lists(t_env *var, char *arg)
 	free(temp);
 	temp = NULL;
 	return (0);
-}
-
-int	is_valid_identifier(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
-		return (0);
-	str++;
-	while (str[i] && str[i] != '=')
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 static int	process_export_arg(t_env *var, char *arg)

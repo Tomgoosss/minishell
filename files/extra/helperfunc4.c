@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helperfunc4.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:23 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:24 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:37:15 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,21 @@ char	*ft_substr_mod(char const *s, unsigned int start, size_t len)
 	}
 	countm[i] = '\0';
 	return (countm);
+}
+
+int	is_valid_identifier(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || !(*str) || (!ft_isalpha(*str) && *str != '_'))
+		return (0);
+	str++;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
