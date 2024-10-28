@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:52:11 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/25 18:09:14 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:54:28 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,13 @@ int	end_of_var(char *line)
 	return (i);
 }
 
-int	check_redir(t_redirection **redirection, char *temp)
+static t_redirection	*create_redir_node(char *temp)
 {
 	t_redirection	*new_node;
-	t_redirection	*last;
 
 	new_node = malloc(sizeof(t_redirection));
 	if (!new_node)
-		return (0);
+		return (NULL);
 	new_node->next = NULL;
 	new_node->file = NULL;
 	if (ft_strcmp(temp, ">>") == 0)
@@ -43,7 +42,21 @@ int	check_redir(t_redirection **redirection, char *temp)
 	else if (ft_strcmp(temp, "<") == 0)
 		new_node->type = REDIR_IN;
 	else
-		return (free(new_node), 0);
+	{
+		free(new_node);
+		return (NULL);
+	}
+	return (new_node);
+}
+
+int	check_redir(t_redirection **redirection, char *temp)
+{
+	t_redirection	*new_node;
+	t_redirection	*last;
+
+	new_node = create_redir_node(temp);
+	if (!new_node)
+		return (0);
 	if (*redirection == NULL)
 		*redirection = new_node;
 	else

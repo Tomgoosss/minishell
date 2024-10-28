@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:08 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 16:40:38 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:58:04 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ void	make_path(t_token *token, t_ex *ex, t_env *var)
 	char	**temp_path;
 
 	i = 0;
+	if (access(token->command[0], X_OK) == 0)
+	{
+		ex->path = ft_strdup(token->command[0]);
+		return (0);
+	}
 	while (var->head_env && ft_strncmp(var->env[i], "PATH=", 5) != 0)
 		i++;
 	if (var->env[i] == NULL)

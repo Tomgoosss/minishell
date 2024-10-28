@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:16:01 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/25 18:10:09 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:56:46 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,32 +44,6 @@ int	add_exit_code(char *ret, int j, char *line, int i, int exit_status)
 	return (i);
 }
 
-char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
-{
-	int		i = 0, j;
-	char	*ret;
-
-	i = 0, j = 0;
-	if (!line)
-		return (NULL);
-	if (ft_strchr(line, '$') == NULL)
-		return (ft_strdup(line));
-	ret = malloc(sizeof(char) * (max_expansion(var)));
-	if (!ret)
-		return (NULL);
-	while (line[i] != '\0')
-	{
-		if (line[i] == '\'' && closing_quote(line, i, '\'', 0)
-			&& !inside_double_quote(line, i))
-			handle_single_quote(line, ret, &i, &j);
-		else if (line[i] == '$')
-			handle_dollar_sign(ret, &j, line, &i, var, ex);
-		else
-			ret[j++] = line[i++];
-	}
-	ret[j] = '\0';
-	return (ret);
-}
 
 char	*replace_variable(char *line, t_env *var)
 {
@@ -98,4 +72,33 @@ char	*replace_variable(char *line, t_env *var)
 		temp = temp->next;
 	}
 	return (free(var_name), NULL);
+}
+
+char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
+{
+	int		i;
+	int		j;
+	char	*ret;
+
+	i = 0;
+	j = 0;
+	if (!line)
+		return (NULL);
+	if (ft_strchr(line, '$') == NULL)
+		return (ft_strdup(line));
+	ret = malloc(sizeof(char) * (max_expansion(var)));
+	if (!ret)
+		return (NULL);
+	while (line[i] != '\0')
+	{
+		if (line[i] == '\'' && closing_quote(line, i, '\'', 0)
+			&& !inside_double_quote(line, i))
+			handle_single_quote(line, ret, &i, &j);
+		else if (line[i] == '$')
+			handle_dollar_sign(ret, &j, line, &i, var, ex);
+		else
+			ret[j++] = line[i++];
+	}
+	ret[j] = '\0';
+	return (ret);
 }
