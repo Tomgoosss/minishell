@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:36:28 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 16:45:49 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 18:58:46 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	init_token(t_token **token, int pipe)
 
 static int	handle_pipe(t_token **token, char **temp, int *i, int *cmd)
 {
-	if (temp[*i + 1] == NULL)
+	if (temp[*i + 1] == NULL || temp[*i + 1][0] == '|')
 	{
 		printf("syntax error near unexpected token `|'\n");
 		return (0);
@@ -46,6 +46,11 @@ static int	handle_pipe(t_token **token, char **temp, int *i, int *cmd)
 
 static int	handle_redirection(t_token **token, char **temp, int *i)
 {
+	if (ft_strlen(temp[*i]) > 2)
+	{
+		printf("syntax error near unexpected token `%c'\n", temp[*i][0]);
+		return (0);
+	}
 	if (temp[*i + 1] && valid_redirection(temp[*i + 1]))
 	{
 		place_file(&(*token)->redirection, temp[*i + 1]);
@@ -61,26 +66,27 @@ static int	handle_redirection(t_token **token, char **temp, int *i)
 	return (1);
 }
 
-static void	process_token(t_token **token, char **temp, int *i, int *cmd)
+static int	process_token(t_token **token, char **temp, int *i, int *cmd)
 {
 	if (temp[*i][0] == '|')
 	{
 		if (!handle_pipe(token, temp, i, cmd))
-			return ;
+			return (0);
 	}
 	else if (check_redir(&(*token)->redirection, temp[*i]))
 	{
 		if (!handle_redirection(token, temp, i))
-			return ;
+			return (0);
 	}
 	else
 	{
 		add_command(*token, temp[*i], *cmd);
 		if (!(*token)->command)
-			return ;
+			return (0);
 		(*cmd)++;
 		(*i)++;
 	}
+	return (1);
 }
 
 void	tokenize(t_token **token, char **temp)
@@ -97,8 +103,7 @@ void	tokenize(t_token **token, char **temp)
 	temp_token = *token;
 	while (temp[i])
 	{
-		process_token(token, temp, &i, &cmd);
-		if (!(*token))
+		if (!process_token(token, temp, &i, &cmd))
 		{
 			free2pointers(temp);
 			free2pointers(temp_token->command);

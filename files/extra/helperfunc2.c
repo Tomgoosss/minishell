@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helperfunc2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:18 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:39:19 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/10/28 18:57:29 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,10 @@ int	valid_redirection(char *str)
 {
 	if (!str || *str == '\0')
 	{
-		printf("syntax error near unexpected token `newline'\n");
 		return (0);
 	}
 	if (is_meta_character(str))
 	{
-		printf("syntax error near unexpected token `%c'\n", str[0]);
 		return (0);
 	}
 	if (not_print_str(str))

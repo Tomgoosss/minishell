@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:52:11 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 16:37:52 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:01:00 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@ int	end_of_var(char *line)
 	return (i);
 }
 
-static t_redirection	*create_redir_node(char *temp)
+t_redirection	*create_redir_node(char *temp)
 {
 	t_redirection	*new_node;
 
+	if (ft_strlen(temp) > 2)
+		return (NULL);
 	new_node = malloc(sizeof(t_redirection));
 	if (!new_node)
 		return (NULL);
@@ -82,15 +84,15 @@ void	add_command(t_token *token, char *cmd, int array_len)
 	{
 		ret[i] = ft_strdup(token->command[i]);
 		if (!ret[i])
-			return (free2pointers(ret), free2pointers(token->command));
+		{
+			free2pointers(ret);
+			return (free2pointers(token->command));
+		}
 		i++;
 	}
 	ret[i] = ft_strdup(cmd);
 	if (!ret[i])
-	{
-		free2pointers(ret);
-		return (free2pointers(token->command));
-	}
+		return (free2pointers(ret), free2pointers(token->command));
 	ret[i + 1] = 0;
 	free2pointers(token->command);
 	token->command = ret;
