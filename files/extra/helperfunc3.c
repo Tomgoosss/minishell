@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:21 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 16:33:32 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 18:11:51 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*ft_strndup(const char *s, size_t n)
 	result = malloc(n + 1);
 	if (result == NULL)
 		return (NULL);
-	strncpy(result, s, n);
+	ft_strlcpy(result, s, n);
 	result[n] = '\0';
 	return (result);
 }
