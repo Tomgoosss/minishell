@@ -6,11 +6,18 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:11 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/25 17:27:24 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:05:17 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	invalid_identifier(char *arg)
+{
+	ft_putstr_fd("bash: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+}
 
 void	print_is_directory(char *arg)
 {

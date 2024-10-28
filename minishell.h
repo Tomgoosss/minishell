@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 17:35:44 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:06:43 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,5 +189,6 @@ void					handle_exit_status(t_var_exp *exp);
 int						handle_variable(t_var_exp *exp);
 void					handle_dollar_sign(t_var_exp *exp);
 int						is_valid_identifier(const char *str);
+void					invalid_identifier(char *arg);
 
 #endif

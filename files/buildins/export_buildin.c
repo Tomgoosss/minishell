@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 16:37:04 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:05:33 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,15 @@ static int	process_export_arg(t_env *var, char *arg)
 		*equal_sign = '\0';
 		if (!is_valid_identifier(arg))
 		{
-			fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
 			*equal_sign = '=';
+			invalid_identifier(arg);
 			return (1);
 		}
 		*equal_sign = '=';
 	}
 	else if (!is_valid_identifier(arg))
 	{
-		fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+		invalid_identifier(arg);
 		return (1);
 	}
 	is_double = remove_double_env(var, arg) + remove_double_exp(var, arg);
