@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:09:51 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/22 16:37:29 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:33:49 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,13 @@ t_token	*main_pars(char *line, t_env *var, t_ex *ex)
 	if (!token)
 		return (NULL);
 	updated_line = check_dollar_sign(line, var, ex);
+	if (!updated_line)
+		return (free(token), NULL);
 	temp = ft_split_mod(updated_line, ' ');
-	if (!temp)
-		return (free(token), free(updated_line), NULL);
-	tokenize(&token, temp);
 	free(updated_line);
+	if (!temp)
+		return (free(token), NULL);
+	tokenize(&token, temp);
 	if (!token)
 	{
 		ex->exit_status = 2;

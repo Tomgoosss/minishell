@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:16:01 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/10/28 16:28:57 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:32:58 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,15 @@ static t_var_exp	init_var_exp(char *line, t_env *var, t_ex *ex)
 char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
 {
 	t_var_exp	exp;
+	char		*result;
 
-	exp = init_var_exp(line, var, ex);
-	if (!line || !exp.ret)
+	if (!line)
 		return (NULL);
 	if (ft_strchr(line, '$') == NULL)
 		return (ft_strdup(line));
+	exp = init_var_exp(line, var, ex);
+	if (!exp.ret)
+		return (NULL);
 	while (exp.line[exp.i] != '\0')
 	{
 		if (exp.line[exp.i] == '\'' && closing_quote(exp.line, exp.i, '\'', 0)
@@ -97,5 +100,7 @@ char	*check_dollar_sign(char *line, t_env *var, t_ex *ex)
 			exp.ret[exp.j++] = exp.line[exp.i++];
 	}
 	exp.ret[exp.j] = '\0';
-	return (exp.ret);
+	result = ft_strdup(exp.ret);
+	free(exp.ret);
+	return (result);
 }

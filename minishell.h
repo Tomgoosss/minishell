@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 17:12:09 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:35:44 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,9 @@ typedef struct s_quote_info
 
 int						process(char *l, t_token **t, t_env *var, t_ex *ex);
 void					cleanup_and_exit(char *line, t_ex *ex, int exitcode);
+void					handle_shlvl(t_env *var, char *env_line);
 void					sort_export(t_env *var);
+void					free_env(t_env *env);
 void					print_error_prefix(void);
 void					print_too_many_args(char *arg);
 void					print_command_not_found(char *arg);

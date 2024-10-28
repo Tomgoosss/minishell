@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:13 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 17:04:59 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/10/28 17:36:03 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,4 @@ void	free_token_line(t_token *token, char *line)
 		free(tmp);
 		tmp = next;
 	}
-}
-
-void	free_env(t_env *var)
-{
-	if (var->head_exp)
-		free_list(var->head_exp);
-	if (var->head_env)
-		free_list(var->head_env);
-	if (var)
-		free(var);
 }
