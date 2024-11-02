@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tgoossen <tgoossen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:08 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/22 15:38:09 by tgoossen         ###   ########.fr       */
+/*   Updated: 2024/11/02 20:04:29 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_n(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '-')
+	{
+		i++;
+		while (str[i] == 'n')
+			i++;
+	}
+	return (str[i] == '\0');
+}
 
 int	echo(char **command)
 {
@@ -19,7 +33,8 @@ int	echo(char **command)
 
 	i = 1;
 	newline = 1;
-	if (command[i] && ft_strncmp(command[i], "-n", 2) == 0)
+	while (command[i] && ft_strncmp(command[i], "-n", 2) == 0
+		&& check_n(command[i]))
 	{
 		newline = 0;
 		i++;
