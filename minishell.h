@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 14:37:49 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/11/02 20:11:31 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:19:34 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ typedef struct s_quote_info
 	int					j;
 }						t_quote_info;
 
+int						exp_check(char *temp, char *arg);
+int						not_print_str(char *c);
 int						inside_quotes(char *line, int i);
 int						process(char *l, t_token **t, t_env *var, t_ex *ex);
 void					cleanup_and_exit(char *line, t_ex *ex, int exitcode);

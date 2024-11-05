@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:28 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 18:13:34 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:20:27 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,13 @@
 
 extern int	g_signal;
 
-static void	handle_signal_status(t_ex *ex)
+void	handle_signal_status(t_ex *ex)
 {
-	if (g_signal)
-	{
-		if (g_signal == 1)
-			ex->exit_status = 130;
-		else if (g_signal == 2)
-			ex->exit_status = 0;
-		g_signal = 0;
-	}
+	if (g_signal == 1)
+		ex->exit_status = 130;
+	else if (g_signal == 2)
+		ex->exit_status = 131;
+	g_signal = 0;
 }
 
 static void	execute_command(t_token *token, t_env *var, t_ex *ex)
@@ -60,8 +57,8 @@ void	loop(t_env *var)
 	while (1)
 	{
 		setup_signals();
-		handle_signal_status(ex);
 		line = readline("minishell> ");
+		handle_signal_status(ex);
 		if (!line)
 			break ;
 		if (!process(line, &token, var, ex))

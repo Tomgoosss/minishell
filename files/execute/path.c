@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:08 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 16:07:53 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:28:08 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@ int	find_path(char **temp_path, t_ex *ex, t_token *token)
 	int	i;
 
 	i = 0;
-	if (access(token->command[0], X_OK) == 0)
-	{
-		ex->path = ft_strdup(token->command[0]);
-		free2pointers(temp_path);
-		return (0);
-	}
 	while (temp_path[i])
 	{
 		ex->path = ft_strjoin(temp_path[i], "/");
@@ -36,6 +30,12 @@ int	find_path(char **temp_path, t_ex *ex, t_token *token)
 		i++;
 	}
 	free2pointers(temp_path);
+	if (ft_strchr(token->command[0], '/') && access(token->command[0],
+			X_OK) == 0)
+	{
+		ex->path = ft_strdup(token->command[0]);
+		return (0);
+	}
 	return (1);
 }
 
@@ -45,7 +45,8 @@ void	make_path(t_token *token, t_ex *ex, t_env *var)
 	char	**temp_path;
 
 	i = 0;
-	if (access(token->command[0], X_OK) == 0)
+	if (ft_strchr(token->command[0], '/') && access(token->command[0],
+			X_OK) == 0)
 	{
 		ex->path = ft_strdup(token->command[0]);
 		return ;

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:38:24 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/11/02 20:04:39 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:49:13 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,20 @@ int	remove_double_env(t_env *var, char *arg)
 
 	len = 0;
 	temp = var->head_env;
+	if (!ft_strchr(arg, '='))
+		return (0);
 	while (arg[len] && arg[len] != '=')
 		len++;
-	if (arg[len] == '\0')
-		len--;
 	while (temp)
 	{
-		if (ft_strncmp(temp->data, arg, len + 1) == 0)
+		if (ft_strncmp(temp->data, arg, len) == 0)
 		{
-			if (!ft_strchr(arg, '='))
-				return (1);
 			remove_current_node(&var->head_env, temp);
 			return (1);
 		}
 		temp = temp->next;
 	}
-	return (1);
+	return (0);
 }
 
 void	remove_current_node(t_node **head, t_node *node)

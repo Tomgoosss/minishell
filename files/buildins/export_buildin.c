@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/11/02 20:05:07 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:20:07 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,10 @@ int	remove_double_exp(t_env *var, char *arg)
 			if (ft_strchr(temp->data, '=') && !ft_strchr(arg, '='))
 				return (1);
 			remove_current_node(&var->head_exp, temp);
-			printf("node removed\n");
 			return (1);
 		}
 		temp = temp->next;
 	}
-	return (1);
-}
-
-int	extra_check(char *temp, char *arg)
-{
-	if (ft_strchr(temp, '=') && !ft_strchr(arg, '='))
-		return (0);
 	return (1);
 }
 
@@ -56,7 +48,7 @@ int	check_no_def(t_node *head, char *arg)
 	{
 		if (ft_strncmp(temp->data, arg, len) == 0)
 			if (ft_strlen(temp->data) > len)
-				return (extra_check(temp->data, arg));
+				return (exp_check(temp->data, arg));
 		temp = temp->next;
 	}
 	return (1);
@@ -65,28 +57,35 @@ int	check_no_def(t_node *head, char *arg)
 int	add_to_lists(t_env *var, char *arg)
 {
 	char	*temp;
+	t_node	*existing;
 
-	if (ft_strchr(arg, '=') != 0)
+	if (ft_strchr(arg, '=') != NULL)
 	{
+		remove_double_env(var, arg);
+		remove_double_exp(var, arg);
 		add_node(&var->head_env, make_node(arg));
 		temp = prepare_for_export(arg);
+		add_node(&var->head_exp, make_node(temp));
+		free(temp);
 	}
 	else
-		temp = ft_strdup(arg);
-	if (!temp)
-		return (1);
-	if (check_no_def(var->head_exp, temp))
-		add_node(&var->head_exp, make_node(temp));
+	{
+		existing = var->head_exp;
+		while (existing)
+		{
+			if (ft_strcmp(existing->data, arg) == 0)
+				return (0);
+			existing = existing->next;
+		}
+		add_node(&var->head_exp, make_node(arg));
+	}
 	sort_export(var);
-	free(temp);
-	temp = NULL;
 	return (0);
 }
 
 static int	process_export_arg(t_env *var, char *arg)
 {
 	char	*equal_sign;
-	int		is_double;
 
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
@@ -105,9 +104,7 @@ static int	process_export_arg(t_env *var, char *arg)
 		invalid_identifier(arg);
 		return (1);
 	}
-	is_double = remove_double_env(var, arg) + remove_double_exp(var, arg);
-	if (is_double != 0)
-		add_to_lists(var, arg);
+	add_to_lists(var, arg);
 	return (0);
 }
 

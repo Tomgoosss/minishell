@@ -14,7 +14,8 @@ SRCS    := files/main.c files/main_helper.c \
            files/parsing/parsing.c files/buildins/cd.c files/buildins/echo.c files/buildins/unset.c \
 		   files/execute/ex_tra.c files/execute/heredoc.c files/extra/helperfunc4.c \
 		   files/extra/helperfunc3.c files/signals.c files/signals2.c files/parsing/var_expansion.c files/parsing/redirections.c \
-		   files/parsing/tokenize.c files/execute/heredoc_pro.c files/parsing/var_expansion_utils.c files/buildins/shlvl.c files/extra/free2.c
+		   files/parsing/tokenize.c files/execute/heredoc_pro.c files/parsing/var_expansion_utils.c files/buildins/shlvl.c files/extra/free2.c \
+		   files/buildins/one_extra_norminette.c
 OBJS    := ${SRCS:.c=.o}
 
 all:  libft $(NAME)
