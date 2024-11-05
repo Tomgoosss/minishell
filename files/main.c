@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:28 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/11/05 15:20:27 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:39:08 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	handle_signal_status(t_ex *ex)
 
 static void	execute_command(t_token *token, t_env *var, t_ex *ex)
 {
+	if (!token->command)
+		return ;
 	if (ft_strncmp(token->command[0], "minishell", 9) == 0
 		|| ft_strncmp(token->command[0], "./minishell", 12) == 0)
 		signals_ignore();

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:46:56 by fbiberog          #+#    #+#             */
-/*   Updated: 2024/11/05 15:20:07 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:17:32 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	add_to_lists(t_env *var, char *arg)
 		remove_double_env(var, arg);
 		remove_double_exp(var, arg);
 		add_node(&var->head_env, make_node(arg));
-		temp = prepare_for_export(arg);
+		temp = ft_strdup(arg);
 		add_node(&var->head_exp, make_node(temp));
 		free(temp);
 	}
@@ -77,7 +77,7 @@ int	add_to_lists(t_env *var, char *arg)
 				return (0);
 			existing = existing->next;
 		}
-		add_node(&var->head_exp, make_node(arg));
+		check_if_add(var, arg);
 	}
 	sort_export(var);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: fbiberog <fbiberog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:39:13 by tgoossen          #+#    #+#             */
-/*   Updated: 2024/10/28 17:36:03 by fbiberog         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:47:31 by fbiberog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	free_redirection(t_redirection *redirection)
 	t_redirection	*next;
 
 	tmp = redirection;
-	while (tmp->next)
+	while (tmp)
 	{
 		next = tmp->next;
 		free(tmp->file);
